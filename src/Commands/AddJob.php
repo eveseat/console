@@ -24,35 +24,48 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Seat\Console;
+namespace Seat\Console\Commands;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Console\Command;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Seat\Eveapi\Jobs\UpdateServerStatus;
 
-class ConsoleServiceProvider extends ServiceProvider
+class AddJob extends Command
 {
+    use DispatchesJobs;
 
     /**
-     * Bootstrap the application services.
+     * The name and signature of the console command.
      *
-     * @return void
+     * @var string
      */
-    public function boot()
-    {
+    protected $signature = 'add:job';
 
-        $this->commands([
-            'Seat\Console\Commands\ShowVersion',    // show:version
-            'Seat\Console\Commands\AddJob'          // add:job
-        ]);
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Adds a Job for Testing';
+
+    /**
+     * Create a new command instance.
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct();
 
     }
 
     /**
-     * Register the application services.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
-    public function register()
+    public function handle()
     {
-        //
+        $this->line('This is just a simple test to add a job!');
+        $this->dispatch(new UpdateServerStatus());
     }
 }
