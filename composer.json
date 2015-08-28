@@ -1,0 +1,21 @@
+{
+    "name": "eveseat/console",
+    "description": "SeAT Console Components",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Leon Jacobs",
+            "email": "leonja511@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Seat\\Console\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.9",
+        "laravel/framework": "5.1.*"
+    }
+}
