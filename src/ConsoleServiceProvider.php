@@ -40,8 +40,8 @@ class ConsoleServiceProvider extends ServiceProvider
     {
 
         $this->commands([
-            'Seat\Console\Commands\ShowVersion',    // show:version
-            'Seat\Console\Commands\AddJob'          // add:job
+            'Seat\Console\Commands\EveUpdateServerStatus',  // eve:update-server-status
+            'Seat\Console\Commands\ShowVersion',            // show:version
         ]);
 
     }

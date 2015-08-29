@@ -27,26 +27,26 @@ SOFTWARE.
 namespace Seat\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Seat\Eveapi\Jobs\UpdateServerStatus;
+use Seat\Eveapi\Traits\JobManager;
 
-class AddJob extends Command
+class EveUpdateServerStatus extends Command
 {
-    use DispatchesJobs;
+
+    use JobManager;
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'add:job';
+    protected $signature = 'eve:update-server-status';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Adds a Job for Testing';
+    protected $description = 'Updates the EVE Online Server Status';
 
     /**
      * Create a new command instance.
@@ -54,6 +54,7 @@ class AddJob extends Command
      */
     public function __construct()
     {
+
         parent::__construct();
 
     }
@@ -65,7 +66,17 @@ class AddJob extends Command
      */
     public function handle()
     {
+
         $this->line('This is just a simple test to add a job!');
-        $this->dispatch(new UpdateServerStatus());
+
+        $job_id = $this->addUniqueJob(
+            'Seat\Eveapi\Jobs\UpdateServerStatus',
+            [
+                'scope' => 'Server',
+                'api'   => 'ServerStatus'
+            ]
+        );
+
+        $this->info('Job ' . $job_id . ' dispatched!');
     }
 }
