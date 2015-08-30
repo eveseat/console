@@ -24,37 +24,59 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace Seat\Console;
+namespace Seat\Console\Commands;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Console\Command;
+use Seat\Eveapi\Traits\JobManager;
 
-class ConsoleServiceProvider extends ServiceProvider
+class EveUpdateMap extends Command
 {
 
+    use JobManager;
+
     /**
-     * Bootstrap the application services.
+     * The name and signature of the console command.
      *
-     * @return void
+     * @var string
      */
-    public function boot()
+    protected $signature = 'eve:update-map';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Updates EVE Map Information';
+
+    /**
+     * Create a new command instance.
+     *
+     */
+    public function __construct()
     {
 
-        $this->commands([
-            'Seat\Console\Commands\EveUpdateServerStatus',  // eve:update-server-status
-            'Seat\Console\Commands\EveUpdateEve',           // eve:update-eve
-            'Seat\Console\Commands\EveUpdateMap',           // eve:update-map
-            'Seat\Console\Commands\ShowVersion',            // show:version
-        ]);
+        parent::__construct();
 
     }
 
     /**
-     * Register the application services.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
-    public function register()
+    public function handle()
     {
-        //
+
+        $this->line('This is just a simple test to add a job!');
+
+        $job_id = $this->addUniqueJob(
+            'Seat\Eveapi\Jobs\UpdateMap',
+            [
+                'scope' => 'Eve',
+                'api'   => 'Map'
+            ]
+        );
+
+        $this->info('Job ' . $job_id . ' dispatched!');
     }
 }
