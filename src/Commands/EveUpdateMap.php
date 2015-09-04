@@ -27,6 +27,7 @@ SOFTWARE.
 namespace Seat\Console\Commands;
 
 use Illuminate\Console\Command;
+use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Traits\JobManager;
 
 class EveUpdateMap extends Command
@@ -62,20 +63,18 @@ class EveUpdateMap extends Command
     /**
      * Execute the console command.
      *
+     * @param \Seat\Eveapi\Helpers\JobContainer $job
+     *
      * @return mixed
      */
-    public function handle()
+    public function handle(JobContainer $job)
     {
 
-        $this->line('This is just a simple test to add a job!');
+        $job->scope = 'Eve';
+        $job->api = 'Map';
 
         $job_id = $this->addUniqueJob(
-            'Seat\Eveapi\Jobs\UpdateMap',
-            [
-                'scope' => 'Eve',
-                'api'   => 'Map'
-            ]
-        );
+            'Seat\Eveapi\Jobs\UpdateMap', $job);
 
         $this->info('Job ' . $job_id . ' dispatched!');
     }

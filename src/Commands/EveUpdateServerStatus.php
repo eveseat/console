@@ -27,8 +27,13 @@ SOFTWARE.
 namespace Seat\Console\Commands;
 
 use Illuminate\Console\Command;
+use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Traits\JobManager;
 
+/**
+ * Class EveUpdateServerStatus
+ * @package Seat\Console\Commands
+ */
 class EveUpdateServerStatus extends Command
 {
 
@@ -60,22 +65,16 @@ class EveUpdateServerStatus extends Command
     }
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
+     * @param \Seat\Eveapi\Helpers\JobContainer $job
      */
-    public function handle()
+    public function handle(JobContainer $job)
     {
 
-        $this->line('This is just a simple test to add a job!');
+        $job->scope = 'Server';
+        $job->api = 'ServerStatus';
 
         $job_id = $this->addUniqueJob(
-            'Seat\Eveapi\Jobs\UpdateServerStatus',
-            [
-                'scope' => 'Server',
-                'api'   => 'ServerStatus'
-            ]
-        );
+            'Seat\Eveapi\Jobs\UpdateServerStatus', $job);
 
         $this->info('Job ' . $job_id . ' dispatched!');
     }
