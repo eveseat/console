@@ -1,7 +1,7 @@
 {
     "name": "eveseat/console",
     "description": "SeAT Console Components",
-    "license": "MIT",
+    "license": "GPL-2.0",
     "authors": [
         {
             "name": "Leon Jacobs",
@@ -13,9 +13,11 @@
             "Seat\\Console\\": "src/"
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.1.*"
+        "laravel/framework": "5.1.*",
+        "psr/log": "1.0.0",
+        "eveseat/eveapi": "dev-master"
     }
 }
