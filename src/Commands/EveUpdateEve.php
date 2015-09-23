@@ -69,7 +69,7 @@ class EveUpdateEve extends Command
         $job->api = 'Eve';
 
         $job_id = $this->addUniqueJob(
-            'Seat\Eveapi\Jobs\UpdateEve', $job);
+            'Seat\Eveapi\Jobs\UpdatePublic', $job);
 
         $this->info('Job ' . $job_id . ' dispatched!');
     }

@@ -66,10 +66,10 @@ class EveUpdateServerStatus extends Command
     {
 
         $job->scope = 'Server';
-        $job->api = 'ServerStatus';
+        $job->api = 'Server';
 
         $job_id = $this->addUniqueJob(
-            'Seat\Eveapi\Jobs\UpdateServerStatus', $job);
+            'Seat\Eveapi\Jobs\UpdatePublic', $job);
 
         $this->info('Job ' . $job_id . ' dispatched!');
     }
