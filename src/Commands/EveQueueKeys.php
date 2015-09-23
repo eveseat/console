@@ -68,7 +68,7 @@ class EveQueueKeys extends Command
 
         // Query the API Keys from the database
         // and queue jobs for them 10 at a time.
-        EveApiKey::chunk(10, function ($keys) use ($job) {
+        EveApiKey::where('enabled', 1)->chunk(10, function ($keys) use ($job) {
 
             foreach ($keys as $key) {
 
