@@ -60,5 +60,6 @@ class ShowVersion extends Command
     {
 
         $this->line('eveapi version: ' . config('eveapi.config.version'));
+        $this->line('console version: ' . config('console.config.version'));
     }
 }

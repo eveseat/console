@@ -52,6 +52,8 @@ class ConsoleServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+
+        $this->mergeConfigFrom(
+            __DIR__ . '/Config/console.config.php', 'console.config');
     }
 }
