@@ -40,6 +40,9 @@ class ConsoleServiceProvider extends ServiceProvider
             'Seat\Console\Commands\Eve\UpdateEve',          // eve:update-eve
             'Seat\Console\Commands\Eve\UpdateMap',          // eve:update-map
             'Seat\Console\Commands\Eve\UpdateServerStatus', // eve:update-server-status
+
+            'Seat\Console\Commands\Seat\Keys\Show',         // seat:keys:show
+
             'Seat\Console\Commands\ShowVersion',            // show:version
         ]);
 
