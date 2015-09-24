@@ -19,17 +19,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-namespace Seat\Console\Commands;
+namespace Seat\Console\Commands\Eve;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Traits\JobManager;
 
-/**
- * Class EveUpdateServerStatus
- * @package Seat\Console\Commands
- */
-class EveUpdateServerStatus extends Command
+class UpdateEve extends Command
 {
 
     use JobManager;
@@ -39,14 +35,14 @@ class EveUpdateServerStatus extends Command
      *
      * @var string
      */
-    protected $signature = 'eve:update-server-status';
+    protected $signature = 'eve:update-eve';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Updates the EVE Online Server Status';
+    protected $description = 'Updates EVE Universe Specific Information';
 
     /**
      * Create a new command instance.
@@ -60,13 +56,17 @@ class EveUpdateServerStatus extends Command
     }
 
     /**
+     * Execute the console command.
+     *
      * @param \Seat\Eveapi\Helpers\JobContainer $job
+     *
+     * @return mixed
      */
     public function handle(JobContainer $job)
     {
 
-        $job->scope = 'Server';
-        $job->api = 'Server';
+        $job->scope = 'Eve';
+        $job->api = 'Eve';
 
         $job_id = $this->addUniqueJob(
             'Seat\Eveapi\Jobs\UpdatePublic', $job);

@@ -19,14 +19,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-namespace Seat\Console\Commands;
+namespace Seat\Console\Commands\Eve;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Models\EveApiKey;
 use Seat\Eveapi\Traits\JobManager;
 
-class EveQueueKeys extends Command
+class QueueKeys extends Command
 {
 
     use JobManager;
@@ -43,7 +43,7 @@ class EveQueueKeys extends Command
      *
      * @var string
      */
-    protected $description = 'Queues EVE API Keys for Update';
+    protected $description = 'Queues Enabled EVE API Keys for Update';
 
     /**
      * Create a new command instance.

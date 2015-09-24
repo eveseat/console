@@ -35,11 +35,11 @@ class ConsoleServiceProvider extends ServiceProvider
     {
 
         $this->commands([
-            'Seat\Console\Commands\EveQueueKeys',           // eve:queue-keys
-            'Seat\Console\Commands\EveUpdateApiCallList',   // eve:update-api-call-list
-            'Seat\Console\Commands\EveUpdateServerStatus',  // eve:update-server-status
-            'Seat\Console\Commands\EveUpdateEve',           // eve:update-eve
-            'Seat\Console\Commands\EveUpdateMap',           // eve:update-map
+            'Seat\Console\Commands\Eve\QueueKeys',          // eve:queue-keys
+            'Seat\Console\Commands\Eve\UpdateApiCallList',  // eve:update-api-call-list
+            'Seat\Console\Commands\Eve\UpdateEve',          // eve:update-eve
+            'Seat\Console\Commands\Eve\UpdateMap',          // eve:update-map
+            'Seat\Console\Commands\Eve\UpdateServerStatus', // eve:update-server-status
             'Seat\Console\Commands\ShowVersion',            // show:version
         ]);
 

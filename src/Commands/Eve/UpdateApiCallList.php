@@ -19,13 +19,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-namespace Seat\Console\Commands;
+namespace Seat\Console\Commands\Eve;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Traits\JobManager;
 
-class EveUpdateEve extends Command
+class UpdateApiCallList extends Command
 {
 
     use JobManager;
@@ -35,14 +35,14 @@ class EveUpdateEve extends Command
      *
      * @var string
      */
-    protected $signature = 'eve:update-eve';
+    protected $signature = 'eve:update-api-call-list';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Updates EVE Universe Specific Information';
+    protected $description = 'Updates EVE API Call List';
 
     /**
      * Create a new command instance.
@@ -66,7 +66,7 @@ class EveUpdateEve extends Command
     {
 
         $job->scope = 'Eve';
-        $job->api = 'Eve';
+        $job->api = 'Api';
 
         $job_id = $this->addUniqueJob(
             'Seat\Eveapi\Jobs\UpdatePublic', $job);
