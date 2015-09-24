@@ -45,7 +45,7 @@ class ConsoleServiceProvider extends ServiceProvider
             'Seat\Console\Commands\Seat\Keys\Show',         // seat:keys:show
             'Seat\Console\Commands\Seat\Queue\Status',      // seat:queue:status
 
-            'Seat\Console\Commands\ShowVersion',            // show:version
+            'Seat\Console\Commands\Seat\Version',           // seat:version
         ]);
 
     }

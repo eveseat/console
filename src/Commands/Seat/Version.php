@@ -19,11 +19,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-namespace Seat\Console\Commands;
+namespace Seat\Console\Commands\Seat;
 
 use Illuminate\Console\Command;
 
-class ShowVersion extends Command
+class Version extends Command
 {
 
     /**
@@ -31,7 +31,7 @@ class ShowVersion extends Command
      *
      * @var string
      */
-    protected $signature = 'show:version';
+    protected $signature = 'seat:version';
 
     /**
      * The console command description.
@@ -61,5 +61,6 @@ class ShowVersion extends Command
 
         $this->line('eveapi version: ' . config('eveapi.config.version'));
         $this->line('console version: ' . config('console.config.version'));
+        $this->line('services version: ' . config('services.config.version'));
     }
 }
