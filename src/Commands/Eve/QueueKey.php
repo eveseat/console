@@ -26,7 +26,7 @@ use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Models\EveApiKey;
 use Seat\Eveapi\Traits\JobManager;
 
-class QueueKeys extends Command
+class QueueKey extends Command
 {
 
     use JobManager;
@@ -36,14 +36,13 @@ class QueueKeys extends Command
      *
      * @var string
      */
-    protected $signature = 'eve:queue-keys';
-
+    protected $signature = 'eve:queue-key {key_id : The Key ID to Update}';
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Queues all enabled EVE API keys for update';
+    protected $description = 'Queues an API key for updating';
 
     /**
      * Create a new command instance.
@@ -68,20 +67,16 @@ class QueueKeys extends Command
 
         // Query the API Keys from the database
         // and queue jobs for them 10 at a time.
-        EveApiKey::where('enabled', 1)->chunk(10, function ($keys) use ($job) {
+        $key = EveApiKey::findOrFail($this->argument('key_id'));
 
-            foreach ($keys as $key) {
+        $job->scope = 'Key';
+        $job->api = 'Scheduler';
+        $job->owner_id = $key->key_id;
+        $job->eve_api_key = $key;
 
-                $job->scope = 'Key';
-                $job->api = 'Scheduler';
-                $job->owner_id = $key->key_id;
-                $job->eve_api_key = $key;
+        $job_id = $this->addUniqueJob(
+            'Seat\Eveapi\Jobs\CheckAndQueueKey', $job);
 
-                $job_id = $this->addUniqueJob(
-                    'Seat\Eveapi\Jobs\CheckAndQueueKey', $job);
-
-                $this->info('Job ' . $job_id . ' dispatched!');
-            }
-        });
+        $this->info('Job ' . $job_id . ' dispatched!');
     }
 }

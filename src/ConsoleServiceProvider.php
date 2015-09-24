@@ -35,6 +35,7 @@ class ConsoleServiceProvider extends ServiceProvider
     {
 
         $this->commands([
+            'Seat\Console\Commands\Eve\QueueKey',           // eve:queue-keys {key_id}
             'Seat\Console\Commands\Eve\QueueKeys',          // eve:queue-keys
             'Seat\Console\Commands\Eve\UpdateApiCallList',  // eve:update-api-call-list
             'Seat\Console\Commands\Eve\UpdateEve',          // eve:update-eve
