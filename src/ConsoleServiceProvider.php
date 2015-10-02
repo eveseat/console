@@ -22,6 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Console;
 
 use Illuminate\Support\ServiceProvider;
+use Seat\Console\Commands\Seat\Admin\Reset;
 
 class ConsoleServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,8 @@ class ConsoleServiceProvider extends ServiceProvider
             'Seat\Console\Commands\Eve\UpdateEve',          // eve:update-eve
             'Seat\Console\Commands\Eve\UpdateMap',          // eve:update-map
             'Seat\Console\Commands\Eve\UpdateServerStatus', // eve:update-server-status
+
+            Reset::class,       // seat:admin:reset
 
             'Seat\Console\Commands\Seat\Keys\Show',         // seat:keys:show
             'Seat\Console\Commands\Seat\Queue\Status',      // seat:queue:status
