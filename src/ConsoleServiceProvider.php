@@ -22,7 +22,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Console;
 
 use Illuminate\Support\ServiceProvider;
+use Seat\Console\Commands\Eve\QueueKey;
+use Seat\Console\Commands\Eve\QueueKeys;
+use Seat\Console\Commands\Eve\UpdateApiCallList;
+use Seat\Console\Commands\Eve\UpdateEve;
+use Seat\Console\Commands\Eve\UpdateMap;
+use Seat\Console\Commands\Eve\UpdateServerStatus;
 use Seat\Console\Commands\Seat\Admin\Reset;
+use Seat\Console\Commands\Seat\Keys\Show;
+use Seat\Console\Commands\Seat\Queue\Status;
+use Seat\Console\Commands\Seat\Version;
 
 class ConsoleServiceProvider extends ServiceProvider
 {
@@ -36,19 +45,16 @@ class ConsoleServiceProvider extends ServiceProvider
     {
 
         $this->commands([
-            'Seat\Console\Commands\Eve\QueueKey',           // eve:queue-keys {key_id}
-            'Seat\Console\Commands\Eve\QueueKeys',          // eve:queue-keys
-            'Seat\Console\Commands\Eve\UpdateApiCallList',  // eve:update-api-call-list
-            'Seat\Console\Commands\Eve\UpdateEve',          // eve:update-eve
-            'Seat\Console\Commands\Eve\UpdateMap',          // eve:update-map
-            'Seat\Console\Commands\Eve\UpdateServerStatus', // eve:update-server-status
-
-            Reset::class,       // seat:admin:reset
-
-            'Seat\Console\Commands\Seat\Keys\Show',         // seat:keys:show
-            'Seat\Console\Commands\Seat\Queue\Status',      // seat:queue:status
-
-            'Seat\Console\Commands\Seat\Version',           // seat:version
+            QueueKey::class,
+            QueueKeys::class,
+            UpdateApiCallList::class,
+            UpdateEve::class,
+            UpdateMap::class,
+            UpdateServerStatus::class,
+            Reset::class,
+            Show::class,
+            Status::class,
+            Version::class,
         ]);
 
     }
