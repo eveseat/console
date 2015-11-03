@@ -27,6 +27,7 @@ use Seat\Console\Commands\Eve\QueueKeys;
 use Seat\Console\Commands\Eve\UpdateApiCallList;
 use Seat\Console\Commands\Eve\UpdateEve;
 use Seat\Console\Commands\Eve\UpdateMap;
+use Seat\Console\Commands\Eve\UpdateSde;
 use Seat\Console\Commands\Eve\UpdateServerStatus;
 use Seat\Console\Commands\Seat\Admin\Reset;
 use Seat\Console\Commands\Seat\Keys\Show;
@@ -50,6 +51,7 @@ class ConsoleServiceProvider extends ServiceProvider
             UpdateApiCallList::class,
             UpdateEve::class,
             UpdateMap::class,
+            UpdateSde::class,
             UpdateServerStatus::class,
             Reset::class,
             Show::class,

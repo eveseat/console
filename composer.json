@@ -19,6 +19,7 @@
         "laravel/framework": "5.1.*",
         "psr/log": "1.0.0",
         "eveseat/eveapi": "dev-master",
-        "eveseat/services": "dev-master"
+        "eveseat/services": "dev-master",
+        "guzzlehttp/guzzle": "^6.1"
     }
 }
