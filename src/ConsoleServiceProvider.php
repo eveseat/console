@@ -30,6 +30,7 @@ use Seat\Console\Commands\Eve\UpdateMap;
 use Seat\Console\Commands\Eve\UpdateSde;
 use Seat\Console\Commands\Eve\UpdateServerStatus;
 use Seat\Console\Commands\Seat\Admin\Reset;
+use Seat\Console\Commands\Seat\Cache\Clear;
 use Seat\Console\Commands\Seat\Keys\Show;
 use Seat\Console\Commands\Seat\Queue\Status;
 use Seat\Console\Commands\Seat\Version;
@@ -54,6 +55,7 @@ class ConsoleServiceProvider extends ServiceProvider
             UpdateSde::class,
             UpdateServerStatus::class,
             Reset::class,
+            Clear::class,
             Show::class,
             Status::class,
             Version::class,
