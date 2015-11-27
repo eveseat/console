@@ -6,4 +6,5 @@
 [![Latest Unstable Version](https://poser.pugx.org/eveseat/console/v/unstable)](https://packagist.org/packages/eveseat/console)
 [![License](https://poser.pugx.org/eveseat/console/license)](https://packagist.org/packages/eveseat/console)
 
-This repository contains the Console code for SeAT
+## This repository contains the Console code for SeAT
+Please use the main SeAT repository [here](https://github.com/eveseat/seat) for issues.
