@@ -59,8 +59,10 @@ class Version extends Command
     public function handle()
     {
 
-        $this->line('eveapi version: ' . config('eveapi.config.version'));
+        $this->line('api version: ' . config('api.config.version'));
         $this->line('console version: ' . config('console.config.version'));
+        $this->line('eveapi version: ' . config('eveapi.config.version'));
+        $this->line('web version: ' . config('web.config.version'));
         $this->line('services version: ' . config('services.config.version'));
     }
 }
