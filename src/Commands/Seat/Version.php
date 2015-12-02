@@ -59,11 +59,37 @@ class Version extends Command
     public function handle()
     {
 
-        $this->line('api version: ' . config('api.config.version'));
-        $this->line('console version: ' . config('console.config.version'));
-        $this->line('eveapi version: ' . config('eveapi.config.version'));
-        $this->line('notifications version: ' . config('notifications.config.version'));
-        $this->line('web version: ' . config('web.config.version'));
-        $this->line('services version: ' . config('services.config.version'));
+        $this->comment('[x] SeAT Package Versions');
+
+        $headers = ['Package Name', 'Version'];
+        $this->table($headers, [
+            [
+                'package' => 'Api',
+                'version' => config('api.config.version')
+            ],
+
+            [
+                'package' => 'Console',
+                'version' => config('console.config.version')
+            ],
+            [
+                'package' => 'Eveapi',
+                'version' => config('eveapi.config.version')
+            ],
+            [
+                'package' => 'Notifications',
+                'version' => config('notifications.config.version')
+            ],
+            [
+                'package' => 'Web',
+                'version' => config('web.config.version')
+            ],
+            [
+                'package' => 'Services',
+                'version' => config('services.config.version')
+            ]
+
+        ]);
+
     }
 }
