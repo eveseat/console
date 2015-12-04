@@ -204,7 +204,8 @@ class UpdateSde extends Command
     {
 
         $bar = $this->output->createProgressBar($iterations);
-        $bar->setFormat('%current%/%max% [%bar%] %percent:3s%% | %message% ');
+
+        $bar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s% %memory:6s%');
 
         return $bar;
     }
@@ -236,18 +237,21 @@ class UpdateSde extends Command
     public function getSde()
     {
 
+        $this->line('Downloading...');
         $bar = $this->getProgressBar(count($this->json->tables));
 
         foreach ($this->json->tables as $table) {
-
-            $bar->setMessage('Downloading ' . $table . $this->json->format);
 
             $url = str_replace(':version', $this->json->version, $this->json->url) .
                 $table . $this->json->format;
             $destination = $this->storage_path . $table . $this->json->format;
 
-            $result = $this->getGuzzle()->request('GET', $url,
-                ['sink' => $destination]);
+            $file_handler = fopen($destination, 'w');
+
+            $result = $this->getGuzzle()->request('GET', $url, [
+                'sink' => $file_handler]);
+
+            fclose($file_handler);
 
             if ($result->getStatusCode() != 200)
                 $this->error('Unable to download ' . $url .
@@ -257,6 +261,7 @@ class UpdateSde extends Command
         }
 
         $bar->finish();
+        $this->line('');
 
         return;
     }
@@ -296,6 +301,7 @@ class UpdateSde extends Command
     public function importSde()
     {
 
+        $this->line('Importing...');
         $bar = $this->getProgressBar(count($this->json->tables));
 
         foreach ($this->json->tables as $table) {
@@ -309,8 +315,6 @@ class UpdateSde extends Command
                 continue;
             }
 
-            $bar->setMessage('Extracting ' . $table . $this->json->format);
-
             // Get 2 handles ready for both the in and out files
             $input_file = bzopen($archive_path, 'r');
             $output_file = fopen($extracted_path, 'w');
@@ -322,8 +326,6 @@ class UpdateSde extends Command
             // Close the files
             bzclose($input_file);
             fclose($output_file);
-
-            $bar->setMessage('Importing ' . $table . $this->json->format);
 
             // With the output file ready, prepare the scary exec() command
             // that should be run. A sample $import_command is:
@@ -349,6 +351,7 @@ class UpdateSde extends Command
         }
 
         $bar->finish();
+        $this->line('');
 
         return;
 
