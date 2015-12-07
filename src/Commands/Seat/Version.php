@@ -61,34 +61,13 @@ class Version extends Command
 
         $this->comment('[x] SeAT Package Versions');
 
-        $headers = ['Package Name', 'Version'];
-        $this->table($headers, [
-            [
-                'package' => 'Api',
-                'version' => config('api.config.version')
-            ],
-
-            [
-                'package' => 'Console',
-                'version' => config('console.config.version')
-            ],
-            [
-                'package' => 'Eveapi',
-                'version' => config('eveapi.config.version')
-            ],
-            [
-                'package' => 'Notifications',
-                'version' => config('notifications.config.version')
-            ],
-            [
-                'package' => 'Web',
-                'version' => config('web.config.version')
-            ],
-            [
-                'package' => 'Services',
-                'version' => config('services.config.version')
-            ]
-
+        $this->table(['Package Name', 'Version'], [
+            ['Api', config('api.config.version')],
+            ['Console', config('console.config.version')],
+            ['Eveapi', config('eveapi.config.version')],
+            ['Notifications', config('notifications.config.version')],
+            ['Web', config('web.config.version')],
+            ['Services', config('services.config.version')]
         ]);
 
     }

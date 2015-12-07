@@ -138,6 +138,9 @@ class Clear extends Command
         return;
     }
 
+    /**
+     * Clear the database job tracking cache
+     */
     public function clear_database_jobs()
     {
 
