@@ -20,6 +20,6 @@
         "psr/log": "1.0.0",
         "eveseat/eveapi": "1.*",
         "eveseat/services": "1.*",
-        "guzzlehttp/guzzle": "^6.0"
+        "guzzlehttp/guzzle": "~6.1"
     }
 }
