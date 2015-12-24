@@ -18,8 +18,8 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
         "psr/log": "1.0.0",
-        "eveseat/eveapi": "1.*",
-        "eveseat/services": "1.*",
+        "eveseat/eveapi": "~1.0",
+        "eveseat/services": "~1.0",
         "guzzlehttp/guzzle": "~6.1"
     }
 }
