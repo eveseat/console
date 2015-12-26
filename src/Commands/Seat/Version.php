@@ -21,8 +21,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 namespace Seat\Console\Commands\Seat;
 
+use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
+/**
+ * Class Version
+ * @package Seat\Console\Commands\Seat
+ */
 class Version extends Command
 {
 
@@ -31,7 +36,7 @@ class Version extends Command
      *
      * @var string
      */
-    protected $signature = 'seat:version';
+    protected $signature = 'seat:version {--offline : Skip Checking Github for latest versions}';
 
     /**
      * The console command description.
@@ -41,14 +46,28 @@ class Version extends Command
     protected $description = 'Show all of the SeAT component versions';
 
     /**
+     * @var string
+     */
+    protected $base_url = 'https://api.github.com/repos/:repo/releases/latest';
+
+    /**
+     * @var array
+     */
+    protected $packages = [
+        'api', 'console', 'eveapi', 'notifications', 'web', 'services'
+    ];
+
+    /**
      * Create a new command instance.
      *
+     * @param \GuzzleHttp\Client $client
      */
-    public function __construct()
+    public function __construct(Client $client)
     {
 
-        parent::__construct();
+        $this->client = $client;
 
+        parent::__construct();
     }
 
     /**
@@ -59,16 +78,44 @@ class Version extends Command
     public function handle()
     {
 
-        $this->comment('[x] SeAT Package Versions');
+        $offline = $this->option('offline');
 
-        $this->table(['Package Name', 'Version'], [
-            ['Api', config('api.config.version')],
-            ['Console', config('console.config.version')],
-            ['Eveapi', config('eveapi.config.version')],
-            ['Notifications', config('notifications.config.version')],
-            ['Web', config('web.config.version')],
-            ['Services', config('services.config.version')]
-        ]);
+        if($offline)
+            $this->info('Checking Local Versions Only');
+        else
+            $this->info('Checking Local and Github Versions. Please wait...');
+
+
+        $client = $this->client;
+        $base_url = $this->base_url;
+        $headers = [
+            'Accept' => 'application/json',
+        ];
+
+        $this->table(['Package Name', 'Local Version', 'Latest Github'],
+            array_map(function ($package) use ($offline, $base_url, $client, $headers) {
+
+                if ($offline) {
+
+                    return [
+                        ucfirst($package),
+                        config($package . '.config.version'),
+                        'Offline'
+                    ];
+                }
+
+                $url = str_replace(':repo', 'eveseat/' . $package, $base_url);
+
+                return [
+                    ucfirst($package),
+                    config($package . '.config.version'),
+                    json_decode($client->get($url, $headers)->getBody())->tag_name
+                ];
+
+            }, $this->packages));
+
+        return;
 
     }
+
 }
