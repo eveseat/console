@@ -77,6 +77,9 @@ class Diagnose extends Command
         $this->line('This helps to check whether the permissions are correct.');
         $this->line('');
 
+        $this->environment_info();
+        $this->line('');
+
         $this->check_debug();
         $this->line('');
 
@@ -92,8 +95,23 @@ class Diagnose extends Command
         $this->check_pheal();
         $this->line('');
 
+        $this->call('seat:version');
+
         $this->line('SeAT Diagnostics complete');
 
+    }
+
+    /**
+     * Print some information about the current environment
+     */
+    public function environment_info()
+    {
+
+        $this->line(' * Getting environment information');
+        $this->info('Current User: ' . get_current_user());
+        $this->info('PHP Version: ' . phpversion());
+        $this->info('Host OS: ' . php_uname());
+        $this->info('SeAT Basepath: ' . base_path());
     }
 
     /**
