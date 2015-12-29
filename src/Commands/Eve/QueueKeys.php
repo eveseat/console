@@ -23,6 +23,7 @@ namespace Seat\Console\Commands\Eve;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Helpers\JobContainer;
+use Seat\Eveapi\Jobs\CheckAndQueueKey;
 use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Traits\JobManager;
 
@@ -78,7 +79,7 @@ class QueueKeys extends Command
                 $job->eve_api_key = $key;
 
                 $job_id = $this->addUniqueJob(
-                    'Seat\Eveapi\Jobs\CheckAndQueueKey', $job);
+                    CheckAndQueueKey::class, $job);
 
                 $this->info('Job ' . $job_id . ' dispatched!');
             }

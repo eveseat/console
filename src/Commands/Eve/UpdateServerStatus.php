@@ -23,6 +23,7 @@ namespace Seat\Console\Commands\Eve;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Helpers\JobContainer;
+use Seat\Eveapi\Jobs\UpdatePublic;
 use Seat\Eveapi\Traits\JobManager;
 
 /**
@@ -68,8 +69,7 @@ class UpdateServerStatus extends Command
         $job->scope = 'Server';
         $job->api = 'Server';
 
-        $job_id = $this->addUniqueJob(
-            'Seat\Eveapi\Jobs\UpdatePublic', $job);
+        $job_id = $this->addUniqueJob(UpdatePublic::class, $job);
 
         $this->info('Job ' . $job_id . ' dispatched!');
     }
