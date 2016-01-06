@@ -80,11 +80,10 @@ class Version extends Command
 
         $offline = $this->option('offline');
 
-        if($offline)
+        if ($offline)
             $this->info('Checking Local Versions Only');
         else
             $this->info('Checking Local and Github Versions. Please wait...');
-
 
         $client = $this->client;
         $base_url = $this->base_url;
