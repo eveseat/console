@@ -84,18 +84,24 @@ class Reset extends Command
             'password' => bcrypt($password)
         ])->save();
 
-        $this->line('Checking if \'admin\' is a super user.');
+        $this->line('Checking if \'admin\' is a super user');
 
         if (!$admin->has('superuser')) {
 
             $this->line('Searching for the \'Superuser\' role');
-
             $role = Role::where('title', 'Superuser')->first();
 
             if (!$role) {
 
                 $this->comment('Creating the Superuser role');
                 $role = Role::create(['title' => 'Superuser']);
+
+            }
+
+            $this->line('Checking if the Superuser role has the superuser permission');
+            $role_permissions = $this->getCompleteRole($role->id)->permissions;
+
+            if (!$role_permissions->contains('superuser')) {
 
                 $this->comment('Adding the superuser permission to the role');
                 $this->giveRolePermission($role->id, 'superuser');
