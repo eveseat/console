@@ -26,6 +26,8 @@ use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Jobs\CheckAndQueueKey;
 use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Traits\JobManager;
+use Seat\Services\Helpers\AnalyticsContainer;
+use Seat\Services\Jobs\Analytics;
 
 class QueueKeys extends Command
 {
@@ -67,9 +69,12 @@ class QueueKeys extends Command
     public function handle(JobContainer $job)
     {
 
+        // Counter for the number of keys queued
+        $queued_keys = 0;
+
         // Query the API Keys from the database
         // and queue jobs for them 10 at a time.
-        ApiKey::where('enabled', 1)->chunk(10, function ($keys) use ($job) {
+        ApiKey::where('enabled', 1)->chunk(10, function ($keys) use ($job, &$queued_keys) {
 
             foreach ($keys as $key) {
 
@@ -82,7 +87,19 @@ class QueueKeys extends Command
                     CheckAndQueueKey::class, $job);
 
                 $this->info('Job ' . $job_id . ' dispatched!');
+
+                $queued_keys++;
+
             }
         });
+
+        // Analytics
+        $this->dispatch((new Analytics((new AnalyticsContainer)
+            ->set('type', 'event')
+            ->set('ec', 'queues')
+            ->set('ea', 'queue_keys')
+            ->set('el', 'console')
+            ->set('ev', $queued_keys)))
+            ->onQueue('medium'));
     }
 }

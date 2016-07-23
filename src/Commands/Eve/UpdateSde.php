@@ -25,6 +25,8 @@ use File;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Seat\Services\Helpers\AnalyticsContainer;
+use Seat\Services\Jobs\Analytics;
 
 /**
  * Class UpdateServerStatus
@@ -170,6 +172,15 @@ class UpdateSde extends Command
         $this->importSde();
 
         $this->line('SDE Update Command Complete');
+
+        // Analytics
+        $this->dispatch((new Analytics((new AnalyticsContainer)
+            ->set('type', 'event')
+            ->set('ec', 'queues')
+            ->set('ea', 'update_sde')
+            ->set('el', 'console')
+            ->set('ev', $this->json->version)))
+            ->onQueue('medium'));
 
         return;
 

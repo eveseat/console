@@ -25,6 +25,8 @@ use Illuminate\Console\Command;
 use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Jobs\UpdatePublic;
 use Seat\Eveapi\Traits\JobManager;
+use Seat\Services\Helpers\AnalyticsContainer;
+use Seat\Services\Jobs\Analytics;
 
 class UpdateEve extends Command
 {
@@ -72,5 +74,13 @@ class UpdateEve extends Command
         $job_id = $this->addUniqueJob(UpdatePublic::class, $job);
 
         $this->info('Job ' . $job_id . ' dispatched!');
+
+        // Analytics
+        $this->dispatch((new Analytics((new AnalyticsContainer)
+            ->set('type', 'event')
+            ->set('ec', 'queues')
+            ->set('ea', 'update_eve')
+            ->set('el', 'console')))
+            ->onQueue('medium'));
     }
 }

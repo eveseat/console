@@ -26,6 +26,8 @@ use Seat\Eveapi\Helpers\JobContainer;
 use Seat\Eveapi\Jobs\CheckAndQueueKey;
 use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Traits\JobManager;
+use Seat\Services\Helpers\AnalyticsContainer;
+use Seat\Services\Jobs\Analytics;
 
 class QueueKey extends Command
 {
@@ -79,5 +81,13 @@ class QueueKey extends Command
             CheckAndQueueKey::class, $job);
 
         $this->info('Job ' . $job_id . ' dispatched!');
+
+        // Analytics
+        $this->dispatch((new Analytics((new AnalyticsContainer)
+            ->set('type', 'event')
+            ->set('ec', 'queues')
+            ->set('ea', 'queue_key')
+            ->set('el', 'console')))
+            ->onQueue('medium'));
     }
 }

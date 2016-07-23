@@ -22,6 +22,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Console\Commands\Seat\Admin;
 
 use Illuminate\Console\Command;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Seat\Services\Helpers\AnalyticsContainer;
+use Seat\Services\Jobs\Analytics;
 use Seat\Services\Repositories\Configuration\UserRespository;
 use Seat\Web\Acl\Pillow;
 use Seat\Web\Models\Acl\Role;
@@ -30,7 +33,7 @@ use Seat\Web\Models\User;
 class Reset extends Command
 {
 
-    use UserRespository, Pillow;
+    use UserRespository, Pillow, DispatchesJobs;
 
     /**
      * The name and signature of the console command.
@@ -112,6 +115,14 @@ class Reset extends Command
             $this->giveUserRole($admin->id, $role->id);
 
         }
+
+        // Analytics
+        $this->dispatch((new Analytics((new AnalyticsContainer)
+            ->set('type', 'event')
+            ->set('ec', 'admin')
+            ->set('ea', 'password_reset')
+            ->set('el', 'console')))
+            ->onQueue('medium'));
 
         $this->info('Done');
 

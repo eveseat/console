@@ -23,11 +23,16 @@ namespace Seat\Console\Commands\Seat\Queue;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Seat\Eveapi\Models\FailedJob;
 use Seat\Eveapi\Models\JobTracking;
+use Seat\Services\Helpers\AnalyticsContainer;
+use Seat\Services\Jobs\Analytics;
 
 class ClearExpired extends Command
 {
+
+    use DispatchesJobs;
 
     /**
      * The name and signature of the console command.
@@ -83,6 +88,15 @@ class ClearExpired extends Command
 
         // Truncate the failed_jobs table
         FailedJob::truncate();
+
+        // Analytics
+        $this->dispatch((new Analytics((new AnalyticsContainer)
+            ->set('type', 'event')
+            ->set('ec', 'admin')
+            ->set('ea', 'expired_jobs_clear')
+            ->set('el', 'console')
+            ->set('ev', $this->option('hours'))))
+            ->onQueue('medium'));
 
     }
 }
