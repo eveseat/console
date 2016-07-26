@@ -39,8 +39,7 @@ class ClearExpired extends Command
      *
      * @var string
      */
-    protected $signature = 'seat:queue:clear-expired ' .
-    '{--H|hours=24 : # hours after which a job if considered expired}';
+    protected $signature = 'seat:queue:clear-expired {--H|hours=24 : # hours after which a job if considered expired}';
 
     /**
      * The console command description.
