@@ -46,8 +46,7 @@ class ClearExpired extends Command
      *
      * @var string
      */
-    protected $description = 'Clear the job queue of jobs older ' .
-    'than x amount of hours';
+    protected $description = 'Clear the job queue of jobs older than x amount of hours';
 
     /**
      * Create a new command instance.
