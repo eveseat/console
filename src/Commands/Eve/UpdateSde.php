@@ -24,6 +24,7 @@ namespace Seat\Console\Commands\Eve;
 use File;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
@@ -34,6 +35,8 @@ use Seat\Services\Jobs\Analytics;
  */
 class UpdateSde extends Command
 {
+
+    use DispatchesJobs;
 
     /**
      * The name and signature of the console command.
