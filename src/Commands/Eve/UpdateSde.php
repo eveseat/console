@@ -28,6 +28,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
+use Seat\Services\Settings\Seat;
 
 /**
  * Class UpdateServerStatus
@@ -44,7 +45,8 @@ class UpdateSde extends Command
      * @var string
      */
     protected $signature = 'eve:update-sde
-                            {--local : Check the local config file for the version string}';
+                            {--local : Check the local config file for the version string}
+                            {--force : Force an existing SDE to be install again}';
 
     /**
      * The console command description.
@@ -141,6 +143,23 @@ class UpdateSde extends Command
             }
         }
 
+        // Avoid an existing SDE to be accidentally install again except if the user explicitly ask for
+        if ($this->json->version == Seat::get('installed_sde') && $this->option('force') == false) {
+            $this->warn('You are already running the latest SDE version.');
+            $this->warn('If you want to install it again, run this command with --force argument.');
+
+            return;
+        }
+
+        // Ask for a confirmation before install an existing SDE version
+        if ($this->option('force') == true) {
+            $this->warn('You will download an SDE version which seems to already been installed.');
+            if (!$this->confirm('Are you sure ?', false)) {
+                $this->info('Nothing has been changed.');
+                return;
+            }
+        }
+
         //TODO: Allow for tables to be specified in config file
 
         // Show a final confirmation with some info on what
@@ -173,6 +192,8 @@ class UpdateSde extends Command
         $this->getSde();
 
         $this->importSde();
+
+        Seat::set('installed_sde', $this->json->version);
 
         $this->line('SDE Update Command Complete');
 
