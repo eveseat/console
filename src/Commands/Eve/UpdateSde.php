@@ -46,7 +46,7 @@ class UpdateSde extends Command
      */
     protected $signature = 'eve:update-sde
                             {--local : Check the local config file for the version string}
-                            {--force : Force an existing SDE to be install again}';
+                            {--force : Force re-installation of an existing SDE version}';
 
     /**
      * The console command description.
@@ -143,19 +143,27 @@ class UpdateSde extends Command
             }
         }
 
-        // Avoid an existing SDE to be accidentally install again except if the user explicitly ask for
-        if ($this->json->version == Seat::get('installed_sde') && $this->option('force') == false) {
+        // Avoid an existing SDE to be accidentally installed again
+        // except if the user explicitly ask for it
+        if ($this->json->version == Seat::get('installed_sde') &&
+            $this->option('force') == false
+        ) {
+
             $this->warn('You are already running the latest SDE version.');
             $this->warn('If you want to install it again, run this command with --force argument.');
 
             return;
         }
 
-        // Ask for a confirmation before install an existing SDE version
+        // Ask for a confirmation before installing an existing SDE version
         if ($this->option('force') == true) {
-            $this->warn('You will download an SDE version which seems to already been installed.');
+
+            $this->warn('You will re-download and install the current SDE version.');
+
             if (!$this->confirm('Are you sure ?', false)) {
-                $this->info('Nothing has been changed.');
+
+                $this->info('Nothing has been updated.');
+
                 return;
             }
         }
