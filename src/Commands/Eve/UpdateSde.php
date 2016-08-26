@@ -160,7 +160,7 @@ class UpdateSde extends Command
 
             $this->warn('You will re-download and install the current SDE version.');
 
-            if (!$this->confirm('Are you sure ?', false)) {
+            if (!$this->confirm('Are you sure ?', true)) {
 
                 $this->info('Nothing has been updated.');
 
@@ -376,8 +376,8 @@ class UpdateSde extends Command
             $import_command = 'mysql -u ' . config('database.connections.mysql.username') .
                 // Check if the password is longer than 0. If not, dont specify the -p flag
                 (strlen(config('database.connections.mysql.password')) ? ' -p' : '')
-                // Append this regardless
-                . config('database.connections.mysql.password') .
+                // Append this regardless. Escape special chars in the password too.
+                . escapeshellcmd(config('database.connections.mysql.password')) .
                 ' -h ' . config('database.connections.mysql.host') .
                 ' ' . config('database.connections.mysql.database') .
                 ' < ' . $extracted_path;
