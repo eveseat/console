@@ -94,7 +94,7 @@ class QueueKeys extends Command
         });
 
         // Analytics
-        $this->dispatch((new Analytics((new AnalyticsContainer)
+        dispatch((new Analytics((new AnalyticsContainer)
             ->set('type', 'event')
             ->set('ec', 'queues')
             ->set('ea', 'queue_keys')

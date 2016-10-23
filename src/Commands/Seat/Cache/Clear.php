@@ -24,7 +24,6 @@ namespace Seat\Console\Commands\Seat\Cache;
 use Exception;
 use File;
 use Illuminate\Console\Command;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Predis\Client;
 use Seat\Eveapi\Models\JobTracking;
 use Seat\Services\Helpers\AnalyticsContainer;
@@ -36,8 +35,6 @@ use Seat\Services\Jobs\Analytics;
  */
 class Clear extends Command
 {
-
-    use DispatchesJobs;
 
     /**
      * The name and signature of the console command.
@@ -87,7 +84,7 @@ class Clear extends Command
         $this->clear_database_jobs();
 
         // Analytics
-        $this->dispatch((new Analytics((new AnalyticsContainer)
+        dispatch((new Analytics((new AnalyticsContainer)
             ->set('type', 'event')
             ->set('ec', 'admin')
             ->set('ea', 'cache_clear')

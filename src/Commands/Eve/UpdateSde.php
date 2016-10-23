@@ -206,7 +206,7 @@ class UpdateSde extends Command
         $this->line('SDE Update Command Complete');
 
         // Analytics
-        $this->dispatch((new Analytics((new AnalyticsContainer)
+        dispatch((new Analytics((new AnalyticsContainer)
             ->set('type', 'event')
             ->set('ec', 'queues')
             ->set('ea', 'update_sde')

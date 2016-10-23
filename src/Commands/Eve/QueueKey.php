@@ -83,7 +83,7 @@ class QueueKey extends Command
         $this->info('Job ' . $job_id . ' dispatched!');
 
         // Analytics
-        $this->dispatch((new Analytics((new AnalyticsContainer)
+        dispatch((new Analytics((new AnalyticsContainer)
             ->set('type', 'event')
             ->set('ec', 'queues')
             ->set('ea', 'queue_key')
