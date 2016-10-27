@@ -108,7 +108,20 @@ class Diagnose extends Command
     {
 
         $this->line(' * Getting environment information');
-        $this->info('Current User: ' . get_current_user());
+
+        // Get the current user.
+        $user = posix_getpwuid(posix_geteuid())['name'];
+
+        // Warn if we are running as root.
+        if ($user === 'root') {
+
+            $this->error('WARNING: This command is running as root!');
+            $this->error('WARNING: Running as root means that we will probably be able to access ' .
+                'any file on your system. This command will not be able to help diagnose permission ' .
+                'problems this way.');
+        }
+
+        $this->info('Current User: ' . $user);
         $this->info('PHP Version: ' . phpversion());
         $this->info('Host OS: ' . php_uname());
         $this->info('SeAT Basepath: ' . base_path());
