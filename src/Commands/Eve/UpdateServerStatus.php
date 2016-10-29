@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Console\Commands\Eve;
 
 use Illuminate\Console\Command;
-use Seat\Eveapi\Helpers\JobContainer;
+use Seat\Eveapi\Helpers\JobPayloadContainer;
 use Seat\Eveapi\Jobs\UpdatePublic;
 use Seat\Eveapi\Traits\JobManager;
 use Seat\Services\Helpers\AnalyticsContainer;
@@ -63,9 +63,9 @@ class UpdateServerStatus extends Command
     }
 
     /**
-     * @param \Seat\Eveapi\Helpers\JobContainer $job
+     * @param \Seat\Eveapi\Helpers\JobPayloadContainer $job
      */
-    public function handle(JobContainer $job)
+    public function handle(JobPayloadContainer $job)
     {
 
         $job->scope = 'Server';

@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 namespace Seat\Console\Commands\Eve;
 
 use Illuminate\Console\Command;
-use Seat\Eveapi\Helpers\JobContainer;
+use Seat\Eveapi\Helpers\JobPayloadContainer;
 use Seat\Eveapi\Jobs\CheckAndQueueKey;
 use Seat\Eveapi\Models\Eve\ApiKey;
 use Seat\Eveapi\Traits\JobManager;
@@ -61,11 +61,11 @@ class QueueKey extends Command
     /**
      * Execute the console command.
      *
-     * @param \Seat\Eveapi\Helpers\JobContainer $job
+     * @param \Seat\Eveapi\Helpers\JobPayloadContainer $job
      *
      * @return mixed
      */
-    public function handle(JobContainer $job)
+    public function handle(JobPayloadContainer $job)
     {
 
         // Query the API Keys from the database
