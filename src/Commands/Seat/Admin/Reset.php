@@ -26,14 +26,14 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 use Seat\Services\Repositories\Configuration\UserRespository;
-use Seat\Web\Acl\Pillow;
+use Seat\Web\Acl\AccessManager;
 use Seat\Web\Models\Acl\Role;
 use Seat\Web\Models\User;
 
 class Reset extends Command
 {
 
-    use UserRespository, Pillow, DispatchesJobs;
+    use UserRespository, AccessManager, DispatchesJobs;
 
     /**
      * The name and signature of the console command.
@@ -107,7 +107,7 @@ class Reset extends Command
             if (!$role_permissions->contains('superuser')) {
 
                 $this->comment('Adding the superuser permission to the role');
-                $this->giveRolePermission($role->id, 'superuser');
+                $this->giveRolePermission($role->id, 'superuser', false);
 
             }
 
