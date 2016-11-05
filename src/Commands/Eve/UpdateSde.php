@@ -219,41 +219,6 @@ class UpdateSde extends Command
     }
 
     /**
-     * Get an instance of Guzzle
-     *
-     * @return \GuzzleHttp\Client
-     */
-    public function getGuzzle()
-    {
-
-        if ($this->guzzle)
-            return $this->guzzle;
-
-        $this->guzzle = new Client();
-
-        return $this->guzzle;
-
-    }
-
-    /**
-     * Get a new progress bar to display based on the
-     * amount of iterations we expect to use
-     *
-     * @param $iterations
-     *
-     * @return \Symfony\Component\Console\Helper\ProgressBar
-     */
-    public function getProgressBar($iterations)
-    {
-
-        $bar = $this->output->createProgressBar($iterations);
-
-        $bar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s% %memory:6s%');
-
-        return $bar;
-    }
-
-    /**
      * Query the eveseat/resources repository for SDE
      * related information
      *
@@ -271,6 +236,51 @@ class UpdateSde extends Command
             return;
 
         return json_decode($result->getBody());
+    }
+
+    /**
+     * Get an instance of Guzzle
+     *
+     * @return \GuzzleHttp\Client
+     */
+    public function getGuzzle()
+    {
+
+        if ($this->guzzle)
+            return $this->guzzle;
+
+        $this->guzzle = new Client();
+
+        return $this->guzzle;
+
+    }
+
+    /**
+     * Check that the storage path is ok. I needed it
+     * will be automatically created.
+     *
+     * @return bool
+     */
+    public function isStorageOk()
+    {
+
+        $storage = storage_path() . '/sde/' . $this->json->version . '/';
+        $this->info('Storage path is: ' . $storage);
+
+        if (File::isWritable(storage_path())) {
+
+            // Check that the path exists
+            if (!File::exists($storage))
+                File::makeDirectory($storage, 0755, true);
+
+            // Set the storage path
+            $this->storage_path = $storage;
+
+            return true;
+
+        }
+
+        return false;
     }
 
     /**
@@ -310,31 +320,21 @@ class UpdateSde extends Command
     }
 
     /**
-     * Check that the storage path is ok. I needed it
-     * will be automatically created.
+     * Get a new progress bar to display based on the
+     * amount of iterations we expect to use
      *
-     * @return bool
+     * @param $iterations
+     *
+     * @return \Symfony\Component\Console\Helper\ProgressBar
      */
-    public function isStorageOk()
+    public function getProgressBar($iterations)
     {
 
-        $storage = storage_path() . '/sde/' . $this->json->version . '/';
-        $this->info('Storage path is: ' . $storage);
+        $bar = $this->output->createProgressBar($iterations);
 
-        if (File::isWritable(storage_path())) {
+        $bar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s% %memory:6s%');
 
-            // Check that the path exists
-            if (!File::exists($storage))
-                File::makeDirectory($storage, 0755, true);
-
-            // Set the storage path
-            $this->storage_path = $storage;
-
-            return true;
-
-        }
-
-        return false;
+        return $bar;
     }
 
     /**
