@@ -116,6 +116,14 @@ class Reset extends Command
 
         }
 
+        $this->line('Ensuring the \'admin\' user is enabled.');
+
+        if (!$admin->active) {
+
+            $admin->active = true;
+            $admin->save();
+        }
+
         // Analytics
         $this->dispatch((new Analytics((new AnalyticsContainer)
             ->set('type', 'event')
