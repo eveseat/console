@@ -40,6 +40,7 @@ class QueueKey extends Command
      * @var string
      */
     protected $signature = 'eve:queue-key {key_id : The Key ID to Update}';
+
     /**
      * The console command description.
      *
