@@ -41,7 +41,7 @@ class Clear extends Command
      *
      * @var string
      */
-    protected $signature = 'seat:cache:clear';
+    protected $signature = 'seat:cache:clear {--include-pheal : Clear the Pheal cache too}';
 
     /**
      * The console command description.
@@ -79,9 +79,14 @@ class Clear extends Command
             return;
         }
 
-        $this->clear_pheal_cache();
-        $this->clear_redis_cache();
+        // If we are not clearing
+        if ($this->option('include-pheal')) {
+
+            $this->clear_pheal_cache();
+        }
+
         $this->clear_database_jobs();
+        $this->clear_redis_cache();
 
         // Analytics
         dispatch((new Analytics((new AnalyticsContainer)
