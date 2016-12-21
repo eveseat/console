@@ -91,7 +91,7 @@ class Tail extends Command
                 );
             }
 
-            sleep(0.2);
+            sleep(0.8);
         }
 
     }
