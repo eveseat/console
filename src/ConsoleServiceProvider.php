@@ -34,6 +34,7 @@ use Seat\Console\Commands\Seat\Admin\Email;
 use Seat\Console\Commands\Seat\Admin\Reset;
 use Seat\Console\Commands\Seat\Cache\Clear;
 use Seat\Console\Commands\Seat\Keys\Show;
+use Seat\Console\Commands\Seat\Keys\Tail;
 use Seat\Console\Commands\Seat\Queue\ClearExpired;
 use Seat\Console\Commands\Seat\Queue\Status;
 use Seat\Console\Commands\Seat\Version;
@@ -65,6 +66,7 @@ class ConsoleServiceProvider extends ServiceProvider
             Show::class,
             Status::class,
             Version::class,
+            Tail::class,
         ]);
 
     }
