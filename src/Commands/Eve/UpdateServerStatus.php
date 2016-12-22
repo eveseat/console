@@ -70,6 +70,7 @@ class UpdateServerStatus extends Command
 
         $job->scope = 'Server';
         $job->api = 'Server';
+        $job->queue = 'high';
 
         $job_id = $this->addUniqueJob(UpdatePublic::class, $job);
 
