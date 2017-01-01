@@ -125,6 +125,17 @@ class Clear extends Command
     }
 
     /**
+     * Clear the database job tracking cache
+     */
+    public function clear_database_jobs()
+    {
+
+        $this->info('Clearing the database Job Tracking Cache');
+
+        JobTracking::truncate();
+    }
+
+    /**
      * Flush all keys in Redis
      */
     public function clear_redis_cache()
@@ -151,16 +162,5 @@ class Clear extends Command
         }
 
         return;
-    }
-
-    /**
-     * Clear the database job tracking cache
-     */
-    public function clear_database_jobs()
-    {
-
-        $this->info('Clearing the database Job Tracking Cache');
-
-        JobTracking::truncate();
     }
 }
