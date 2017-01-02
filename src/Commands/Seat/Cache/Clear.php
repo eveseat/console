@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Console\Commands\Seat\Cache;
 
@@ -30,12 +31,11 @@ use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 
 /**
- * Class Clear
+ * Class Clear.
  * @package Seat\Console\Commands\Seat\Cache
  */
 class Clear extends Command
 {
-
     /**
      * The name and signature of the console command.
      *
@@ -72,7 +72,7 @@ class Clear extends Command
         $this->line('SeAT Cache Clearing Tool');
         $this->line('');
 
-        if (!$this->confirm('Are you sure you want to clear ALL caches (file/redis/db)?', true)) {
+        if (! $this->confirm('Are you sure you want to clear ALL caches (file/redis/db)?', true)) {
 
             $this->warn('Exiting without clearing cache');
 
@@ -96,12 +96,10 @@ class Clear extends Command
             ->set('el', 'console')))
             ->onQueue('medium'));
 
-        return;
-
     }
 
     /**
-     * Clear the Pheal Storage Cache
+     * Clear the Pheal Storage Cache.
      */
     public function clear_pheal_cache()
     {
@@ -113,7 +111,7 @@ class Clear extends Command
 
             $this->info('Clearing the Pheal Cache at: ' . $pheal_storage);
 
-            if (!File::deleteDirectory($pheal_storage, true))
+            if (! File::deleteDirectory($pheal_storage, true))
                 $this->error('Failed to clear the Pheal Cache directory. Check permissions.');
 
         } else {
@@ -121,11 +119,10 @@ class Clear extends Command
             $this->warn('Pheal Cache directory at ' . $pheal_storage . ' is not writable');
         }
 
-        return;
     }
 
     /**
-     * Clear the database job tracking cache
+     * Clear the database job tracking cache.
      */
     public function clear_database_jobs()
     {
@@ -136,7 +133,7 @@ class Clear extends Command
     }
 
     /**
-     * Flush all keys in Redis
+     * Flush all keys in Redis.
      */
     public function clear_redis_cache()
     {
@@ -150,7 +147,7 @@ class Clear extends Command
 
             $redis = new Client([
                 'host' => $redis_host,
-                'port' => $redis_port
+                'port' => $redis_port,
             ]);
             $redis->flushall();
             $redis->disconnect();
@@ -161,6 +158,5 @@ class Clear extends Command
 
         }
 
-        return;
     }
 }

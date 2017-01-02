@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Console\Commands\Seat\Admin;
 
@@ -30,12 +31,11 @@ use Predis\Client;
 use Seat\Eveapi\Api\Server\ServerStatus;
 
 /**
- * Class Diagnose
+ * Class Diagnose.
  * @package Seat\Console\Commands\Seat\Admin
  */
 class Diagnose extends Command
 {
-
     /**
      * The name and signature of the console command.
      *
@@ -102,7 +102,7 @@ class Diagnose extends Command
     }
 
     /**
-     * Print some information about the current environment
+     * Print some information about the current environment.
      */
     public function environment_info()
     {
@@ -128,7 +128,7 @@ class Diagnose extends Command
     }
 
     /**
-     * Check if DEBUG mode is enabled
+     * Check if DEBUG mode is enabled.
      */
     public function check_debug()
     {
@@ -142,35 +142,35 @@ class Diagnose extends Command
     }
 
     /**
-     * Check access to some important storage paths
+     * Check access to some important storage paths.
      */
     public function check_storage()
     {
 
         $this->line(' * Checking storage');
-        if (!File::isWritable(storage_path()))
+        if (! File::isWritable(storage_path()))
             $this->error(storage_path() . ' is not writable');
         else
             $this->info(storage_path() . ' is writable');
 
-        if (!File::isWritable(config('eveapi.config.pheal.cache_path')))
+        if (! File::isWritable(config('eveapi.config.pheal.cache_path')))
             $this->error(config('eveapi.config.pheal.cache_path') . ' is not writable');
         else
             $this->info(config('eveapi.config.pheal.cache_path') . ' is writable');
 
-        if (!File::isWritable(storage_path() . '/sde/'))
+        if (! File::isWritable(storage_path() . '/sde/'))
             $this->error(storage_path() . '/sde/' . ' is not writable');
         else
             $this->info(storage_path() . '/sde/' . ' is writable');
 
-        if (!File::isWritable(storage_path('logs/laravel.log')))
+        if (! File::isWritable(storage_path('logs/laravel.log')))
             $this->error(storage_path('logs/laravel.log') . ' is not writable');
         else
             $this->info(storage_path('logs/laravel.log') . ' is writable');
     }
 
     /**
-     * Check if database access is OK
+     * Check if database access is OK.
      */
     public function check_database()
     {
@@ -181,7 +181,7 @@ class Diagnose extends Command
             ['Host', env('DB_HOST')],
             ['Database', env('DB_DATABASE')],
             ['Username', env('DB_USERNAME')],
-            ['Password', str_repeat('*', strlen(env('DB_PASSWORD')))]
+            ['Password', str_repeat('*', strlen(env('DB_PASSWORD')))],
         ]);
 
         try {
@@ -196,7 +196,7 @@ class Diagnose extends Command
     }
 
     /**
-     * Check of redis access is OK
+     * Check of redis access is OK.
      */
     public function check_redis()
     {
@@ -205,7 +205,7 @@ class Diagnose extends Command
         $this->table(['Setting', 'Value'], [
             ['Host', config('database.redis.default.host')],
             ['Port', config('database.redis.default.port')],
-            ['Database', config('database.redis.default.database')]
+            ['Database', config('database.redis.default.database')],
         ]);
 
         $test_key = str_random(64);
@@ -214,7 +214,7 @@ class Diagnose extends Command
 
             $redis = new Client([
                 'host' => config('database.redis.default.host'),
-                'port' => config('database.redis.default.port')
+                'port' => config('database.redis.default.port'),
             ]);
             $this->info('Connected to Redis');
 
@@ -235,7 +235,7 @@ class Diagnose extends Command
     }
 
     /**
-     * Check if access to the EVE API OK
+     * Check if access to the EVE API OK.
      */
     public function check_pheal()
     {
