@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Console\Commands\Seat;
 
@@ -25,12 +26,11 @@ use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
 /**
- * Class Version
+ * Class Version.
  * @package Seat\Console\Commands\Seat
  */
 class Version extends Command
 {
-
     /**
      * The name and signature of the console command.
      *
@@ -54,7 +54,7 @@ class Version extends Command
      * @var array
      */
     protected $packages = [
-        'api', 'console', 'eveapi', 'notifications', 'web', 'services'
+        'api', 'console', 'eveapi', 'notifications', 'web', 'services',
     ];
 
     /**
@@ -99,7 +99,7 @@ class Version extends Command
                     return [
                         ucfirst($package),
                         config($package . '.config.version'),
-                        'Offline'
+                        'Offline',
                     ];
                 }
 
@@ -108,13 +108,10 @@ class Version extends Command
                 return [
                     ucfirst($package),
                     config($package . '.config.version'),
-                    json_decode($client->get($url, $headers)->getBody())->tag_name
+                    json_decode($client->get($url, $headers)->getBody())->tag_name,
                 ];
 
             }, $this->packages));
 
-        return;
-
     }
-
 }

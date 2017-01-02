@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Console\Commands\Eve;
 
@@ -31,12 +32,11 @@ use Seat\Services\Jobs\Analytics;
 use Seat\Services\Settings\Seat;
 
 /**
- * Class UpdateServerStatus
+ * Class UpdateServerStatus.
  * @package Seat\Console\Commands
  */
 class UpdateSde extends Command
 {
-
     use DispatchesJobs;
 
     /**
@@ -56,21 +56,21 @@ class UpdateSde extends Command
     protected $description = 'Updates the EVE Online SDE Data';
 
     /**
-     * The Guzzle Instance
+     * The Guzzle Instance.
      *
      * @var
      */
     protected $guzzle;
 
     /**
-     * The response Json from the resources repo
+     * The response Json from the resources repo.
      *
      * @var
      */
     protected $json;
 
     /**
-     * The SDE file storage path
+     * The SDE file storage path.
      *
      * @var
      */
@@ -78,7 +78,6 @@ class UpdateSde extends Command
 
     /**
      * Create a new command instance.
-     *
      */
     public function __construct()
     {
@@ -107,7 +106,7 @@ class UpdateSde extends Command
         // will be thrown if this fails.
         DB::connection()->getDatabaseName();
 
-        if (!$this->confirm('Are you sure you want to update to the latest EVE SDE?', true)) {
+        if (! $this->confirm('Are you sure you want to update to the latest EVE SDE?', true)) {
 
             $this->warn('Exiting');
 
@@ -118,7 +117,7 @@ class UpdateSde extends Command
         $this->json = $this->getJsonResource();
 
         // Ensure we got a response, else fail.
-        if (!$this->json) {
+        if (! $this->json) {
 
             $this->warn('Unable to reach the resources endpoint.');
 
@@ -131,7 +130,7 @@ class UpdateSde extends Command
 
             $version_number = env('SDE_VERSION', null);
 
-            if (!is_null($version_number)) {
+            if (! is_null($version_number)) {
 
                 $this->comment('Using locally sourced version number of: ' . $version_number);
                 $this->json->version = env('SDE_VERSION');
@@ -160,7 +159,7 @@ class UpdateSde extends Command
 
             $this->warn('You will re-download and install the current SDE version.');
 
-            if (!$this->confirm('Are you sure ?', true)) {
+            if (! $this->confirm('Are you sure ?', true)) {
 
                 $this->info('Nothing has been updated.');
 
@@ -182,14 +181,14 @@ class UpdateSde extends Command
             config('database.connections.mysql.host') . '/' .
             config('database.connections.mysql.database'));
 
-        if (!$this->confirm('Does the above look OK?', true)) {
+        if (! $this->confirm('Does the above look OK?', true)) {
 
             $this->warn('Exiting');
 
             return;
         }
 
-        if (!$this->isStorageOk()) {
+        if (! $this->isStorageOk()) {
 
             $this->error('Storage path is not OK. Please check permissions');
 
@@ -214,13 +213,11 @@ class UpdateSde extends Command
             ->set('ev', $this->json->version)))
             ->onQueue('medium'));
 
-        return;
-
     }
 
     /**
      * Query the eveseat/resources repository for SDE
-     * related information
+     * related information.
      *
      * @return \Psr\Http\Message\StreamInterface|void
      */
@@ -229,7 +226,7 @@ class UpdateSde extends Command
 
         $result = $this->getGuzzle()->request('GET',
             'https://raw.githubusercontent.com/eveseat/resources/master/sde.json', [
-                'headers' => ['Accept' => 'application/json',]
+                'headers' => ['Accept' => 'application/json'],
             ]);
 
         if ($result->getStatusCode() != 200)
@@ -239,7 +236,7 @@ class UpdateSde extends Command
     }
 
     /**
-     * Get an instance of Guzzle
+     * Get an instance of Guzzle.
      *
      * @return \GuzzleHttp\Client
      */
@@ -270,7 +267,7 @@ class UpdateSde extends Command
         if (File::isWritable(storage_path())) {
 
             // Check that the path exists
-            if (!File::exists($storage))
+            if (! File::exists($storage))
                 File::makeDirectory($storage, 0755, true);
 
             // Set the storage path
@@ -285,7 +282,7 @@ class UpdateSde extends Command
 
     /**
      * Download the EVE Sde from Fuzzwork and save it
-     * in the storage_path/sde folder
+     * in the storage_path/sde folder.
      */
     public function getSde()
     {
@@ -302,7 +299,7 @@ class UpdateSde extends Command
             $file_handler = fopen($destination, 'w');
 
             $result = $this->getGuzzle()->request('GET', $url, [
-                'sink' => $file_handler]);
+                'sink' => $file_handler, ]);
 
             fclose($file_handler);
 
@@ -316,12 +313,11 @@ class UpdateSde extends Command
         $bar->finish();
         $this->line('');
 
-        return;
     }
 
     /**
      * Get a new progress bar to display based on the
-     * amount of iterations we expect to use
+     * amount of iterations we expect to use.
      *
      * @param $iterations
      *
@@ -352,7 +348,7 @@ class UpdateSde extends Command
             $archive_path = $this->storage_path . $table . $this->json->format;
             $extracted_path = $this->storage_path . $table . '.sql';
 
-            if (!File::exists($archive_path)) {
+            if (! File::exists($archive_path)) {
 
                 $this->warn($archive_path . ' seems to be invalid. Skipping.');
                 continue;
@@ -396,8 +392,5 @@ class UpdateSde extends Command
         $bar->finish();
         $this->line('');
 
-        return;
-
     }
-
 }

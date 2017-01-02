@@ -1,23 +1,24 @@
 <?php
+
 /*
-This file is part of SeAT
-
-Copyright (C) 2015, 2016  Leon Jacobs
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
+ * This file is part of SeAT
+ *
+ * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 namespace Seat\Console\Commands\Seat\Admin;
 
@@ -32,7 +33,6 @@ use Seat\Web\Models\User;
 
 class Reset extends Command
 {
-
     use UserRespository, AccessManager, DispatchesJobs;
 
     /**
@@ -51,7 +51,6 @@ class Reset extends Command
 
     /**
      * Create a new command instance.
-     *
      */
     public function __construct()
     {
@@ -72,7 +71,7 @@ class Reset extends Command
 
         $admin = User::firstOrNew(['name' => 'admin']);
 
-        if (!$admin->exists)
+        if (! $admin->exists)
             $this->warn('User \'admin\' does not exist. It will be created.');
 
         $password = null;
@@ -84,17 +83,17 @@ class Reset extends Command
         $admin->fill([
             'name'     => 'admin',
             'email'    => 'admin@seat.local',
-            'password' => bcrypt($password)
+            'password' => bcrypt($password),
         ])->save();
 
         $this->line('Checking if \'admin\' is a super user');
 
-        if (!$admin->has('superuser')) {
+        if (! $admin->has('superuser')) {
 
             $this->line('Searching for the \'Superuser\' role');
             $role = Role::where('title', 'Superuser')->first();
 
-            if (!$role) {
+            if (! $role) {
 
                 $this->comment('Creating the Superuser role');
                 $role = Role::create(['title' => 'Superuser']);
@@ -104,7 +103,7 @@ class Reset extends Command
             $this->line('Checking if the Superuser role has the superuser permission');
             $role_permissions = $this->getCompleteRole($role->id)->permissions;
 
-            if (!$role_permissions->contains('superuser')) {
+            if (! $role_permissions->contains('superuser')) {
 
                 $this->comment('Adding the superuser permission to the role');
                 $this->giveRolePermission($role->id, 'superuser', false);
@@ -118,7 +117,7 @@ class Reset extends Command
 
         $this->line('Ensuring the \'admin\' user is enabled.');
 
-        if (!$admin->active) {
+        if (! $admin->active) {
 
             $admin->active = true;
             $admin->save();
