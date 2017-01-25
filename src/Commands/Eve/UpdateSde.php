@@ -375,6 +375,7 @@ class UpdateSde extends Command
                 // Append this regardless. Escape special chars in the password too.
                 . escapeshellcmd(config('database.connections.mysql.password')) .
                 ' -h ' . config('database.connections.mysql.host') .
+				' -P ' . config('database.connections.mysql.port') .
                 ' ' . config('database.connections.mysql.database') .
                 ' < ' . $extracted_path;
 
