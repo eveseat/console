@@ -23,6 +23,7 @@
 namespace Seat\Console;
 
 use Illuminate\Support\ServiceProvider;
+use Seat\Console\Commands\Eve\Esi\UpdateEsi;
 use Seat\Console\Commands\Eve\QueueKey;
 use Seat\Console\Commands\Eve\QueueKeys;
 use Seat\Console\Commands\Eve\UpdateApiCallList;
@@ -55,6 +56,7 @@ class ConsoleServiceProvider extends ServiceProvider
             QueueKeys::class,
             UpdateApiCallList::class,
             UpdateEve::class,
+            UpdateEsi::class,
             UpdateMap::class,
             UpdateSde::class,
             UpdateServerStatus::class,
