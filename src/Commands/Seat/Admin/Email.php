@@ -50,9 +50,12 @@ class Email extends Command
      */
     public function __construct()
     {
-
         parent::__construct();
 
+        // Ensure STDIN is set (could be not on some setup)
+        if (!defined('STDIN')) {
+            define('STDIN',fopen("php://stdin","r"));
+        }
     }
 
     /**
