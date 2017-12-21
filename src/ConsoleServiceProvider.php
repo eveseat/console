@@ -32,6 +32,7 @@ use Seat\Console\Commands\Eve\UpdateSde;
 use Seat\Console\Commands\Eve\UpdateServerStatus;
 use Seat\Console\Commands\Seat\Admin\Diagnose;
 use Seat\Console\Commands\Seat\Admin\Email;
+use Seat\Console\Commands\Seat\Admin\Generate;
 use Seat\Console\Commands\Seat\Admin\Reset;
 use Seat\Console\Commands\Seat\Cache\Clear;
 use Seat\Console\Commands\Seat\Keys\Show;
@@ -61,6 +62,7 @@ class ConsoleServiceProvider extends ServiceProvider
             Diagnose::class,
             Reset::class,
             Email::class,
+            Generate::class,
             Clear::class,
             ClearExpired::class,
             Show::class,
