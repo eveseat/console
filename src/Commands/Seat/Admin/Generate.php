@@ -25,8 +25,8 @@ namespace Seat\Console\Commands\Seat\Admin;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Seat\Services\Helpers\AnalyticsContainer;
-use Seat\Services\Repositories\Configuration\UserRespository;
 use Seat\Services\Jobs\Analytics;
+use Seat\Services\Repositories\Configuration\UserRespository;
 use Seat\Web\Acl\AccessManager;
 use Seat\Web\Models\Acl\Role;
 use Seat\Web\Models\User;
@@ -82,7 +82,6 @@ class Generate extends Command
             'character_owner_hash' => 'none',
             'email'                => 'admin@seat.local',
         ])->save();
-
 
         $this->line('Searching for the \'Superuser\' role');
         $role = Role::where('title', 'Superuser')->first();
