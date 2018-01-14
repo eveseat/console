@@ -23,7 +23,7 @@
 namespace Seat\Console\Commands\Seat\Queue;
 
 use Illuminate\Console\Command;
-use Seat\Services\Data\Queue;
+use Laravel\Horizon\Contracts\WorkloadRepository;
 
 /**
  * Class Status.
@@ -31,14 +31,12 @@ use Seat\Services\Data\Queue;
  */
 class Status extends Command
 {
-    use Queue;
-
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'seat:queue:status {--live : Follow the progress live}';
+    protected $signature = 'seat:queue:status';
 
     /**
      * The console command description.
@@ -48,16 +46,6 @@ class Status extends Command
     protected $description = 'Show the job queue status';
 
     /**
-     * Create a new command instance.
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -65,65 +53,7 @@ class Status extends Command
     public function handle()
     {
 
-        if ($this->option('live')) {
-
-            $this->info('Live Progress:');
-            $summaries = $this->count_summary();
-            $bar = $this->new_bar($summaries);
-
-            // Continuously update a progress bar with
-            // the current progress. If we a change in the
-            // total number of jobs, redraw the bar.
-            while (($summaries['total_jobs'] - $summaries['queued_jobs']) > 0) {
-
-                $new_summaries = $this->count_summary();
-                if ($new_summaries['total_jobs'] != $summaries['total_jobs'])
-                    $bar = $this->new_bar($new_summaries);
-
-                // Set the values to $summaries for
-                // the while loop to eval
-                $summaries = $new_summaries;
-
-                $bar->setMessage(
-                    '[Working: ' . $summaries['working_jobs'] .
-                    ' | Done: ' . $summaries['done_jobs'] .
-                    ' | Error: ' . $summaries['error_jobs'] .
-                    '] Total:'
-                );
-                $bar->setProgress($summaries['total_jobs'] - $summaries['queued_jobs']);
-
-                // Sleep for a second and update again.
-                sleep(2);
-            }
-
-            return;
-        }
-
-        // Just throw a summary table of the jobs
-        $summaries = $this->count_summary();
-        $this->table(['Total', 'Working', 'Done', 'Error'], [
-            [
-                $summaries['total_jobs'],
-                $summaries['working_jobs'],
-                $summaries['done_jobs'],
-                $summaries['error_jobs'],
-            ],
-        ]);
-
-    }
-
-    /**
-     * @param $summaries
-     *
-     * @return \Symfony\Component\Console\Helper\ProgressBar
-     */
-    public function new_bar($summaries)
-    {
-
-        $bar = $this->output->createProgressBar($summaries['total_jobs']);
-        $bar->setFormat(
-            '%message% %current%/%max% [%bar%] %percent:3s%%');
-
-        return $bar;
+        $this->table(['Name', 'Jobs', 'Avg Wait', '# Processes'],
+            collect(resolve(WorkloadRepository::class)->get()));
     }
 }
