@@ -23,13 +23,10 @@
 namespace Seat\Console;
 
 use Illuminate\Support\ServiceProvider;
-use Seat\Console\Commands\Eve\QueueKey;
-use Seat\Console\Commands\Eve\QueueKeys;
-use Seat\Console\Commands\Eve\UpdateApiCallList;
-use Seat\Console\Commands\Eve\UpdateEve;
-use Seat\Console\Commands\Eve\UpdateMap;
+use Seat\Console\Commands\Esi\Dispatch;
+use Seat\Console\Commands\Esi\Ping;
+use Seat\Console\Commands\Esi\Update\Characters as CharactersUpdater;
 use Seat\Console\Commands\Eve\UpdateSde;
-use Seat\Console\Commands\Eve\UpdateServerStatus;
 use Seat\Console\Commands\Seat\Admin\Diagnose;
 use Seat\Console\Commands\Seat\Admin\Email;
 use Seat\Console\Commands\Seat\Admin\Generate;
@@ -41,6 +38,7 @@ use Seat\Console\Commands\Seat\Queue\ClearExpired;
 use Seat\Console\Commands\Seat\Queue\Status;
 use Seat\Console\Commands\Seat\Version;
 
+
 class ConsoleServiceProvider extends ServiceProvider
 {
     /**
@@ -51,26 +49,26 @@ class ConsoleServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        $this->commands([
-            QueueKey::class,
-            QueueKeys::class,
-            UpdateApiCallList::class,
-            UpdateEve::class,
-            UpdateMap::class,
-            UpdateSde::class,
-            UpdateServerStatus::class,
-            Diagnose::class,
-            Reset::class,
-            Email::class,
-            Generate::class,
-            Clear::class,
-            ClearExpired::class,
-            Show::class,
-            Status::class,
-            Version::class,
-            Tail::class,
-        ]);
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                UpdateSde::class,
+                Diagnose::class,
+                Reset::class,
+                Email::class,
+                Generate::class,
+                Clear::class,
+                ClearExpired::class,
+                Show::class,
+                Status::class,
+                Version::class,
+                Tail::class,
 
+                // Esi
+                Ping::class,
+                CharactersUpdater::class,
+                Dispatch::class,
+            ]);
+        }
     }
 
     /**
