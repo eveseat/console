@@ -35,6 +35,7 @@ use Seat\Console\Commands\Seat\Cache\Clear;
 use Seat\Console\Commands\Seat\Queue\ClearExpired;
 use Seat\Console\Commands\Seat\Queue\Status;
 use Seat\Console\Commands\Seat\Version;
+use Seat\Eveapi\Console\EsiJobMakeCommand;
 
 
 class ConsoleServiceProvider extends ServiceProvider
@@ -58,6 +59,9 @@ class ConsoleServiceProvider extends ServiceProvider
                 ClearExpired::class,
                 Status::class,
                 Version::class,
+
+                // Dev
+                EsiJobMakeCommand::class,
 
                 // Esi
                 Ping::class,
