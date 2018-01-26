@@ -20,7 +20,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Eveapi\Console;
+namespace Seat\Console\Commands;
 
 
 use Illuminate\Console\GeneratorCommand;
