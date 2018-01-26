@@ -23,53 +23,51 @@
 namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
-use Seat\Eveapi\Jobs\Assets\Character\Assets;
-use Seat\Eveapi\Jobs\Assets\Character\Names;
-use Seat\Eveapi\Jobs\Bookmarks\Character\Bookmarks;
-use Seat\Eveapi\Jobs\Bookmarks\Character\Folders;
-use Seat\Eveapi\Jobs\Calendar\Detail;
-use Seat\Eveapi\Jobs\Calendar\Events;
-use Seat\Eveapi\Jobs\Character\AgentsResearch;
-use Seat\Eveapi\Jobs\Character\Blueprints;
-use Seat\Eveapi\Jobs\Character\ChatChannels;
-use Seat\Eveapi\Jobs\Character\CorporationHistory;
-use Seat\Eveapi\Jobs\Character\Fatigue;
-use Seat\Eveapi\Jobs\Character\Info;
-use Seat\Eveapi\Jobs\Character\Medals;
-use Seat\Eveapi\Jobs\Character\Notifications;
-use Seat\Eveapi\Jobs\Character\Roles;
-use Seat\Eveapi\Jobs\Character\Standings;
-use Seat\Eveapi\Jobs\Character\Stats;
-use Seat\Eveapi\Jobs\Character\Titles;
-use Seat\Eveapi\Jobs\Clones\Clones;
-use Seat\Eveapi\Jobs\Clones\Implants;
-use Seat\Eveapi\Jobs\Contacts\Character\Contacts;
-use Seat\Eveapi\Jobs\Contracts\Character\Bids;
-use Seat\Eveapi\Jobs\Contracts\Character\Contracts;
-use Seat\Eveapi\Jobs\Contracts\Character\Items;
-use Seat\Eveapi\Jobs\FIttings\Character\Fittings;
-use Seat\Eveapi\Jobs\Industry\Character\Jobs;
-use Seat\Eveapi\Jobs\Industry\Character\Mining;
-use Seat\Eveapi\Jobs\Killmails\Character\Detail as KillmailDetail;
-use Seat\Eveapi\Jobs\Killmails\Character\Recent;
-use Seat\Eveapi\Jobs\Location\Character\Location;
-use Seat\Eveapi\Jobs\Location\Character\Online;
-use Seat\Eveapi\Jobs\Location\Character\Ship;
-use Seat\Eveapi\Jobs\Mail\Bodies;
-use Seat\Eveapi\Jobs\Mail\Headers;
-use Seat\Eveapi\Jobs\Mail\Labels;
-use Seat\Eveapi\Jobs\Mail\MailingLists;
-use Seat\Eveapi\Jobs\Market\Character\Orders;
-use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\Planets;
-use Seat\Eveapi\Jobs\Skills\Character\Attributes;
-use Seat\Eveapi\Jobs\Skills\Character\Queue;
-use Seat\Eveapi\Jobs\Skills\Character\Skills;
-use Seat\Eveapi\Jobs\Wallet\Character\Balance;
-use Seat\Eveapi\Jobs\Wallet\Character\Journal;
-use Seat\Eveapi\Jobs\Wallet\Character\Transactions;
+use Seat\Eveapi\Jobs\Assets\Corporation\Assets;
+use Seat\Eveapi\Jobs\Assets\Corporation\Locations;
+use Seat\Eveapi\Jobs\Assets\Corporation\Names;
+use Seat\Eveapi\Jobs\Bookmarks\Corporation\Bookmarks;
+use Seat\Eveapi\Jobs\Bookmarks\Corporation\Folders;
+use Seat\Eveapi\Jobs\Contacts\Corporation\Contacts;
+use Seat\Eveapi\Jobs\Contracts\Corporation\Bids;
+use Seat\Eveapi\Jobs\Contracts\Corporation\Contracts;
+use Seat\Eveapi\Jobs\Contracts\Corporation\Items;
+use Seat\Eveapi\Jobs\Corporation\AllianceHistory;
+use Seat\Eveapi\Jobs\Corporation\Blueprints;
+use Seat\Eveapi\Jobs\Corporation\ContainerLogs;
+use Seat\Eveapi\Jobs\Corporation\Divisions;
+use Seat\Eveapi\Jobs\Corporation\Facilities;
+use Seat\Eveapi\Jobs\Corporation\Info;
+use Seat\Eveapi\Jobs\Corporation\IssuedMedals;
+use Seat\Eveapi\Jobs\Corporation\Medals;
+use Seat\Eveapi\Jobs\Corporation\Members;
+use Seat\Eveapi\Jobs\Corporation\MembersLimit;
+use Seat\Eveapi\Jobs\Corporation\MembersTitles;
+use Seat\Eveapi\Jobs\Corporation\MemberTracking;
+use Seat\Eveapi\Jobs\Corporation\OutpostDetails;
+use Seat\Eveapi\Jobs\Corporation\Outposts;
+use Seat\Eveapi\Jobs\Corporation\RoleHistories;
+use Seat\Eveapi\Jobs\Corporation\Roles;
+use Seat\Eveapi\Jobs\Corporation\Shareholders;
+use Seat\Eveapi\Jobs\Corporation\Standings;
+use Seat\Eveapi\Jobs\Corporation\StarbaseDetails;
+use Seat\Eveapi\Jobs\Corporation\Starbases;
+use Seat\Eveapi\Jobs\Corporation\Structures;
+use Seat\Eveapi\Jobs\Corporation\TitleMembers;
+use Seat\Eveapi\Jobs\Corporation\Titles;
+use Seat\Eveapi\Jobs\Industry\Corporation\Jobs;
+use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Extractions;
+use Seat\Eveapi\Jobs\Industry\Corporation\Mining\ObserverDetails;
+use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Observers;
+use Seat\Eveapi\Jobs\Killmails\Corporation\Detail;
+use Seat\Eveapi\Jobs\Killmails\Corporation\Recent;
+use Seat\Eveapi\Jobs\Market\Corporation\Orders;
+use Seat\Eveapi\Jobs\Wallet\Corporation\Balances;
+use Seat\Eveapi\Jobs\Wallet\Corporation\Journals;
+use Seat\Eveapi\Jobs\Wallet\Corporation\Transactions;
 use Seat\Eveapi\Models\RefreshToken;
 
-class Corporation extends Command
+class Corporations extends Command
 {
     /**
      * The name and signature of the console command.
@@ -83,7 +81,7 @@ class Corporation extends Command
      *
      * @var string
      */
-    protected $description = 'Schedule updater jobs for all characters.';
+    protected $description = 'Schedule updater jobs for all corporations';
 
     /**
      * Create a new command instance.
@@ -106,71 +104,44 @@ class Corporation extends Command
 
         $tokens = RefreshToken::all()->each(function ($token) {
 
-            // Assets
-            Assets::withChain([new Location($token), new Names($token)])->dispatch($token);
+            Assets::withChain([new Locations($token), new Names($token)])->dispatch($token);
 
-            // Bookmarks
             Bookmarks::withChain([new Folders($token)])->dispatch($token);
 
-            // Calendar
-            Events::withChain([new Detail($token)])->dispatch($token);
+            Contacts::dispatch($token);
 
-            // Character
-            Info::dispatch($token);
-            AgentsResearch::dispatch($token);
-            Blueprints::dispatch($token);
-            ChatChannels::dispatch($token);
-            CorporationHistory::dispatch($token);
-            Fatigue::dispatch($token);
-            Medals::dispatch($token);
-            Notifications::dispatch($token);
-            Roles::dispatch($token);
-            Standings::dispatch($token);
-            Stats::dispatch($token);
-            Titles::dispatch($token);
-
-            // Clones
-            Clones::withChain([new Implants($token)])->dispatch($token);
-
-            // Contacts
-            Contacts::withChain([new Labels($token)])->dispatch($token);
-
-            // Contracts
             Contracts::withChain([new Items($token), new Bids($token)])->dispatch($token);
 
-            // Fittings
-            Fittings::dispatch($token);
+            Info::dispatch($token);
+            AllianceHistory::dispatch($token);
+            Blueprints::dispatch($token);
+            ContainerLogs::dispatch($token);
+            Divisions::dispatch($token);
+            Facilities::dispatch($token);
+            IssuedMedals::dispatch($token);
+            Medals::dispatch($token);
+            Members::dispatch($token);
+            MembersLimit::dispatch($token);
+            MembersTitles::dispatch($token);
+            MemberTracking::dispatch($token);
+            Outposts::withChain([new OutpostDetails($token)])->dispatch($token);
+            Roles::withChain([new RoleHistories($token)])->dispatch($token);
+            Shareholders::dispatch($token);
+            Standings::dispatch($token);
+            Starbases::withChain([new StarbaseDetails($token)])->dispatch($token);
+            Structures::dispatch($token);
+            Titles::withChain([new TitleMembers($token)])->dispatch($token);
 
-            // Industry
             Jobs::dispatch($token);
-            Mining::dispatch($token);
+            Extractions::dispatch($token);
+            Observers::withChain([new ObserverDetails($token)])->dispatch($token);
 
-            // Killmails
-            Recent::withChain([new KillmailDetail($token)])->dispatch($token);
+            Recent::withChain([new Detail($token)])->dispatch($token);
 
-            // Location
-            Location::dispatch($token);
-            Online::dispatch($token);
-            Ship::dispatch($token);
-
-            // Mail
-            Headers::withChain([new Bodies($token), new Labels($token)])->dispatch($token);
-            MailingLists::dispatch($token);
-
-            // Market
             Orders::dispatch($token);
 
-            // Planetary Interactions
-            Planets::dispatch($token);
-
-            // Skills
-            Attributes::dispatch($token);
-            Queue::dispatch($token);
-            Skills::dispatch($token);
-
-            // Wallet
-            Balance::dispatch($token);
-            Journal::dispatch($token);
+            Balances::dispatch($token);
+            Journals::dispatch($token);
             Transactions::dispatch($token);
 
         });

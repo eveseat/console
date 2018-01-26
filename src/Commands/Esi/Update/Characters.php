@@ -27,6 +27,7 @@ use Seat\Eveapi\Jobs\Assets\Character\Assets;
 use Seat\Eveapi\Jobs\Assets\Character\Names;
 use Seat\Eveapi\Jobs\Bookmarks\Character\Bookmarks;
 use Seat\Eveapi\Jobs\Bookmarks\Character\Folders;
+use Seat\Eveapi\Jobs\Calendar\Attendees;
 use Seat\Eveapi\Jobs\Calendar\Detail;
 use Seat\Eveapi\Jobs\Calendar\Events;
 use Seat\Eveapi\Jobs\Character\AgentsResearch;
@@ -60,6 +61,7 @@ use Seat\Eveapi\Jobs\Mail\Headers;
 use Seat\Eveapi\Jobs\Mail\Labels;
 use Seat\Eveapi\Jobs\Mail\MailingLists;
 use Seat\Eveapi\Jobs\Market\Character\Orders;
+use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\PlanetDetail;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\Planets;
 use Seat\Eveapi\Jobs\Skills\Character\Attributes;
 use Seat\Eveapi\Jobs\Skills\Character\Queue;
@@ -83,7 +85,7 @@ class Characters extends Command
      *
      * @var string
      */
-    protected $description = 'Schedule updater jobs for all characters.';
+    protected $description = 'Schedule updater jobs for all characters';
 
     /**
      * Create a new command instance.
@@ -113,7 +115,7 @@ class Characters extends Command
             Bookmarks::withChain([new Folders($token)])->dispatch($token);
 
             // Calendar
-            Events::withChain([new Detail($token)])->dispatch($token);
+            Events::withChain([new Detail($token), new Attendees($token)])->dispatch($token);
 
             // Character
             Info::dispatch($token);
@@ -161,7 +163,7 @@ class Characters extends Command
             Orders::dispatch($token);
 
             // Planetary Interactions
-            Planets::dispatch($token);
+            Planets::withChain([new PlanetDetail($token)])->dispatch($token);
 
             // Skills
             Attributes::dispatch($token);
