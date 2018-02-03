@@ -81,7 +81,9 @@ class Generate extends Command
             'name'                 => 'admin',
             'character_owner_hash' => 'none',
             'email'                => 'admin@seat.local',
-        ])->save();
+        ]);
+        $admin->id = 1; // Needed as id is not fillable
+        $admin->save();
 
 
         $this->line('Searching for the \'Superuser\' role');
