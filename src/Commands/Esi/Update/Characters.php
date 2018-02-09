@@ -45,6 +45,7 @@ use Seat\Eveapi\Jobs\Character\Titles;
 use Seat\Eveapi\Jobs\Clones\Clones;
 use Seat\Eveapi\Jobs\Clones\Implants;
 use Seat\Eveapi\Jobs\Contacts\Character\Contacts;
+use Seat\Eveapi\Jobs\Contacts\Character\Labels as ContactLabels;
 use Seat\Eveapi\Jobs\Contracts\Character\Bids;
 use Seat\Eveapi\Jobs\Contracts\Character\Contracts;
 use Seat\Eveapi\Jobs\Contracts\Character\Items;
@@ -135,7 +136,7 @@ class Characters extends Command
             Clones::withChain([new Implants($token)])->dispatch($token);
 
             // Contacts
-            Contacts::withChain([new Labels($token)])->dispatch($token);
+            Contacts::withChain([new ContactLabels($token)])->dispatch($token);
 
             // Contracts
             Contracts::withChain([new Items($token), new Bids($token)])->dispatch($token);
