@@ -23,7 +23,8 @@
 namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
-use Seat\Eveapi\Models\RefreshToken;
+use Seat\Eveapi\Jobs\Sovereignty\Structures;
+use Seat\Eveapi\Jobs\Universe\Stations;
 
 class PublicInfo extends Command
 {
@@ -60,6 +61,7 @@ class PublicInfo extends Command
     public function handle()
     {
 
+        Structures::withChain([new Stations])->dispatch();
 
     }
 }
