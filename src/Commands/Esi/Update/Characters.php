@@ -66,6 +66,7 @@ use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\Planets;
 use Seat\Eveapi\Jobs\Skills\Character\Attributes;
 use Seat\Eveapi\Jobs\Skills\Character\Queue;
 use Seat\Eveapi\Jobs\Skills\Character\Skills;
+use Seat\Eveapi\Jobs\Universe\Structures;
 use Seat\Eveapi\Jobs\Wallet\Character\Balance;
 use Seat\Eveapi\Jobs\Wallet\Character\Journal;
 use Seat\Eveapi\Jobs\Wallet\Character\Transactions;
@@ -169,6 +170,9 @@ class Characters extends Command
             Attributes::dispatch($token);
             Queue::dispatch($token);
             Skills::dispatch($token);
+
+            // Structures
+            Structures::dispatch($token);
 
             // Wallet
             Balance::dispatch($token);

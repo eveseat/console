@@ -27,6 +27,7 @@ use Seat\Console\Commands\Esi\Dispatch;
 use Seat\Console\Commands\Esi\Ping;
 use Seat\Console\Commands\Esi\Update\Characters as CharactersUpdater;
 use Seat\Console\Commands\Esi\Update\Corporations as CorporationsUpdater;
+use Seat\Console\Commands\Esi\Update\PublicInfo;
 use Seat\Console\Commands\Eve\UpdateSde;
 use Seat\Console\Commands\Seat\Admin\Diagnose;
 use Seat\Console\Commands\Seat\Admin\Email;
@@ -68,6 +69,7 @@ class ConsoleServiceProvider extends ServiceProvider
                 Ping::class,
                 CharactersUpdater::class,
                 CorporationsUpdater::class,
+                PublicInfo::class,
                 Dispatch::class,
             ]);
         }
