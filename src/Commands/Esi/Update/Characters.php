@@ -45,6 +45,7 @@ use Seat\Eveapi\Jobs\Character\Titles;
 use Seat\Eveapi\Jobs\Clones\Clones;
 use Seat\Eveapi\Jobs\Clones\Implants;
 use Seat\Eveapi\Jobs\Contacts\Character\Contacts;
+use Seat\Eveapi\Jobs\Contacts\Character\Labels as ContactLabels;
 use Seat\Eveapi\Jobs\Contracts\Character\Bids;
 use Seat\Eveapi\Jobs\Contracts\Character\Contracts;
 use Seat\Eveapi\Jobs\Contracts\Character\Items;
@@ -66,6 +67,7 @@ use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\Planets;
 use Seat\Eveapi\Jobs\Skills\Character\Attributes;
 use Seat\Eveapi\Jobs\Skills\Character\Queue;
 use Seat\Eveapi\Jobs\Skills\Character\Skills;
+use Seat\Eveapi\Jobs\Universe\Structures;
 use Seat\Eveapi\Jobs\Wallet\Character\Balance;
 use Seat\Eveapi\Jobs\Wallet\Character\Journal;
 use Seat\Eveapi\Jobs\Wallet\Character\Transactions;
@@ -135,7 +137,7 @@ class Characters extends Command
             Clones::withChain([new Implants($token)])->dispatch($token);
 
             // Contacts
-            Contacts::withChain([new Labels($token)])->dispatch($token);
+            Contacts::withChain([new ContactLabels($token)])->dispatch($token);
 
             // Contracts
             Contracts::withChain([new Items($token), new Bids($token)])->dispatch($token);
@@ -169,6 +171,9 @@ class Characters extends Command
             Attributes::dispatch($token);
             Queue::dispatch($token);
             Skills::dispatch($token);
+
+            // Structures
+            Structures::dispatch($token);
 
             // Wallet
             Balance::dispatch($token);
