@@ -26,6 +26,10 @@ use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Sovereignty\Structures;
 use Seat\Eveapi\Jobs\Universe\Stations;
 
+/**
+ * Class PublicInfo
+ * @package Seat\Console\Commands\Esi\Update
+ */
 class PublicInfo extends Command
 {
     /**
@@ -43,17 +47,6 @@ class PublicInfo extends Command
     protected $description = 'Schedule updater jobs for public information';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -62,6 +55,5 @@ class PublicInfo extends Command
     {
 
         Structures::withChain([new Stations])->dispatch();
-
     }
 }
