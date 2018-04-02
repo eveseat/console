@@ -34,6 +34,7 @@ use Seat\Console\Commands\Seat\Admin\Diagnose;
 use Seat\Console\Commands\Seat\Admin\Email;
 use Seat\Console\Commands\Seat\Admin\Generate;
 use Seat\Console\Commands\Seat\Cache\Clear;
+use Seat\Console\Commands\Seat\Queue\Status;
 use Seat\Console\Commands\Seat\Version;
 use Seat\Console\Commands\EsiJobMakeCommand;
 
@@ -56,6 +57,7 @@ class ConsoleServiceProvider extends ServiceProvider
                 Generate::class,
                 Clear::class,
                 Version::class,
+                Status::class,
 
                 // Dev
                 EsiJobMakeCommand::class,
