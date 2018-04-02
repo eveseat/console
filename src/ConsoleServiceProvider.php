@@ -28,14 +28,12 @@ use Seat\Console\Commands\Esi\Ping;
 use Seat\Console\Commands\Esi\Update\Characters as CharactersUpdater;
 use Seat\Console\Commands\Esi\Update\Corporations as CorporationsUpdater;
 use Seat\Console\Commands\Esi\Update\PublicInfo;
+use Seat\Console\Commands\Esi\Update\ServerStatus;
 use Seat\Console\Commands\Eve\UpdateSde;
 use Seat\Console\Commands\Seat\Admin\Diagnose;
 use Seat\Console\Commands\Seat\Admin\Email;
 use Seat\Console\Commands\Seat\Admin\Generate;
-use Seat\Console\Commands\Seat\Admin\Reset;
 use Seat\Console\Commands\Seat\Cache\Clear;
-use Seat\Console\Commands\Seat\Queue\ClearExpired;
-use Seat\Console\Commands\Seat\Queue\Status;
 use Seat\Console\Commands\Seat\Version;
 use Seat\Console\Commands\EsiJobMakeCommand;
 
@@ -54,12 +52,9 @@ class ConsoleServiceProvider extends ServiceProvider
             $this->commands([
                 UpdateSde::class,
                 Diagnose::class,
-                Reset::class,
                 Email::class,
                 Generate::class,
                 Clear::class,
-                ClearExpired::class,
-                Status::class,
                 Version::class,
 
                 // Dev
@@ -71,6 +66,7 @@ class ConsoleServiceProvider extends ServiceProvider
                 CorporationsUpdater::class,
                 PublicInfo::class,
                 Dispatch::class,
+                ServerStatus::class,
             ]);
         }
     }

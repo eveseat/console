@@ -20,30 +20,30 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Console\Commands\Seat\Queue;
+namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
-use Laravel\Horizon\Contracts\WorkloadRepository;
+use Seat\Eveapi\Jobs\Status\Status;
 
 /**
- * Class Status.
- * @package Seat\Console\Commands\Seat\Queue
+ * Class ServerStatus
+ * @package Seat\Console\Commands\Esi\Update
  */
-class Status extends Command
+class ServerStatus extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'seat:queue:status';
+    protected $signature = 'esi:update:serverstatus';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Show the job queue status';
+    protected $description = 'Schedule updater jobs for the EVE server status';
 
     /**
      * Execute the console command.
@@ -53,7 +53,6 @@ class Status extends Command
     public function handle()
     {
 
-        $this->table(['Name', 'Jobs', 'Avg Wait', '# Processes'],
-            collect(resolve(WorkloadRepository::class)->get()));
+        Status::dispatch();
     }
 }
