@@ -119,7 +119,7 @@ class Characters extends Command
     public function handle()
     {
         $tokens = RefreshToken::all()
-            ->when($this->checkForOptionalParameter(), function ($tokens){
+            ->when($this->checkForOptionalParameter(), function ($tokens) {
                 return $tokens->whereStrict('character_id', intval($this->Argument('character_id')));
             })
             ->each(function ($token) {
