@@ -80,14 +80,14 @@ class Characters extends Command
      *
      * @var string
      */
-    protected $signature = 'esi:update:characters';
+    protected $signature = 'esi:update:characters {character_id? : The characterId of a user/character in SeAT}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Schedule updater jobs for all characters';
+    protected $description = 'Schedule updater jobs for all characters ';
 
     /**
      * Create a new command instance.
@@ -101,14 +101,28 @@ class Characters extends Command
     }
 
     /**
+     * Checks if an optional parameter is present.
+     *
+     * @return bool
+     */
+    public function checkForOptionalParameter(){
+        if($this->hasArgument('character_id') && intval($this->Argument('character_id')) != ''){
+            return true;
+        } else return false;
+    }
+
+    /**
      * Execute the console command.
      *
      * @return mixed
      */
     public function handle()
     {
-
-        $tokens = RefreshToken::all()->each(function ($token) {
+        $tokens = RefreshToken::all()
+            ->when($this->checkForOptionalParameter(),function ($tokens){
+                return $tokens->whereStrict('character_id', intval($this->Argument('character_id')));
+            })
+            ->each(function ($token) {
 
             // Assets
             Assets::withChain([new Location($token), new Names($token)])->dispatch($token);
@@ -185,4 +199,6 @@ class Characters extends Command
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
 
     }
+
+
 }
