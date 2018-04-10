@@ -105,7 +105,7 @@ class Characters extends Command
      *
      * @return bool
      */
-    public function checkForOptionalParameter(){
+    public function checkForOptionalParameter() {
         if($this->hasArgument('character_id') && intval($this->Argument('character_id')) != ''){
             return true;
         } else return false;
@@ -119,7 +119,7 @@ class Characters extends Command
     public function handle()
     {
         $tokens = RefreshToken::all()
-            ->when($this->checkForOptionalParameter(),function ($tokens){
+            ->when($this->checkForOptionalParameter(), function ($tokens){
                 return $tokens->whereStrict('character_id', intval($this->Argument('character_id')));
             })
             ->each(function ($token) {
@@ -199,6 +199,4 @@ class Characters extends Command
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
 
     }
-
-
 }
