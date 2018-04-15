@@ -48,29 +48,7 @@ class ConsoleServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                UpdateSde::class,
-                Diagnose::class,
-                Email::class,
-                Generate::class,
-                Clear::class,
-                Version::class,
-                Status::class,
-
-                // Dev
-                EsiJobMakeCommand::class,
-
-                // Esi
-                Ping::class,
-                CharactersUpdater::class,
-                CorporationsUpdater::class,
-                PublicInfo::class,
-                Dispatch::class,
-                ServerStatus::class,
-            ]);
-        }
+        $this->addCommands();
     }
 
     /**
@@ -83,5 +61,29 @@ class ConsoleServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom(
             __DIR__ . '/Config/console.config.php', 'console.config');
+    }
+
+    public function addCommands(){
+
+        $this->commands([
+            UpdateSde::class,
+            Diagnose::class,
+            Email::class,
+            Generate::class,
+            Clear::class,
+            Version::class,
+            Status::class,
+
+            // Dev
+            EsiJobMakeCommand::class,
+
+            // Esi
+            Ping::class,
+            CharactersUpdater::class,
+            CorporationsUpdater::class,
+            PublicInfo::class,
+            Dispatch::class,
+            ServerStatus::class,
+        ]);
     }
 }
