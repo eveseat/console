@@ -21,5 +21,12 @@
         "eveseat/eveapi": "2.0.*",
         "eveseat/services": "2.0.*",
         "guzzlehttp/guzzle": "^6.2"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Seat\\Console\\ConsoleServiceProvider"
+            ]
+        }
     }
 }
