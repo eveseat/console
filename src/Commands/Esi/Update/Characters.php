@@ -80,14 +80,14 @@ class Characters extends Command
      *
      * @var string
      */
-    protected $signature = 'esi:update:characters {character_id? : The characterId of a user/character in SeAT}';
+    protected $signature = 'esi:update:characters {character_id? : Optional character_id to update}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Schedule updater jobs for all characters ';
+    protected $description = 'Schedule updater jobs for all characters';
 
     /**
      * Create a new command instance.
@@ -101,100 +101,91 @@ class Characters extends Command
     }
 
     /**
-     * Checks if an optional parameter is present.
-     *
-     * @return bool
-     */
-    public function checkForOptionalParameter() {
-        if($this->hasArgument('character_id') && intval($this->Argument('character_id')) != ''){
-            return true;
-        } else return false;
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
      */
     public function handle()
     {
+
         $tokens = RefreshToken::all()
-            ->when($this->checkForOptionalParameter(), function ($tokens) {
-                return $tokens->whereStrict('character_id', intval($this->Argument('character_id')));
+            ->when($this->argument('character_id'), function ($tokens) {
+
+                return $tokens->where('character_id', $this->argument('character_id'));
             })
             ->each(function ($token) {
 
-            // Assets
-            Assets::withChain([new Location($token), new Names($token)])->dispatch($token);
+                // Assets
+                Assets::withChain([new Location($token), new Names($token)])->dispatch($token);
 
-            // Bookmarks
-            Bookmarks::withChain([new Folders($token)])->dispatch($token);
+                // Bookmarks
+                Bookmarks::withChain([new Folders($token)])->dispatch($token);
 
-            // Calendar
-            Events::withChain([new Detail($token), new Attendees($token)])->dispatch($token);
+                // Calendar
+                Events::withChain([new Detail($token), new Attendees($token)])->dispatch($token);
 
-            // Character
-            Info::dispatch($token);
-            AgentsResearch::dispatch($token);
-            Blueprints::dispatch($token);
-            ChatChannels::dispatch($token);
-            CorporationHistory::dispatch($token);
-            Fatigue::dispatch($token);
-            Medals::dispatch($token);
-            Notifications::dispatch($token);
-            Roles::dispatch($token);
-            Standings::dispatch($token);
-            Stats::dispatch($token);
-            Titles::dispatch($token);
+                // Character
+                Info::dispatch($token);
+                AgentsResearch::dispatch($token);
+                Blueprints::dispatch($token);
+                ChatChannels::dispatch($token);
+                CorporationHistory::dispatch($token);
+                Fatigue::dispatch($token);
+                Medals::dispatch($token);
+                Notifications::dispatch($token);
+                Roles::dispatch($token);
+                Standings::dispatch($token);
+                Stats::dispatch($token);
+                Titles::dispatch($token);
 
-            // Clones
-            Clones::withChain([new Implants($token)])->dispatch($token);
+                // Clones
+                Clones::withChain([new Implants($token)])->dispatch($token);
 
-            // Contacts
-            Contacts::withChain([new ContactLabels($token)])->dispatch($token);
+                // Contacts
+                Contacts::withChain([new ContactLabels($token)])->dispatch($token);
 
-            // Contracts
-            Contracts::withChain([new Items($token), new Bids($token)])->dispatch($token);
+                // Contracts
+                Contracts::withChain([new Items($token), new Bids($token)])->dispatch($token);
 
-            // Fittings
-            Fittings::dispatch($token);
+                // Fittings
+                Fittings::dispatch($token);
 
-            // Industry
-            Jobs::dispatch($token);
-            Mining::dispatch($token);
+                // Industry
+                Jobs::dispatch($token);
+                Mining::dispatch($token);
 
-            // Killmails
-            Recent::withChain([new KillmailDetail($token)])->dispatch($token);
+                // Killmails
+                Recent::withChain([new KillmailDetail($token)])->dispatch($token);
 
-            // Location
-            Location::dispatch($token);
-            Online::dispatch($token);
-            Ship::dispatch($token);
+                // Location
+                Location::dispatch($token);
+                Online::dispatch($token);
+                Ship::dispatch($token);
 
-            // Mail
-            Headers::withChain([new Bodies($token), new Labels($token)])->dispatch($token);
-            MailingLists::dispatch($token);
+                // Mail
+                Headers::withChain([new Bodies($token), new Labels($token)])->dispatch($token);
+                MailingLists::dispatch($token);
 
-            // Market
-            Orders::dispatch($token);
+                // Market
+                Orders::dispatch($token);
 
-            // Planetary Interactions
-            Planets::withChain([new PlanetDetail($token)])->dispatch($token);
+                // Planetary Interactions
+                Planets::withChain([new PlanetDetail($token)])->dispatch($token);
 
-            // Skills
-            Attributes::dispatch($token);
-            Queue::dispatch($token);
-            Skills::dispatch($token);
+                // Skills
+                Attributes::dispatch($token);
+                Queue::dispatch($token);
+                Skills::dispatch($token);
 
-            // Structures
-            Structures::dispatch($token);
+                // Structures
+                Structures::dispatch($token);
 
-            // Wallet
-            Balance::dispatch($token);
-            Journal::dispatch($token);
-            Transactions::dispatch($token);
+                // Wallet
+                Balance::dispatch($token);
+                Journal::dispatch($token);
+                Transactions::dispatch($token);
 
-        });
+            });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
 
