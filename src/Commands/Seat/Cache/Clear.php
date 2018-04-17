@@ -26,7 +26,6 @@ use Exception;
 use File;
 use Illuminate\Console\Command;
 use Predis\Client;
-use Seat\Eveapi\Models\JobTracking;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 
