@@ -41,7 +41,7 @@ class Clear extends Command
      *
      * @var string
      */
-    protected $signature = 'seat:cache:clear {--include-pheal : Clear the Pheal cache too}';
+    protected $signature = 'seat:cache:clear {--skip-eseye : Do not clear the Eseye cache}';
 
     /**
      * The console command description.
@@ -79,14 +79,13 @@ class Clear extends Command
             return;
         }
 
-        // If we are not clearing
-        if ($this->option('include-pheal')) {
-
-            $this->clear_pheal_cache();
-        }
-
-        $this->clear_database_jobs();
         $this->clear_redis_cache();
+
+        // If we are not clearing
+        if (! $this->option('skip-eseye')) {
+
+            $this->clear_eseye_cache();
+        }
 
         // Analytics
         dispatch((new Analytics((new AnalyticsContainer)
@@ -96,40 +95,6 @@ class Clear extends Command
             ->set('el', 'console')))
             ->onQueue('medium'));
 
-    }
-
-    /**
-     * Clear the Pheal Storage Cache.
-     */
-    public function clear_pheal_cache()
-    {
-
-        // Pheal Cache Clearing
-        $pheal_storage = storage_path() . '/app/pheal/';
-
-        if (File::isWritable($pheal_storage)) {
-
-            $this->info('Clearing the Pheal Cache at: ' . $pheal_storage);
-
-            if (! File::deleteDirectory($pheal_storage, true))
-                $this->error('Failed to clear the Pheal Cache directory. Check permissions.');
-
-        } else {
-
-            $this->warn('Pheal Cache directory at ' . $pheal_storage . ' is not writable');
-        }
-
-    }
-
-    /**
-     * Clear the database job tracking cache.
-     */
-    public function clear_database_jobs()
-    {
-
-        $this->info('Clearing the database Job Tracking Cache');
-
-        JobTracking::truncate();
     }
 
     /**
@@ -158,5 +123,27 @@ class Clear extends Command
 
         }
 
+    }
+
+    /**
+     * Clear the Eseye Storage Cache.
+     */
+    public function clear_eseye_cache()
+    {
+
+        // Eseye Cache Clearing
+        $eseye_cache = config('eveapi.config.eseye_cache');
+
+        if (File::isWritable($eseye_cache)) {
+
+            $this->info('Clearing the Eseye Cache at: ' . $eseye_cache);
+
+            if (! File::deleteDirectory($eseye_cache, true))
+                $this->error('Failed to clear the Eseye Cache directory. Check permissions.');
+
+        } else {
+
+            $this->warn('Eseye Cache directory at ' . $eseye_cache . ' is not writable');
+        }
     }
 }
