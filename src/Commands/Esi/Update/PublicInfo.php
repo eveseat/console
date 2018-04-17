@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ use Seat\Eveapi\Jobs\Sovereignty\Structures;
 use Seat\Eveapi\Jobs\Universe\Stations;
 
 /**
- * Class PublicInfo
+ * Class PublicInfo.
  * @package Seat\Console\Commands\Esi\Update
  */
 class PublicInfo extends Command
