@@ -20,62 +20,39 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Console\Commands\Esi;
+namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
-use Seat\Eseye\Cache\NullCache;
-use Seat\Eseye\Configuration;
-use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eveapi\Jobs\Status\Status;
 
-class Ping extends Command
+/**
+ * Class ServerStatus.
+ * @package Seat\Console\Commands\Esi\Update
+ */
+class ServerStatus extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'esi:ping';
+    protected $signature = 'esi:update:serverstatus';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Perform an ESI status check';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-    }
+    protected $description = 'Schedule updater jobs for the EVE server status';
 
     /**
      * Execute the console command.
      *
      * @return mixed
-     * @throws \Illuminate\Container\EntryNotFoundException
      */
     public function handle()
     {
 
-        $esi = app('esi-client')->get();
-        $esi->setVersion('');   // meta URI lives in /
-        Configuration::getInstance()->cache = NullCache::class;
-
-        try {
-
-            $esi->invoke('get', '/ping');
-
-        } catch (RequestFailedException $e) {
-
-            $this->error('ESI does not appear to be available: ' . $e->getMessage());
-        }
-
-        $this->info('ESI appears to be OK');
+        Status::dispatch();
     }
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,8 @@ use Exception;
 use File;
 use Illuminate\Console\Command;
 use Predis\Client;
-use Seat\Eveapi\Api\Server\ServerStatus;
+use Seat\Eseye\Cache\NullCache;
+use Seat\Eseye\Configuration;
 
 /**
  * Class Diagnose.
@@ -74,6 +75,7 @@ class Diagnose extends Command
             'run this as the user the workers are running as.');
         $this->line('Eg:');
         $this->info('    sudo -u apache php artisan seat:admin:diagnose');
+        $this->info('    su -c "php artisan seat:admin:diagnose" -s /bin/sh www-data');
         $this->line('This helps to check whether the permissions are correct.');
         $this->line('');
 
@@ -153,10 +155,15 @@ class Diagnose extends Command
         else
             $this->info(storage_path() . ' is writable');
 
-        if (! File::isWritable(config('eveapi.config.pheal.cache_path')))
-            $this->error(config('eveapi.config.pheal.cache_path') . ' is not writable');
+        if (! File::isWritable(config('eveapi.config.eseye_logfile')))
+            $this->error(config('eveapi.config.eseye_logfile') . ' is not writable');
         else
-            $this->info(config('eveapi.config.pheal.cache_path') . ' is writable');
+            $this->info(config('eveapi.config.eseye_logfile') . ' is writable');
+
+        if (! File::isWritable(config('eveapi.config.eseye_cache')))
+            $this->error(config('eveapi.config.eseye_cache') . ' is not writable');
+        else
+            $this->info(config('eveapi.config.eseye_cache') . ' is writable');
 
         if (! File::isWritable(storage_path() . '/sde/'))
             $this->error(storage_path() . '/sde/' . ' is not writable');
@@ -240,22 +247,24 @@ class Diagnose extends Command
     public function check_pheal()
     {
 
-        $this->line(' * Checking Pheal EVE API Access');
+        $this->line(' * Checking ESI Access');
+
+        $esi = app('esi-client')->get();
+        $esi->setVersion('v1');
+        Configuration::getInstance()->cache = NullCache::class;
 
         try {
 
-            $status = (new ServerStatus)->setScope('server')
-                ->getPheal()
-                ->ServerStatus();
+            $result = $esi->invoke('get', '/status/');
+            $this->info('Server Online Since: ' . $result->start_time);
+            $this->info('Online Players: ' . $result->players);
 
-            $this->info('Server Online: ' . $status->serverOpen);
-            $this->info('Online Players: ' . $status->onlinePlayers);
+        } catch (RequestFailedException $e) {
 
-        } catch (Exception $e) {
-
-            $this->error('Unable to call the EVE API: ' . $e->getMessage());
-
+            $this->error('ESI does not appear to be available: ' . $e->getMessage());
         }
+
+        $this->info('ESI appears to be OK');
 
     }
 }

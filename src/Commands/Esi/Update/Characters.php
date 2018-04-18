@@ -3,7 +3,7 @@
 /*
  * This file is part of SeAT
  *
- * Copyright (C) 2015, 2016, 2017  Leon Jacobs
+ * Copyright (C) 2015, 2016, 2017, 2018  Leon Jacobs
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ class Characters extends Command
      *
      * @var string
      */
-    protected $signature = 'esi:update:characters';
+    protected $signature = 'esi:update:characters {character_id? : Optional character_id to update}';
 
     /**
      * The console command description.
@@ -108,79 +108,84 @@ class Characters extends Command
     public function handle()
     {
 
-        $tokens = RefreshToken::all()->each(function ($token) {
+        $tokens = RefreshToken::all()
+            ->when($this->argument('character_id'), function ($tokens) {
 
-            // Assets
-            Assets::withChain([new Location($token), new Names($token)])->dispatch($token);
+                return $tokens->where('character_id', $this->argument('character_id'));
+            })
+            ->each(function ($token) {
 
-            // Bookmarks
-            Bookmarks::withChain([new Folders($token)])->dispatch($token);
+                // Assets
+                Assets::withChain([new Location($token), new Names($token)])->dispatch($token);
 
-            // Calendar
-            Events::withChain([new Detail($token), new Attendees($token)])->dispatch($token);
+                // Bookmarks
+                Bookmarks::withChain([new Folders($token)])->dispatch($token);
 
-            // Character
-            Info::dispatch($token);
-            AgentsResearch::dispatch($token);
-            Blueprints::dispatch($token);
-            ChatChannels::dispatch($token);
-            CorporationHistory::dispatch($token);
-            Fatigue::dispatch($token);
-            Medals::dispatch($token);
-            Notifications::dispatch($token);
-            Roles::dispatch($token);
-            Standings::dispatch($token);
-            Stats::dispatch($token);
-            Titles::dispatch($token);
+                // Calendar
+                Events::withChain([new Detail($token), new Attendees($token)])->dispatch($token);
 
-            // Clones
-            Clones::withChain([new Implants($token)])->dispatch($token);
+                // Character
+                Info::dispatch($token);
+                AgentsResearch::dispatch($token);
+                Blueprints::dispatch($token);
+                ChatChannels::dispatch($token);
+                CorporationHistory::dispatch($token);
+                Fatigue::dispatch($token);
+                Medals::dispatch($token);
+                Notifications::dispatch($token);
+                Roles::dispatch($token);
+                Standings::dispatch($token);
+                Stats::dispatch($token);
+                Titles::dispatch($token);
 
-            // Contacts
-            Contacts::withChain([new ContactLabels($token)])->dispatch($token);
+                // Clones
+                Clones::withChain([new Implants($token)])->dispatch($token);
 
-            // Contracts
-            Contracts::withChain([new Items($token), new Bids($token)])->dispatch($token);
+                // Contacts
+                Contacts::withChain([new ContactLabels($token)])->dispatch($token);
 
-            // Fittings
-            Fittings::dispatch($token);
+                // Contracts
+                Contracts::withChain([new Items($token), new Bids($token)])->dispatch($token);
 
-            // Industry
-            Jobs::dispatch($token);
-            Mining::dispatch($token);
+                // Fittings
+                Fittings::dispatch($token);
 
-            // Killmails
-            Recent::withChain([new KillmailDetail($token)])->dispatch($token);
+                // Industry
+                Jobs::dispatch($token);
+                Mining::dispatch($token);
 
-            // Location
-            Location::dispatch($token);
-            Online::dispatch($token);
-            Ship::dispatch($token);
+                // Killmails
+                Recent::withChain([new KillmailDetail($token)])->dispatch($token);
 
-            // Mail
-            Headers::withChain([new Bodies($token), new Labels($token)])->dispatch($token);
-            MailingLists::dispatch($token);
+                // Location
+                Location::dispatch($token);
+                Online::dispatch($token);
+                Ship::dispatch($token);
 
-            // Market
-            Orders::dispatch($token);
+                // Mail
+                Headers::withChain([new Bodies($token), new Labels($token)])->dispatch($token);
+                MailingLists::dispatch($token);
 
-            // Planetary Interactions
-            Planets::withChain([new PlanetDetail($token)])->dispatch($token);
+                // Market
+                Orders::dispatch($token);
 
-            // Skills
-            Attributes::dispatch($token);
-            Queue::dispatch($token);
-            Skills::dispatch($token);
+                // Planetary Interactions
+                Planets::withChain([new PlanetDetail($token)])->dispatch($token);
 
-            // Structures
-            Structures::dispatch($token);
+                // Skills
+                Attributes::dispatch($token);
+                Queue::dispatch($token);
+                Skills::dispatch($token);
 
-            // Wallet
-            Balance::dispatch($token);
-            Journal::dispatch($token);
-            Transactions::dispatch($token);
+                // Structures
+                Structures::dispatch($token);
 
-        });
+                // Wallet
+                Balance::dispatch($token);
+                Journal::dispatch($token);
+                Transactions::dispatch($token);
+
+            });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
 
