@@ -23,10 +23,10 @@
 namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
-use Seat\Eveapi\Jobs\Sovereignty\Structures;
-use Seat\Eveapi\Jobs\Universe\Stations;
 use Seat\Eveapi\Jobs\Character\Affiliation;
+use Seat\Eveapi\Jobs\Sovereignty\Structures;
 use Seat\Eveapi\Jobs\Universe\Names;
+use Seat\Eveapi\Jobs\Universe\Stations;
 
 /**
  * Class PublicInfo.
