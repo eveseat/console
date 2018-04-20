@@ -23,7 +23,9 @@
 namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
+use Seat\Eveapi\Jobs\Character\Affiliation;
 use Seat\Eveapi\Jobs\Sovereignty\Structures;
+use Seat\Eveapi\Jobs\Universe\Names;
 use Seat\Eveapi\Jobs\Universe\Stations;
 
 /**
@@ -55,5 +57,6 @@ class PublicInfo extends Command
     {
 
         Structures::withChain([new Stations])->dispatch();
+        Affiliation::withChain([new Names])->dispatch();
     }
 }
