@@ -32,7 +32,6 @@ use Seat\Eveapi\Jobs\Calendar\Detail;
 use Seat\Eveapi\Jobs\Calendar\Events;
 use Seat\Eveapi\Jobs\Character\AgentsResearch;
 use Seat\Eveapi\Jobs\Character\Blueprints;
-use Seat\Eveapi\Jobs\Character\ChatChannels;
 use Seat\Eveapi\Jobs\Character\CorporationHistory;
 use Seat\Eveapi\Jobs\Character\Fatigue;
 use Seat\Eveapi\Jobs\Character\Info;
@@ -128,7 +127,6 @@ class Characters extends Command
                 Info::dispatch($token);
                 AgentsResearch::dispatch($token);
                 Blueprints::dispatch($token);
-                ChatChannels::dispatch($token);
                 CorporationHistory::dispatch($token);
                 Fatigue::dispatch($token);
                 Medals::dispatch($token);
