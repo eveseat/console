@@ -48,7 +48,7 @@ use Seat\Eveapi\Jobs\Contacts\Character\Labels as ContactLabels;
 use Seat\Eveapi\Jobs\Contracts\Character\Bids;
 use Seat\Eveapi\Jobs\Contracts\Character\Contracts;
 use Seat\Eveapi\Jobs\Contracts\Character\Items;
-use Seat\Eveapi\Jobs\FIttings\Character\Fittings;
+use Seat\Eveapi\Jobs\Fittings\Character\Fittings;
 use Seat\Eveapi\Jobs\Industry\Character\Jobs;
 use Seat\Eveapi\Jobs\Industry\Character\Mining;
 use Seat\Eveapi\Jobs\Killmails\Character\Detail as KillmailDetail;
