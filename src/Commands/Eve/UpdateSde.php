@@ -303,7 +303,7 @@ class UpdateSde extends Command
             $file_handler = fopen($destination, 'w');
 
             $result = $this->getGuzzle()->request('GET', $url, [
-                'sink' => $file_handler, ]);
+                'sink' => $file_handler,]);
 
             fclose($file_handler);
 

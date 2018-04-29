@@ -51,6 +51,7 @@ class EsiJobMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
+
         return $this->option('paginated') ?
             __DIR__ . '/stubs/esi-paginated-job.stub' : __DIR__ . '/stubs/esi-job.stub';
     }
@@ -59,10 +60,12 @@ class EsiJobMakeCommand extends GeneratorCommand
      * Build the class with the given name.
      *
      * @param string $name
+     *
      * @return string
      */
     protected function buildClass($name)
     {
+
         $stub = parent::buildClass($name);
 
         $this->replaceEndpoint($stub, $this->argument('endpoint'));
@@ -81,10 +84,12 @@ class EsiJobMakeCommand extends GeneratorCommand
      *
      * @param string $stub
      * @param string $endpoint
+     *
      * @return $this
      */
     protected function replaceEndpoint(string &$stub, string $endpoint)
     {
+
         if (strlen($endpoint) > 0)
             $stub = str_replace('/dummy/endpoint/', $endpoint, $stub);
 
@@ -96,10 +101,12 @@ class EsiJobMakeCommand extends GeneratorCommand
      *
      * @param string $stub
      * @param string $version
+     *
      * @return $this
      */
     protected function replaceVersion(string &$stub, string $version)
     {
+
         if (strlen($version) > 0)
             $stub = str_replace('v1', $version, $stub);
 
@@ -111,10 +118,12 @@ class EsiJobMakeCommand extends GeneratorCommand
      *
      * @param string $stub
      * @param string $scope
+     *
      * @return $this
      */
     protected function replaceScope(string &$stub, string $scope)
     {
+
         if (strlen($scope) > 0)
             $stub = str_replace("'public'", "'$scope'", $stub);
 
@@ -124,11 +133,13 @@ class EsiJobMakeCommand extends GeneratorCommand
     /**
      * Get the default namespace for the class.
      *
-     * @param  string  $rootNamespace
+     * @param  string $rootNamespace
+     *
      * @return string
      */
     protected function getDefaultNamespace($rootNamespace)
     {
+
         return $rootNamespace . '\Jobs';
     }
 
@@ -139,6 +150,7 @@ class EsiJobMakeCommand extends GeneratorCommand
      */
     protected function getOptions()
     {
+
         return [
             [
                 'esi-version',
@@ -168,6 +180,7 @@ class EsiJobMakeCommand extends GeneratorCommand
      */
     protected function getArguments()
     {
+
         return [
             [
                 'name',
