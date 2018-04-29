@@ -1,25 +1,32 @@
 {
-    "name": "eveseat/console",
-    "description": "SeAT Console Components",
-    "license": "GPL-2.0",
-    "authors": [
-        {
-            "name": "Leon Jacobs",
-            "email": "leonja511@gmail.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Seat\\Console\\": "src/"
-        }
-    },
-    "minimum-stability": "alpha",
-    "prefer-stable": true,
-    "require": {
-        "php": ">=7.0",
-        "laravel/framework": "5.3.*",
-        "eveseat/eveapi": "2.0.*",
-        "eveseat/services": "2.0.*",
-        "guzzlehttp/guzzle": "^6.2"
+  "name": "eveseat/console",
+  "description": "SeAT Console Components",
+  "license": "GPL-2.0",
+  "authors": [
+    {
+      "name": "Leon Jacobs",
+      "email": "leonja511@gmail.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Seat\\Console\\": "src/"
+    }
+  },
+  "minimum-stability": "alpha",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=7.1",
+    "laravel/framework": "5.5.*",
+    "eveseat/eveapi": "~3",
+    "eveseat/services": "~3",
+    "guzzlehttp/guzzle": "^6.3"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Seat\\Console\\ConsoleServiceProvider"
+      ]
+    }
+  }
 }
