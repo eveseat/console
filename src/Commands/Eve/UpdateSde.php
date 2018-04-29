@@ -218,7 +218,6 @@ class UpdateSde extends Command
 
     }
 
-
     /**
      * Query the eveseat/resources repository for SDE
      * related information.
@@ -303,7 +302,7 @@ class UpdateSde extends Command
             $file_handler = fopen($destination, 'w');
 
             $result = $this->getGuzzle()->request('GET', $url, [
-                'sink' => $file_handler,]);
+                'sink' => $file_handler, ]);
 
             fclose($file_handler);
 
