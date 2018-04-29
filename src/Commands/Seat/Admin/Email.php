@@ -58,7 +58,7 @@ class Email extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @throws \Seat\Services\Exceptions\SettingException
      */
     public function handle()
     {

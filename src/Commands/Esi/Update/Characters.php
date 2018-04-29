@@ -101,8 +101,6 @@ class Characters extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {
@@ -186,6 +184,5 @@ class Characters extends Command
             });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
-
     }
 }
