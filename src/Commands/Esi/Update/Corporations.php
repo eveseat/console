@@ -73,14 +73,15 @@ class Corporations extends Command
      *
      * @var string
      */
-    protected $signature = 'esi:update:corporations';
+    protected $signature = 'esi:update:corporations {character_id? : Optional character_id to update ' .
+    'corporation information for}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Schedule updater jobs for all corporations';
+    protected $description = 'Schedule updater jobs for corporations';
 
     /**
      * Create a new command instance.
@@ -99,48 +100,53 @@ class Corporations extends Command
     public function handle()
     {
 
-        $tokens = RefreshToken::all()->each(function ($token) {
+        $tokens = RefreshToken::all()
+            ->when($this->argument('character_id'), function ($tokens) {
 
-            Assets::withChain([new Locations($token), new Names($token)])->dispatch($token);
+                return $tokens->where('character_id', $this->argument('character_id'));
+            })
+            ->each(function ($token) {
 
-            Bookmarks::withChain([new Folders($token)])->dispatch($token);
+                Assets::withChain([new Locations($token), new Names($token)])->dispatch($token);
 
-            Contacts::dispatch($token);
+                Bookmarks::withChain([new Folders($token)])->dispatch($token);
 
-            Contracts::withChain([new Items($token), new Bids($token)])->dispatch($token);
+                Contacts::dispatch($token);
 
-            Info::dispatch($token);
-            AllianceHistory::dispatch($token);
-            Blueprints::dispatch($token);
-            ContainerLogs::dispatch($token);
-            Divisions::dispatch($token);
-            Facilities::dispatch($token);
-            IssuedMedals::dispatch($token);
-            Medals::dispatch($token);
-            Members::dispatch($token);
-            MembersLimit::dispatch($token);
-            MemberTracking::dispatch($token);
-            Outposts::withChain([new OutpostDetails($token)])->dispatch($token);
-            Roles::withChain([new RoleHistories($token)])->dispatch($token);
-            Shareholders::dispatch($token);
-            Standings::dispatch($token);
-            Starbases::withChain([new StarbaseDetails($token)])->dispatch($token);
-            Structures::dispatch($token);
-            Titles::withChain([new MembersTitles($token)])->dispatch($token);
+                Contracts::withChain([new Items($token), new Bids($token)])->dispatch($token);
 
-            Jobs::dispatch($token);
-            Extractions::dispatch($token);
-            Observers::withChain([new ObserverDetails($token)])->dispatch($token);
+                Info::dispatch($token);
+                AllianceHistory::dispatch($token);
+                Blueprints::dispatch($token);
+                ContainerLogs::dispatch($token);
+                Divisions::dispatch($token);
+                Facilities::dispatch($token);
+                IssuedMedals::dispatch($token);
+                Medals::dispatch($token);
+                Members::dispatch($token);
+                MembersLimit::dispatch($token);
+                MemberTracking::dispatch($token);
+                Outposts::withChain([new OutpostDetails($token)])->dispatch($token);
+                Roles::withChain([new RoleHistories($token)])->dispatch($token);
+                Shareholders::dispatch($token);
+                Standings::dispatch($token);
+                Starbases::withChain([new StarbaseDetails($token)])->dispatch($token);
+                Structures::dispatch($token);
+                Titles::withChain([new MembersTitles($token)])->dispatch($token);
 
-            Recent::withChain([new Detail($token)])->dispatch($token);
+                Jobs::dispatch($token);
+                Extractions::dispatch($token);
+                Observers::withChain([new ObserverDetails($token)])->dispatch($token);
 
-            Orders::dispatch($token);
+                Recent::withChain([new Detail($token)])->dispatch($token);
 
-            Balances::dispatch($token);
-            Journals::dispatch($token);
-            Transactions::dispatch($token);
+                Orders::dispatch($token);
 
-        });
+                Balances::dispatch($token);
+                Journals::dispatch($token);
+                Transactions::dispatch($token);
+
+            });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
 

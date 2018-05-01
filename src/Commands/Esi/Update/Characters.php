@@ -86,7 +86,7 @@ class Characters extends Command
      *
      * @var string
      */
-    protected $description = 'Schedule updater jobs for all characters';
+    protected $description = 'Schedule updater jobs for characters';
 
     /**
      * Create a new command instance.
