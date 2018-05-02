@@ -32,7 +32,6 @@ use Seat\Eveapi\Jobs\Calendar\Detail;
 use Seat\Eveapi\Jobs\Calendar\Events;
 use Seat\Eveapi\Jobs\Character\AgentsResearch;
 use Seat\Eveapi\Jobs\Character\Blueprints;
-use Seat\Eveapi\Jobs\Character\ChatChannels;
 use Seat\Eveapi\Jobs\Character\CorporationHistory;
 use Seat\Eveapi\Jobs\Character\Fatigue;
 use Seat\Eveapi\Jobs\Character\Info;
@@ -49,7 +48,7 @@ use Seat\Eveapi\Jobs\Contacts\Character\Labels as ContactLabels;
 use Seat\Eveapi\Jobs\Contracts\Character\Bids;
 use Seat\Eveapi\Jobs\Contracts\Character\Contracts;
 use Seat\Eveapi\Jobs\Contracts\Character\Items;
-use Seat\Eveapi\Jobs\FIttings\Character\Fittings;
+use Seat\Eveapi\Jobs\Fittings\Character\Fittings;
 use Seat\Eveapi\Jobs\Industry\Character\Jobs;
 use Seat\Eveapi\Jobs\Industry\Character\Mining;
 use Seat\Eveapi\Jobs\Killmails\Character\Detail as KillmailDetail;
@@ -87,7 +86,7 @@ class Characters extends Command
      *
      * @var string
      */
-    protected $description = 'Schedule updater jobs for all characters';
+    protected $description = 'Schedule updater jobs for characters';
 
     /**
      * Create a new command instance.
@@ -102,8 +101,6 @@ class Characters extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {
@@ -128,7 +125,6 @@ class Characters extends Command
                 Info::dispatch($token);
                 AgentsResearch::dispatch($token);
                 Blueprints::dispatch($token);
-                ChatChannels::dispatch($token);
                 CorporationHistory::dispatch($token);
                 Fatigue::dispatch($token);
                 Medals::dispatch($token);
@@ -188,6 +184,5 @@ class Characters extends Command
             });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
-
     }
 }

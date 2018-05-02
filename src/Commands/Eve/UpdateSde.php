@@ -87,8 +87,10 @@ class UpdateSde extends Command
     }
 
     /**
-     * Handle the calling of the required function to
-     * update the EVE SDE data.
+     * Query the eveseat/resources repository for SDE
+     * related information.
+     *
+     * @throws \Seat\Services\Exceptions\SettingException
      */
     public function handle()
     {
@@ -220,7 +222,7 @@ class UpdateSde extends Command
      * Query the eveseat/resources repository for SDE
      * related information.
      *
-     * @return \Psr\Http\Message\StreamInterface|void
+     * @return mixed
      */
     public function getJsonResource()
     {
@@ -231,7 +233,7 @@ class UpdateSde extends Command
             ]);
 
         if ($result->getStatusCode() != 200)
-            return;
+            return json_encode([]);
 
         return json_decode($result->getBody());
     }
@@ -371,7 +373,7 @@ class UpdateSde extends Command
             // that should be run. A sample $import_command is:
             // mysql -u root -h 127.0.0.1 seat < /tmp/sample.sql
             $import_command = 'mysql -u ' . config('database.connections.mysql.username') .
-                // Check if the password is longer than 0. If not, dont specify the -p flag
+                // Check if the password is longer than 0. If not, don't specify the -p flag
                 (strlen(config('database.connections.mysql.password')) ? ' -p' : '')
                 // Append this regardless. Escape special chars in the password too.
                 . escapeshellcmd(config('database.connections.mysql.password')) .

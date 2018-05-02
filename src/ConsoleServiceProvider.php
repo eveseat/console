@@ -47,22 +47,12 @@ class ConsoleServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
         $this->addCommands();
     }
 
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
+    public function addCommands()
     {
-
-        $this->mergeConfigFrom(
-            __DIR__ . '/Config/console.config.php', 'console.config');
-    }
-
-    public function addCommands() {
 
         $this->commands([
             UpdateSde::class,
@@ -84,5 +74,17 @@ class ConsoleServiceProvider extends ServiceProvider
             Dispatch::class,
             ServerStatus::class,
         ]);
+    }
+
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+
+        $this->mergeConfigFrom(
+            __DIR__ . '/Config/console.config.php', 'console.config');
     }
 }

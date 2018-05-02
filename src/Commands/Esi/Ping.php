@@ -57,8 +57,7 @@ class Ping extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
-     * @throws \Illuminate\Container\EntryNotFoundException
+     * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
      */
     public function handle()
     {
