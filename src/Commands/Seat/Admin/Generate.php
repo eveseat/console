@@ -111,7 +111,7 @@ class Generate extends Command
         if (! $admin->has('superuser')) {
 
             $this->comment('Adding \'admin\' to the Superuser role');
-            $this->giveUserRole($admin->id, $role->id);
+            $this->giveGroupRole($admin->group->id, $role->id);
         }
 
         $this->line('Generating authentication token');
