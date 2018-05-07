@@ -127,7 +127,6 @@ class Generate extends Command
             ->set('type', 'event')
             ->set('ec', 'admin')
             ->set('ea', 'password_reset')
-            ->set('el', 'console')))
-            ->onQueue('medium'));
+            ->set('el', 'console'))));
     }
 }
