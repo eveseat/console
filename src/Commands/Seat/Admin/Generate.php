@@ -29,6 +29,7 @@ use Seat\Services\Jobs\Analytics;
 use Seat\Services\Repositories\Configuration\UserRespository;
 use Seat\Web\Acl\AccessManager;
 use Seat\Web\Models\Acl\Role;
+use Seat\Web\Models\Group;
 use Seat\Web\Models\User;
 
 class Generate extends Command
@@ -73,16 +74,19 @@ class Generate extends Command
 
         $admin = User::firstOrNew(['name' => 'admin']);
 
-        if (! $admin->exists)
+        if (! $admin->exists) {
+
             $this->warn('User \'admin\' does not exist. It will be created.');
 
-        $admin->fill([
-            'name'                 => 'admin',
-            'character_owner_hash' => 'none',
-            'email'                => 'admin@seat.local',
-        ]);
-        $admin->id = 1; // Needed as id is not fillable
-        $admin->save();
+            $admin->fill([
+                'name'                 => 'admin',
+                'character_owner_hash' => 'none',
+                'email'                => 'admin@seat.local',
+            ]);
+            $admin->id = 1; // Needed as id is not fillable
+            $admin->group_id = Group::create(['main_character_id' => 1])->id;
+            $admin->save();
+        }
 
         $this->line('Searching for the \'Superuser\' role');
         $role = Role::where('title', 'Superuser')->first();
@@ -107,7 +111,7 @@ class Generate extends Command
         if (! $admin->has('superuser')) {
 
             $this->comment('Adding \'admin\' to the Superuser role');
-            $this->giveUserRole($admin->id, $role->id);
+            $this->giveGroupRole($admin->group->id, $role->id);
         }
 
         $this->line('Generating authentication token');
