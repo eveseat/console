@@ -22,11 +22,11 @@
 
 namespace Seat\Console\Commands\Eve;
 
-use File;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 use Seat\Services\Settings\Seat;
@@ -35,7 +35,7 @@ use Seat\Services\Settings\Seat;
  * Class UpdateServerStatus.
  * @package Seat\Console\Commands
  */
-class UpdateSde extends Command
+class Sde extends Command
 {
     use DispatchesJobs;
 
@@ -44,7 +44,7 @@ class UpdateSde extends Command
      *
      * @var string
      */
-    protected $signature = 'eve:update-sde
+    protected $signature = 'eve:update:sde
                             {--local : Check the local config file for the version string}
                             {--force : Force re-installation of an existing SDE version}';
 

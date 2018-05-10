@@ -32,7 +32,7 @@ use Seat\Web\Models\Acl\Role;
 use Seat\Web\Models\Group;
 use Seat\Web\Models\User;
 
-class Generate extends Command
+class Login extends Command
 {
 
     use UserRespository, AccessManager, DispatchesJobs;
