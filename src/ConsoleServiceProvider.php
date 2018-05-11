@@ -30,10 +30,10 @@ use Seat\Console\Commands\Esi\Update\Corporations as CorporationsUpdater;
 use Seat\Console\Commands\Esi\Update\PublicInfo;
 use Seat\Console\Commands\Esi\Update\ServerStatus;
 use Seat\Console\Commands\EsiJobMakeCommand;
-use Seat\Console\Commands\Eve\UpdateSde;
+use Seat\Console\Commands\Eve\Sde;
 use Seat\Console\Commands\Seat\Admin\Diagnose;
 use Seat\Console\Commands\Seat\Admin\Email;
-use Seat\Console\Commands\Seat\Admin\Generate;
+use Seat\Console\Commands\Seat\Admin\Login;
 use Seat\Console\Commands\Seat\Cache\Clear;
 use Seat\Console\Commands\Seat\Queue\Status;
 use Seat\Console\Commands\Seat\Version;
@@ -55,10 +55,10 @@ class ConsoleServiceProvider extends ServiceProvider
     {
 
         $this->commands([
-            UpdateSde::class,
+            Sde::class,
             Diagnose::class,
             Email::class,
-            Generate::class,
+            Login::class,
             Clear::class,
             Version::class,
             Status::class,
