@@ -71,7 +71,6 @@ use Seat\Eveapi\Jobs\Wallet\Character\Journal;
 use Seat\Eveapi\Jobs\Wallet\Character\Transactions;
 use Seat\Eveapi\Models\RefreshToken;
 
-
 /**
  * Class CharacterShouldUpdate.
  * @package Seat\Console\Bus
@@ -111,17 +110,17 @@ class CharacterTokenShouldUpdate extends BusCommand
 
         // Assets
         Assets::withChain([
-            new Location($this->token), new Names($this->token)
+            new Location($this->token), new Names($this->token),
         ])->dispatch($this->token)->onQueue($this->queue);
 
         // Bookmarks
         Bookmarks::withChain([
-            new Folders($this->token)
+            new Folders($this->token),
         ])->dispatch($this->token)->onQueue($this->queue);
 
         // Calendar
         Events::withChain([
-            new Detail($this->token), new Attendees($this->token)
+            new Detail($this->token), new Attendees($this->token),
         ])->dispatch($this->token)->onQueue($this->queue);
 
         // Character
@@ -139,17 +138,17 @@ class CharacterTokenShouldUpdate extends BusCommand
 
         // Clones
         Clones::withChain([
-            new Implants($this->token)
+            new Implants($this->token),
         ])->dispatch($this->token)->onQueue($this->queue);
 
         // Contacts
         Contacts::withChain([
-            new ContactLabels($this->token)
+            new ContactLabels($this->token),
         ])->dispatch($this->token)->onQueue($this->queue);
 
         // Contracts
         Contracts::withChain([
-            new Items($this->token), new Bids($this->token)
+            new Items($this->token), new Bids($this->token),
         ])->dispatch($this->token)->onQueue($this->queue);
 
         // Fittings
@@ -161,7 +160,7 @@ class CharacterTokenShouldUpdate extends BusCommand
 
         // Killmails
         Recent::withChain([
-            new KillmailDetail($this->token)]
+            new KillmailDetail($this->token), ]
         )->dispatch($this->token)->onQueue($this->queue);
 
         // Location
@@ -171,7 +170,7 @@ class CharacterTokenShouldUpdate extends BusCommand
 
         // Mail
         Headers::withChain([
-            new Bodies($this->token), new Labels($this->token)
+            new Bodies($this->token), new Labels($this->token),
         ])->dispatch($this->token)->onQueue($this->queue);
         MailingLists::dispatch($this->token)->onQueue($this->queue);
 
@@ -180,7 +179,7 @@ class CharacterTokenShouldUpdate extends BusCommand
 
         // Planetary Interactions
         Planets::withChain([
-            new PlanetDetail($this->token)]
+            new PlanetDetail($this->token), ]
         )->dispatch($this->token)->onQueue($this->queue);
 
         // Skills
