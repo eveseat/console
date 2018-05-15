@@ -22,7 +22,6 @@
 
 namespace Seat\Console\Bus;
 
-
 use Seat\Eveapi\Jobs\Assets\Corporation\Assets;
 use Seat\Eveapi\Jobs\Assets\Corporation\Locations;
 use Seat\Eveapi\Jobs\Assets\Corporation\Names;
@@ -134,7 +133,7 @@ class CorporationTokenShouldUpdate extends BusCommand
         ])->dispatch($this->token)->onQueue($this->queue);
 
         Roles::withChain([
-                new RoleHistories($this->token)]
+                new RoleHistories($this->token), ]
         )->dispatch($this->token)->onQueue($this->queue);
 
         Shareholders::dispatch($this->token)->onQueue($this->queue);

@@ -22,7 +22,6 @@
 
 namespace Seat\Console\Bus;
 
-
 /**
  * Class BusCommand.
  * @package Seat\Console\Bus
