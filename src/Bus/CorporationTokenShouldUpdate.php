@@ -70,7 +70,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class CorporationCharacterShouldUpdate.
  * @package Seat\Console\Bus
  */
-class CorporationCharacterShouldUpdate extends BusCommand
+class CorporationTokenShouldUpdate extends BusCommand
 {
     /**
      * @var \Seat\Eveapi\Models\RefreshToken

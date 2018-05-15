@@ -23,7 +23,7 @@
 namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
-use Seat\Console\Bus\CorporationCharacterShouldUpdate;
+use Seat\Console\Bus\CorporationTokenShouldUpdate;
 use Seat\Eveapi\Models\RefreshToken;
 
 class Corporations extends Command
@@ -57,7 +57,7 @@ class Corporations extends Command
             ->each(function ($token) {
 
                 // Fire the class to update corporation information
-                (new CorporationCharacterShouldUpdate($token, 'default'))->fire();
+                (new CorporationTokenShouldUpdate($token, 'default'))->fire();
             });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
