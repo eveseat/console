@@ -24,7 +24,6 @@ namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Alliances\Alliances;
-use Seat\Eveapi\Jobs\Alliances\Info;
 use Seat\Eveapi\Jobs\Alliances\Members;
 use Seat\Eveapi\Jobs\Character\Affiliation;
 use Seat\Eveapi\Jobs\Market\Prices;
@@ -62,7 +61,7 @@ class PublicInfo extends Command
         Map::dispatch();
         Structures::withChain([new Stations])->dispatch();
         Affiliation::withChain([new Names])->dispatch();
-        Alliances::withChain([new Info, new Members])->dispatch();
+        Alliances::withChain([new Members])->dispatch();
         Prices::dispatch();
     }
 }
