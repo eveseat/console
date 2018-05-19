@@ -23,53 +23,7 @@
 namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
-use Seat\Eveapi\Jobs\Assets\Character\Assets;
-use Seat\Eveapi\Jobs\Assets\Character\Names;
-use Seat\Eveapi\Jobs\Bookmarks\Character\Bookmarks;
-use Seat\Eveapi\Jobs\Bookmarks\Character\Folders;
-use Seat\Eveapi\Jobs\Calendar\Attendees;
-use Seat\Eveapi\Jobs\Calendar\Detail;
-use Seat\Eveapi\Jobs\Calendar\Events;
-use Seat\Eveapi\Jobs\Character\AgentsResearch;
-use Seat\Eveapi\Jobs\Character\Blueprints;
-use Seat\Eveapi\Jobs\Character\CorporationHistory;
-use Seat\Eveapi\Jobs\Character\Fatigue;
-use Seat\Eveapi\Jobs\Character\Info;
-use Seat\Eveapi\Jobs\Character\Medals;
-use Seat\Eveapi\Jobs\Character\Notifications;
-use Seat\Eveapi\Jobs\Character\Roles;
-use Seat\Eveapi\Jobs\Character\Standings;
-use Seat\Eveapi\Jobs\Character\Stats;
-use Seat\Eveapi\Jobs\Character\Titles;
-use Seat\Eveapi\Jobs\Clones\Clones;
-use Seat\Eveapi\Jobs\Clones\Implants;
-use Seat\Eveapi\Jobs\Contacts\Character\Contacts;
-use Seat\Eveapi\Jobs\Contacts\Character\Labels as ContactLabels;
-use Seat\Eveapi\Jobs\Contracts\Character\Bids;
-use Seat\Eveapi\Jobs\Contracts\Character\Contracts;
-use Seat\Eveapi\Jobs\Contracts\Character\Items;
-use Seat\Eveapi\Jobs\Fittings\Character\Fittings;
-use Seat\Eveapi\Jobs\Industry\Character\Jobs;
-use Seat\Eveapi\Jobs\Industry\Character\Mining;
-use Seat\Eveapi\Jobs\Killmails\Character\Detail as KillmailDetail;
-use Seat\Eveapi\Jobs\Killmails\Character\Recent;
-use Seat\Eveapi\Jobs\Location\Character\Location;
-use Seat\Eveapi\Jobs\Location\Character\Online;
-use Seat\Eveapi\Jobs\Location\Character\Ship;
-use Seat\Eveapi\Jobs\Mail\Bodies;
-use Seat\Eveapi\Jobs\Mail\Headers;
-use Seat\Eveapi\Jobs\Mail\Labels;
-use Seat\Eveapi\Jobs\Mail\MailingLists;
-use Seat\Eveapi\Jobs\Market\Character\Orders;
-use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\PlanetDetail;
-use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\Planets;
-use Seat\Eveapi\Jobs\Skills\Character\Attributes;
-use Seat\Eveapi\Jobs\Skills\Character\Queue;
-use Seat\Eveapi\Jobs\Skills\Character\Skills;
-use Seat\Eveapi\Jobs\Universe\Structures;
-use Seat\Eveapi\Jobs\Wallet\Character\Balance;
-use Seat\Eveapi\Jobs\Wallet\Character\Journal;
-use Seat\Eveapi\Jobs\Wallet\Character\Transactions;
+use Seat\Console\Bus\CharacterTokenShouldUpdate;
 use Seat\Eveapi\Models\RefreshToken;
 
 class Characters extends Command
@@ -89,17 +43,6 @@ class Characters extends Command
     protected $description = 'Schedule updater jobs for characters';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle()
@@ -112,75 +55,8 @@ class Characters extends Command
             })
             ->each(function ($token) {
 
-                // Assets
-                Assets::withChain([new Location($token), new Names($token)])->dispatch($token);
-
-                // Bookmarks
-                Bookmarks::withChain([new Folders($token)])->dispatch($token);
-
-                // Calendar
-                Events::withChain([new Detail($token), new Attendees($token)])->dispatch($token);
-
-                // Character
-                Info::dispatch($token);
-                AgentsResearch::dispatch($token);
-                Blueprints::dispatch($token);
-                CorporationHistory::dispatch($token);
-                Fatigue::dispatch($token);
-                Medals::dispatch($token);
-                Notifications::dispatch($token);
-                Roles::dispatch($token);
-                Standings::dispatch($token);
-                Stats::dispatch($token);
-                Titles::dispatch($token);
-
-                // Clones
-                Clones::withChain([new Implants($token)])->dispatch($token);
-
-                // Contacts
-                Contacts::withChain([new ContactLabels($token)])->dispatch($token);
-
-                // Contracts
-                Contracts::withChain([new Items($token), new Bids($token)])->dispatch($token);
-
-                // Fittings
-                Fittings::dispatch($token);
-
-                // Industry
-                Jobs::dispatch($token);
-                Mining::dispatch($token);
-
-                // Killmails
-                Recent::withChain([new KillmailDetail($token)])->dispatch($token);
-
-                // Location
-                Location::dispatch($token);
-                Online::dispatch($token);
-                Ship::dispatch($token);
-
-                // Mail
-                Headers::withChain([new Bodies($token), new Labels($token)])->dispatch($token);
-                MailingLists::dispatch($token);
-
-                // Market
-                Orders::dispatch($token);
-
-                // Planetary Interactions
-                Planets::withChain([new PlanetDetail($token)])->dispatch($token);
-
-                // Skills
-                Attributes::dispatch($token);
-                Queue::dispatch($token);
-                Skills::dispatch($token);
-
-                // Structures
-                Structures::dispatch($token);
-
-                // Wallet
-                Balance::dispatch($token);
-                Journal::dispatch($token);
-                Transactions::dispatch($token);
-
+                // Fire the class that handles the collection of jobs to run.
+                (new CharacterTokenShouldUpdate($token, 'default'))->fire();
             });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');

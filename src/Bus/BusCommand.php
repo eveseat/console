@@ -20,8 +20,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-return [
+namespace Seat\Console\Bus;
 
-    'version' => '3.0.0-beta6',
-
-];
+/**
+ * Class BusCommand.
+ * @package Seat\Console\Bus
+ */
+abstract class BusCommand
+{
+    /**
+     * Fires the command.
+     *
+     * @return mixed
+     */
+    abstract public function fire();
+}
