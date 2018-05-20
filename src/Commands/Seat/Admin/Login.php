@@ -81,10 +81,9 @@ class Login extends Command
             $admin->fill([
                 'name'                 => 'admin',
                 'character_owner_hash' => 'none',
-                'email'                => 'admin@seat.local',
             ]);
             $admin->id = 1; // Needed as id is not fillable
-            $admin->group_id = Group::create(['main_character_id' => 1])->id;
+            $admin->group_id = Group::create()->id;
             $admin->save();
         }
 
