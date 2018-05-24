@@ -168,10 +168,10 @@ class Diagnose extends Command
         else
             $this->info(storage_path() . '/sde/' . ' is writable');
 
-        if (! File::isWritable(storage_path('logs/laravel.log')))
-            $this->error(storage_path('logs/laravel.log') . ' is not writable');
+        if (! File::isWritable(storage_path(sprintf('logs/laravel-%s.log', carbon()->toDateString()))))
+            $this->error(storage_path(sprintf('logs/laravel-%s.log  is not writable', carbon()->toDateString())));
         else
-            $this->info(storage_path('logs/laravel.log') . ' is writable');
+            $this->info(storage_path(sprintf('logs/laravel-%s.log is writable', carbon()->toDateString())));
     }
 
     /**
