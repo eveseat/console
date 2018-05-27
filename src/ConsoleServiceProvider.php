@@ -35,6 +35,7 @@ use Seat\Console\Commands\Eve\Sde;
 use Seat\Console\Commands\Seat\Admin\Diagnose;
 use Seat\Console\Commands\Seat\Admin\Email;
 use Seat\Console\Commands\Seat\Admin\Login;
+use Seat\Console\Commands\Seat\Admin\Maintenance;
 use Seat\Console\Commands\Seat\Cache\Clear;
 use Seat\Console\Commands\Seat\Queue\Status;
 use Seat\Console\Commands\Seat\Version;
@@ -63,6 +64,7 @@ class ConsoleServiceProvider extends ServiceProvider
             Clear::class,
             Version::class,
             Status::class,
+            Maintenance::class,
 
             // Dev
             EsiJobMakeCommand::class,
