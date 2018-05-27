@@ -27,6 +27,7 @@ use Seat\Console\Commands\Esi\Dispatch;
 use Seat\Console\Commands\Esi\Ping;
 use Seat\Console\Commands\Esi\Update\Characters as CharactersUpdater;
 use Seat\Console\Commands\Esi\Update\Corporations as CorporationsUpdater;
+use Seat\Console\Commands\Esi\Update\EsiStatus;
 use Seat\Console\Commands\Esi\Update\PublicInfo;
 use Seat\Console\Commands\Esi\Update\ServerStatus;
 use Seat\Console\Commands\EsiJobMakeCommand;
@@ -73,6 +74,7 @@ class ConsoleServiceProvider extends ServiceProvider
             PublicInfo::class,
             Dispatch::class,
             ServerStatus::class,
+            EsiStatus::class,
         ]);
     }
 
