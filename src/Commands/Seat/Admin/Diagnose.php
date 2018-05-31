@@ -217,13 +217,12 @@ class Diagnose extends Command
 
         try {
 
-            if (config('database.redis.default.path') != null && config('database.redis.default.scheme') != null) {
+            if (config('database.redis.default.path') && config('database.redis.default.scheme')) {
                 $redis = new Client([
                     'scheme' => config('database.redis.default.scheme'),
                     'path'   => config('database.redis.default.path'),
                 ]);
-            }
-            else {
+            } else {
                 $redis = new Client([
                     'host' => config('database.redis.default.host'),
                     'port' => config('database.redis.default.port'),
