@@ -43,8 +43,6 @@ use Seat\Eveapi\Jobs\Corporation\Members;
 use Seat\Eveapi\Jobs\Corporation\MembersLimit;
 use Seat\Eveapi\Jobs\Corporation\MembersTitles;
 use Seat\Eveapi\Jobs\Corporation\MemberTracking;
-use Seat\Eveapi\Jobs\Corporation\OutpostDetails;
-use Seat\Eveapi\Jobs\Corporation\Outposts;
 use Seat\Eveapi\Jobs\Corporation\RoleHistories;
 use Seat\Eveapi\Jobs\Corporation\Roles;
 use Seat\Eveapi\Jobs\Corporation\Shareholders;
@@ -130,12 +128,8 @@ class CorporationTokenShouldUpdate extends BusCommand
         MembersLimit::dispatch($this->token)->onQueue($this->queue);
         MemberTracking::dispatch($this->token)->onQueue($this->queue);
 
-        Outposts::withChain([
-            new OutpostDetails($this->token),
-        ])->dispatch($this->token)->onQueue($this->queue);
-
         Roles::withChain([
-                new RoleHistories($this->token), ]
+                new RoleHistories($this->token),]
         )->dispatch($this->token)->onQueue($this->queue);
 
         Shareholders::dispatch($this->token)->onQueue($this->queue);
