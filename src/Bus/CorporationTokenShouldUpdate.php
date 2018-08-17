@@ -28,6 +28,7 @@ use Seat\Eveapi\Jobs\Assets\Corporation\Names;
 use Seat\Eveapi\Jobs\Bookmarks\Corporation\Bookmarks;
 use Seat\Eveapi\Jobs\Bookmarks\Corporation\Folders;
 use Seat\Eveapi\Jobs\Contacts\Corporation\Contacts;
+use Seat\Eveapi\Jobs\Contacts\Corporation\Labels;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Bids;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Contracts;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Items;
@@ -110,7 +111,9 @@ class CorporationTokenShouldUpdate extends BusCommand
             new Folders($this->token),
         ])->dispatch($this->token)->onQueue($this->queue);
 
-        Contacts::dispatch($this->token)->onQueue($this->queue);
+        Contacts::withChain([
+            new Labels($this->token),
+        ])->dispatch($this->token)->onQueue($this->queue);
 
         Contracts::withChain([
             new Items($this->token), new Bids($this->token),
