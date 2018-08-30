@@ -28,6 +28,7 @@ use Seat\Eveapi\Jobs\Assets\Corporation\Names;
 use Seat\Eveapi\Jobs\Bookmarks\Corporation\Bookmarks;
 use Seat\Eveapi\Jobs\Bookmarks\Corporation\Folders;
 use Seat\Eveapi\Jobs\Contacts\Corporation\Contacts;
+use Seat\Eveapi\Jobs\Contacts\Corporation\Labels;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Bids;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Contracts;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Items;
@@ -43,8 +44,6 @@ use Seat\Eveapi\Jobs\Corporation\Members;
 use Seat\Eveapi\Jobs\Corporation\MembersLimit;
 use Seat\Eveapi\Jobs\Corporation\MembersTitles;
 use Seat\Eveapi\Jobs\Corporation\MemberTracking;
-use Seat\Eveapi\Jobs\Corporation\OutpostDetails;
-use Seat\Eveapi\Jobs\Corporation\Outposts;
 use Seat\Eveapi\Jobs\Corporation\RoleHistories;
 use Seat\Eveapi\Jobs\Corporation\Roles;
 use Seat\Eveapi\Jobs\Corporation\Shareholders;
@@ -60,6 +59,8 @@ use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Observers;
 use Seat\Eveapi\Jobs\Killmails\Corporation\Detail;
 use Seat\Eveapi\Jobs\Killmails\Corporation\Recent;
 use Seat\Eveapi\Jobs\Market\Corporation\Orders;
+use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOfficeLocations;
+use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOffices;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Balances;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Journals;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Transactions;
@@ -110,7 +111,9 @@ class CorporationTokenShouldUpdate extends BusCommand
             new Folders($this->token),
         ])->dispatch($this->token)->onQueue($this->queue);
 
-        Contacts::dispatch($this->token)->onQueue($this->queue);
+        Contacts::withChain([
+            new Labels($this->token),
+        ])->dispatch($this->token)->onQueue($this->queue);
 
         Contracts::withChain([
             new Items($this->token), new Bids($this->token),
@@ -128,10 +131,6 @@ class CorporationTokenShouldUpdate extends BusCommand
         MembersLimit::dispatch($this->token)->onQueue($this->queue);
         MemberTracking::dispatch($this->token)->onQueue($this->queue);
 
-        Outposts::withChain([
-            new OutpostDetails($this->token),
-        ])->dispatch($this->token)->onQueue($this->queue);
-
         Roles::withChain([
                 new RoleHistories($this->token), ]
         )->dispatch($this->token)->onQueue($this->queue);
@@ -144,6 +143,10 @@ class CorporationTokenShouldUpdate extends BusCommand
         ])->dispatch($this->token)->onQueue($this->queue);
 
         Structures::dispatch($this->token)->onQueue($this->queue);
+
+        CustomsOffices::withChain([
+            new CustomsOfficeLocations($this->token),
+        ])->dispatch($this->token)->onQueue($this->queue);
 
         Titles::withChain([
             new MembersTitles($this->token),

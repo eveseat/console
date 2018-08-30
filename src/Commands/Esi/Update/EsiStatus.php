@@ -23,27 +23,28 @@
 namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
-use Seat\Eveapi\Jobs\Status\Status;
+use Seat\Eveapi\Jobs\Status\Esi;
 
 /**
- * Class ServerStatus.
+ * Class EsiStatus.
  * @package Seat\Console\Commands\Esi\Update
  */
-class ServerStatus extends Command
+class EsiStatus extends Command
 {
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'esi:update:serverstatus';
+    protected $signature = 'esi:update:esistatus';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Schedule updater jobs for the EVE server status';
+    protected $description = 'Schedule updater jobs for the ESI status';
 
     /**
      * Execute the console command.
@@ -51,6 +52,6 @@ class ServerStatus extends Command
     public function handle()
     {
 
-        Status::dispatch()->onQueue('high');
+        Esi::dispatch()->onQueue('high');
     }
 }

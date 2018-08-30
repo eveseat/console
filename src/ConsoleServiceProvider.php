@@ -27,6 +27,7 @@ use Seat\Console\Commands\Esi\Dispatch;
 use Seat\Console\Commands\Esi\Ping;
 use Seat\Console\Commands\Esi\Update\Characters as CharactersUpdater;
 use Seat\Console\Commands\Esi\Update\Corporations as CorporationsUpdater;
+use Seat\Console\Commands\Esi\Update\EsiStatus;
 use Seat\Console\Commands\Esi\Update\PublicInfo;
 use Seat\Console\Commands\Esi\Update\ServerStatus;
 use Seat\Console\Commands\EsiJobMakeCommand;
@@ -34,6 +35,7 @@ use Seat\Console\Commands\Eve\Sde;
 use Seat\Console\Commands\Seat\Admin\Diagnose;
 use Seat\Console\Commands\Seat\Admin\Email;
 use Seat\Console\Commands\Seat\Admin\Login;
+use Seat\Console\Commands\Seat\Admin\Maintenance;
 use Seat\Console\Commands\Seat\Cache\Clear;
 use Seat\Console\Commands\Seat\Queue\Status;
 use Seat\Console\Commands\Seat\Version;
@@ -62,6 +64,7 @@ class ConsoleServiceProvider extends ServiceProvider
             Clear::class,
             Version::class,
             Status::class,
+            Maintenance::class,
 
             // Dev
             EsiJobMakeCommand::class,
@@ -73,6 +76,7 @@ class ConsoleServiceProvider extends ServiceProvider
             PublicInfo::class,
             Dispatch::class,
             ServerStatus::class,
+            EsiStatus::class,
         ]);
     }
 
