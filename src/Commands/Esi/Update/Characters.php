@@ -56,7 +56,7 @@ class Characters extends Command
             ->each(function ($token) {
 
                 // Fire the class that handles the collection of jobs to run.
-                (new CharacterTokenShouldUpdate($token, 'default'))->fire();
+                (new CharacterTokenShouldUpdate($token, 'characters'))->fire();
             });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
