@@ -97,7 +97,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
      *
      * @return int|null
      */
-    public static function getAuthorEveCharacterID(): ?int
+    public function getAuthorEveCharacterID(): ?int
     {
         return 1477919642;
     }
@@ -107,7 +107,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
      *
      * @return string
      */
-    public static function getAuthorName(): string
+    public function getAuthorName(): string
     {
         return 'qu1ckkkk';
     }
@@ -117,7 +117,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
      *
      * @return string|null
      */
-    public static function getAuthorMailAddress(): ?string
+    public function getAuthorMailAddress(): ?string
     {
         return 'theninjabag@gmail.com';
     }
@@ -127,7 +127,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
      *
      * @return string|null
      */
-    public static function getAuthorSlackNickname(): ?string
+    public function getAuthorSlackNickname(): ?string
     {
         return 'qu1ckkkk';
     }
@@ -137,7 +137,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
      *
      * @return string
      */
-    public static function getName(): string
+    public function getName(): string
     {
         return 'SeAT Console';
     }
@@ -147,7 +147,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
      *
      * @return string
      */
-    public static function getPackageRepositoryUrl(): string
+    public function getPackageRepositoryUrl(): string
     {
         return 'https://github.com/eveseat/console';
     }
@@ -157,7 +157,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
      *
      * @return string
      */
-    public static function getPackagistPackageName(): string
+    public function getPackagistPackageName(): string
     {
         return 'console';
     }
@@ -167,7 +167,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
      *
      * @return string
      */
-    public static function getPackagistVendorName(): string
+    public function getPackagistVendorName(): string
     {
         return 'eveseat';
     }
@@ -177,7 +177,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
      *
      * @return string
      */
-    public static function getVersion(): string
+    public function getVersion(): string
     {
         return config('console.config.version');
     }
