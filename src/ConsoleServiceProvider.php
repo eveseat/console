@@ -22,7 +22,6 @@
 
 namespace Seat\Console;
 
-use Illuminate\Support\ServiceProvider;
 use Seat\Console\Commands\Esi\Dispatch;
 use Seat\Console\Commands\Esi\Ping;
 use Seat\Console\Commands\Esi\Update\Characters as CharactersUpdater;
@@ -39,8 +38,9 @@ use Seat\Console\Commands\Seat\Admin\Maintenance;
 use Seat\Console\Commands\Seat\Cache\Clear;
 use Seat\Console\Commands\Seat\Queue\Status;
 use Seat\Console\Commands\Seat\Version;
+use Seat\Services\AbstractSeatPlugin;
 
-class ConsoleServiceProvider extends ServiceProvider
+class ConsoleServiceProvider extends AbstractSeatPlugin
 {
     /**
      * Bootstrap the application services.
@@ -90,5 +90,55 @@ class ConsoleServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom(
             __DIR__ . '/Config/console.config.php', 'console.config');
+    }
+
+    /**
+     * Return the plugin public name as it should be displayed into settings.
+     *
+     * @return string
+     */
+    public function getName(): string
+    {
+        return 'SeAT Console';
+    }
+
+    /**
+     * Return the plugin repository address.
+     *
+     * @return string
+     */
+    public function getPackageRepositoryUrl(): string
+    {
+        return 'https://github.com/eveseat/console';
+    }
+
+    /**
+     * Return the plugin technical name as published on package manager.
+     *
+     * @return string
+     */
+    public function getPackagistPackageName(): string
+    {
+        return 'console';
+    }
+
+    /**
+     * Return the plugin vendor tag as published on package manager.
+     *
+     * @return string
+     */
+    public function getPackagistVendorName(): string
+    {
+        return 'eveseat';
+    }
+
+    /**
+     * Return the plugin installed version.
+     *
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return config('console.config.version');
     }
 }
