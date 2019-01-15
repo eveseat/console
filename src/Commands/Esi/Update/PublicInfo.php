@@ -26,7 +26,7 @@ use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Alliances\Alliances;
 use Seat\Eveapi\Jobs\Alliances\Members;
 use Seat\Eveapi\Jobs\Character\Affiliation;
-use Seat\Eveapi\Jobs\Character\Info;
+use Seat\Eveapi\Jobs\Character\PublicInfo as PublicInfoJob;
 use Seat\Eveapi\Jobs\Market\Prices;
 use Seat\Eveapi\Jobs\Sovereignty\Map;
 use Seat\Eveapi\Jobs\Sovereignty\Structures;
@@ -64,6 +64,6 @@ class PublicInfo extends Command
         Affiliation::withChain([new Names])->dispatch();
         Alliances::withChain([new Members])->dispatch();
         Prices::dispatch();
-        Info::dispatch();
+        PublicInfoJob::dispatch();
     }
 }
