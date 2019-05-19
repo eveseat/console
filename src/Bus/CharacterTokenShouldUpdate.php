@@ -23,6 +23,7 @@
 namespace Seat\Console\Bus;
 
 use Seat\Eveapi\Jobs\Assets\Character\Assets;
+use Seat\Eveapi\Jobs\Assets\Character\Locations;
 use Seat\Eveapi\Jobs\Assets\Character\Names;
 use Seat\Eveapi\Jobs\Bookmarks\Character\Bookmarks;
 use Seat\Eveapi\Jobs\Bookmarks\Character\Folders;
@@ -110,7 +111,7 @@ class CharacterTokenShouldUpdate extends BusCommand
 
         // Assets
         Assets::withChain([
-            new Location($this->token), new Names($this->token),
+            new Locations($this->token), new Names($this->token),
         ])->dispatch($this->token)->onQueue($this->queue);
 
         // Bookmarks
