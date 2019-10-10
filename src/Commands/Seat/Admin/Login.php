@@ -24,6 +24,7 @@ namespace Seat\Console\Commands\Seat\Admin;
 
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Str;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 use Seat\Services\Repositories\Configuration\UserRespository;
@@ -114,7 +115,7 @@ class Login extends Command
         }
 
         $this->line('Generating authentication token');
-        $token = str_random(32);
+        $token = Str::random(32);
         cache(['admin_login_token' => $token], 60);
 
         $this->line('');
