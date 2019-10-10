@@ -27,6 +27,7 @@ use DB;
 use Exception;
 use File;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 use Predis\Client;
 use Seat\Eseye\Cache\NullCache;
 use Seat\Eseye\Configuration;
@@ -213,7 +214,7 @@ class Diagnose extends Command
             ['Database', config('database.redis.default.database')],
         ]);
 
-        $test_key = str_random(64);
+        $test_key = Str::random(64);
 
         try {
 
