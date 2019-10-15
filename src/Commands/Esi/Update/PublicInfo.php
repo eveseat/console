@@ -28,6 +28,7 @@ use Seat\Eveapi\Jobs\Alliances\Members;
 use Seat\Eveapi\Jobs\Character\Affiliation;
 use Seat\Eveapi\Jobs\Character\PublicCorporationHistory;
 use Seat\Eveapi\Jobs\Character\PublicInfo as PublicInfoJob;
+use Seat\Eveapi\Jobs\Fittings\Insurances;
 use Seat\Eveapi\Jobs\Market\Prices;
 use Seat\Eveapi\Jobs\Sovereignty\Map;
 use Seat\Eveapi\Jobs\Sovereignty\Structures;
@@ -65,6 +66,7 @@ class PublicInfo extends Command
         Affiliation::withChain([new Names])->dispatch();
         Alliances::withChain([new Members])->dispatch();
         Prices::dispatch();
+        Insurances::dispatch();
         PublicCorporationHistory::dispatch();
         PublicInfoJob::dispatch();
     }
