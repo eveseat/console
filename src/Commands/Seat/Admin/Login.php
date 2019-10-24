@@ -100,15 +100,15 @@ class Login extends Command
         $this->line('Checking if the Superuser role has the superuser permission');
         $role_permissions = $this->getCompleteRole($role->id)->permissions;
 
-        if (! $role_permissions->contains('superuser')) {
+        if (! $role_permissions->contains('global.superuser')) {
 
             $this->comment('Adding the superuser permission to the role');
-            $this->giveRolePermission($role->id, 'superuser', false);
+            $this->giveRolePermission($role->id, 'global.superuser', false);
         }
 
         $this->line('Checking if \'admin\' is a super user');
 
-        if (! $admin->has('superuser')) {
+        if (! $admin->has('global.superuser')) {
 
             $this->comment('Adding \'admin\' to the Superuser role');
             $this->giveGroupRole($admin->group->id, $role->id);
