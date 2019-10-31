@@ -56,10 +56,9 @@ use Seat\Eveapi\Jobs\Killmails\Character\Recent;
 use Seat\Eveapi\Jobs\Location\Character\Location;
 use Seat\Eveapi\Jobs\Location\Character\Online;
 use Seat\Eveapi\Jobs\Location\Character\Ship;
-use Seat\Eveapi\Jobs\Mail\Bodies;
-use Seat\Eveapi\Jobs\Mail\Headers;
 use Seat\Eveapi\Jobs\Mail\Labels;
 use Seat\Eveapi\Jobs\Mail\MailingLists;
+use Seat\Eveapi\Jobs\Mail\Mails;
 use Seat\Eveapi\Jobs\Market\Character\Orders;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\PlanetDetail;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\Planets;
@@ -170,8 +169,8 @@ class CharacterTokenShouldUpdate extends BusCommand
         Ship::dispatch($this->token)->onQueue($this->queue);
 
         // Mail
-        Headers::withChain([
-            new Bodies($this->token), new Labels($this->token),
+        Mails::withChain([
+            new Labels($this->token),
         ])->dispatch($this->token)->onQueue($this->queue);
         MailingLists::dispatch($this->token)->onQueue($this->queue);
 
