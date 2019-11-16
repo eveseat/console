@@ -30,7 +30,6 @@ use Seat\Services\Jobs\Analytics;
 use Seat\Services\Repositories\Configuration\UserRespository;
 use Seat\Web\Acl\AccessManager;
 use Seat\Web\Models\Acl\Role;
-use Seat\Web\Models\Group;
 use Seat\Web\Models\User;
 
 class Login extends Command
@@ -80,11 +79,10 @@ class Login extends Command
             $this->warn('User \'admin\' does not exist. It will be created.');
 
             $admin->fill([
-                'name'                 => 'admin',
-                'character_owner_hash' => 'none',
+                'name'              => 'admin',
+                'main_character_id' => 0,
             ]);
             $admin->id = 1; // Needed as id is not fillable
-            $admin->group_id = Group::create()->id;
             $admin->save();
         }
 
@@ -111,7 +109,7 @@ class Login extends Command
         if (! $admin->has('global.superuser')) {
 
             $this->comment('Adding \'admin\' to the Superuser role');
-            $this->giveGroupRole($admin->group->id, $role->id);
+            $this->giveUserRole($admin->id, $role->id);
         }
 
         $this->line('Generating authentication token');
