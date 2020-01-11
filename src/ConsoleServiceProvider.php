@@ -76,6 +76,9 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
             CharactersUpdater::class,
             CorporationsUpdater::class,
             PublicInfo::class,
+            Alliances::class,
+            Contracts::class,
+            Killmails::class,
             Dispatch::class,
             EsiStatus::class,
         ]);
