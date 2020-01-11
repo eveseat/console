@@ -64,7 +64,7 @@ class Killmails extends Command
         // if we don't have any kills registered -> queue character and corporation jobs to collect them
         if ($killmails->get()->each(function ($killmail) {
             Detail::dispatch($killmail->killmail_id, $killmail->killmail_hash);
-        })->isEmpty() && empty ($killmail_ids)) {
+        })->isEmpty() && empty($killmail_ids)) {
             RefreshToken::with('character', 'affiliation', 'character.corporation_roles')->get()->each(function ($token) {
                 RecentCharacterKills::dispatch($token);
 

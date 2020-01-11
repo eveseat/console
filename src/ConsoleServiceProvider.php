@@ -29,10 +29,9 @@ use Seat\Console\Commands\Esi\Update\Alliances;
 use Seat\Console\Commands\Esi\Update\Characters as CharactersUpdater;
 use Seat\Console\Commands\Esi\Update\Contracts;
 use Seat\Console\Commands\Esi\Update\Corporations as CorporationsUpdater;
-use Seat\Console\Commands\Esi\Update\Status as EsiStatus;
-use Seat\Console\Commands\Server\Update\Status as ServerStatus;
 use Seat\Console\Commands\Esi\Update\Killmails;
 use Seat\Console\Commands\Esi\Update\PublicInfo;
+use Seat\Console\Commands\Esi\Update\Status as EsiStatus;
 use Seat\Console\Commands\EsiJobMakeCommand;
 use Seat\Console\Commands\Eve\Sde;
 use Seat\Console\Commands\Seat\Admin\Diagnose;
@@ -41,6 +40,7 @@ use Seat\Console\Commands\Seat\Admin\Login;
 use Seat\Console\Commands\Seat\Admin\Maintenance;
 use Seat\Console\Commands\Seat\Cache\Clear;
 use Seat\Console\Commands\Seat\Version;
+use Seat\Console\Commands\Server\Update\Status as ServerStatus;
 
 class ConsoleServiceProvider extends AbstractSeatPlugin
 {
