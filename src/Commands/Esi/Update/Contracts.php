@@ -29,8 +29,8 @@ use Seat\Eveapi\Jobs\Contracts\Character\Items as CharacterItems;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Bids as CorporationBids;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Contracts as CorporationContracts;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Items as CorporationItems;
-use Seat\Eveapi\Models\Contracts\CorporationContract;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
+use Seat\Eveapi\Models\Contracts\CorporationContract;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
