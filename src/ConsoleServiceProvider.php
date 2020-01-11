@@ -25,11 +25,14 @@ namespace Seat\Console;
 use App\Providers\AbstractSeatPlugin;
 use Seat\Console\Commands\Esi\Dispatch;
 use Seat\Console\Commands\Esi\Ping;
+use Seat\Console\Commands\Esi\Update\Alliances;
 use Seat\Console\Commands\Esi\Update\Characters as CharactersUpdater;
+use Seat\Console\Commands\Esi\Update\Contracts;
 use Seat\Console\Commands\Esi\Update\Corporations as CorporationsUpdater;
-use Seat\Console\Commands\Esi\Update\EsiStatus;
+use Seat\Console\Commands\Esi\Update\Status as EsiStatus;
+use Seat\Console\Commands\Server\Update\Status as ServerStatus;
+use Seat\Console\Commands\Esi\Update\Killmails;
 use Seat\Console\Commands\Esi\Update\PublicInfo;
-use Seat\Console\Commands\Esi\Update\ServerStatus;
 use Seat\Console\Commands\EsiJobMakeCommand;
 use Seat\Console\Commands\Eve\Sde;
 use Seat\Console\Commands\Seat\Admin\Diagnose;
@@ -37,7 +40,6 @@ use Seat\Console\Commands\Seat\Admin\Email;
 use Seat\Console\Commands\Seat\Admin\Login;
 use Seat\Console\Commands\Seat\Admin\Maintenance;
 use Seat\Console\Commands\Seat\Cache\Clear;
-use Seat\Console\Commands\Seat\Queue\Status;
 use Seat\Console\Commands\Seat\Version;
 
 class ConsoleServiceProvider extends AbstractSeatPlugin
@@ -63,7 +65,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
             Login::class,
             Clear::class,
             Version::class,
-            Status::class,
+            ServerStatus::class,
             Maintenance::class,
 
             // Dev
@@ -75,7 +77,6 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
             CorporationsUpdater::class,
             PublicInfo::class,
             Dispatch::class,
-            ServerStatus::class,
             EsiStatus::class,
         ]);
     }
