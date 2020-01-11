@@ -127,7 +127,7 @@ class CorporationTokenShouldUpdate extends BusCommand
         MemberTracking::dispatch($this->corporation_id, $this->token);
 
         Roles::withChain([
-                new RoleHistories($this->corporation_id, $this->token), ]
+            new RoleHistories($this->corporation_id, $this->token), ]
         )->dispatch($this->corporation_id, $this->token);
 
         Shareholders::dispatch($this->corporation_id, $this->token);
