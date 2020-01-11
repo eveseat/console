@@ -29,9 +29,7 @@ use Seat\Eveapi\Jobs\Bookmarks\Corporation\Bookmarks;
 use Seat\Eveapi\Jobs\Bookmarks\Corporation\Folders;
 use Seat\Eveapi\Jobs\Contacts\Corporation\Contacts;
 use Seat\Eveapi\Jobs\Contacts\Corporation\Labels;
-use Seat\Eveapi\Jobs\Contracts\Corporation\Bids;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Contracts;
-use Seat\Eveapi\Jobs\Contracts\Corporation\Items;
 use Seat\Eveapi\Jobs\Corporation\AllianceHistory;
 use Seat\Eveapi\Jobs\Corporation\Blueprints;
 use Seat\Eveapi\Jobs\Corporation\ContainerLogs;
@@ -56,7 +54,6 @@ use Seat\Eveapi\Jobs\Industry\Corporation\Jobs;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Extractions;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\ObserverDetails;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Observers;
-use Seat\Eveapi\Jobs\Killmails\Corporation\Detail;
 use Seat\Eveapi\Jobs\Killmails\Corporation\Recent;
 use Seat\Eveapi\Jobs\Market\Corporation\Orders;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOfficeLocations;
@@ -73,26 +70,26 @@ use Seat\Eveapi\Models\RefreshToken;
 class CorporationTokenShouldUpdate extends BusCommand
 {
     /**
+     * @var int
+     */
+    private $corporation_id;
+
+    /**
      * @var \Seat\Eveapi\Models\RefreshToken
      */
     private $token;
 
     /**
-     * @var string
-     */
-    private $queue;
-
-    /**
      * CorporationCharacterShouldUpdate constructor.
      *
+     * @param int $corporation_id
      * @param \Seat\Eveapi\Models\RefreshToken $token
-     * @param string                           $queue
      */
-    public function __construct(RefreshToken $token, string $queue = 'default')
+    public function __construct(int $corporation_id, RefreshToken $token)
     {
 
+        $this->corporation_id = $corporation_id;
         $this->token = $token;
-        $this->queue = $queue;
     }
 
     /**
@@ -104,69 +101,65 @@ class CorporationTokenShouldUpdate extends BusCommand
     {
 
         Assets::withChain([
-            new Locations($this->token), new Names($this->token),
-        ])->dispatch($this->token)->onQueue($this->queue);
+            new Locations($this->corporation_id, $this->token), new Names($this->corporation_id, $this->token),
+        ])->dispatch($this->corporation_id, $this->token);
 
         Bookmarks::withChain([
-            new Folders($this->token),
-        ])->dispatch($this->token)->onQueue($this->queue);
+            new Folders($this->corporation_id, $this->token),
+        ])->dispatch($this->corporation_id, $this->token);
 
         Contacts::withChain([
-            new Labels($this->token),
-        ])->dispatch($this->token)->onQueue($this->queue);
+            new Labels($this->corporation_id, $this->token),
+        ])->dispatch($this->corporation_id, $this->token);
 
-        Contracts::withChain([
-            new Items($this->token), new Bids($this->token),
-        ])->dispatch($this->token)->onQueue($this->queue);
+        Contracts::dispatch($this->corporation_id, $this->token);
 
-        Info::dispatch($this->token)->onQueue($this->queue);
-        AllianceHistory::dispatch($this->token)->onQueue($this->queue);
-        Blueprints::dispatch($this->token)->onQueue($this->queue);
-        ContainerLogs::dispatch($this->token)->onQueue($this->queue);
-        Divisions::dispatch($this->token)->onQueue($this->queue);
-        Facilities::dispatch($this->token)->onQueue($this->queue);
-        IssuedMedals::dispatch($this->token)->onQueue($this->queue);
-        Medals::dispatch($this->token)->onQueue($this->queue);
-        Members::dispatch($this->token)->onQueue($this->queue);
-        MembersLimit::dispatch($this->token)->onQueue($this->queue);
-        MemberTracking::dispatch($this->token)->onQueue($this->queue);
+        Info::dispatch($this->corporation_id);
+        AllianceHistory::dispatch($this->corporation_id);
+        Blueprints::dispatch($this->corporation_id, $this->token);
+        ContainerLogs::dispatch($this->corporation_id, $this->token);
+        Divisions::dispatch($this->corporation_id, $this->token);
+        Facilities::dispatch($this->corporation_id, $this->token);
+        IssuedMedals::dispatch($this->corporation_id, $this->token);
+        Medals::dispatch($this->corporation_id, $this->token);
+        Members::dispatch($this->corporation_id, $this->token);
+        MembersLimit::dispatch($this->corporation_id, $this->token);
+        MemberTracking::dispatch($this->corporation_id, $this->token);
 
         Roles::withChain([
-                new RoleHistories($this->token), ]
-        )->dispatch($this->token)->onQueue($this->queue);
+                new RoleHistories($this->corporation_id, $this->token), ]
+        )->dispatch($this->corporation_id, $this->token);
 
-        Shareholders::dispatch($this->token)->onQueue($this->queue);
-        Standings::dispatch($this->token)->onQueue($this->queue);
+        Shareholders::dispatch($this->corporation_id, $this->token);
+        Standings::dispatch($this->corporation_id, $this->token);
 
         Starbases::withChain([
-            new StarbaseDetails($this->token),
-        ])->dispatch($this->token)->onQueue($this->queue);
+            new StarbaseDetails($this->corporation_id, $this->token),
+        ])->dispatch($this->corporation_id, $this->token);
 
-        Structures::dispatch($this->token)->onQueue($this->queue);
+        Structures::dispatch($this->corporation_id, $this->token);
 
         CustomsOffices::withChain([
-            new CustomsOfficeLocations($this->token),
-        ])->dispatch($this->token)->onQueue($this->queue);
+            new CustomsOfficeLocations($this->corporation_id, $this->token),
+        ])->dispatch($this->corporation_id, $this->token);
 
         Titles::withChain([
-            new MembersTitles($this->token),
-        ])->dispatch($this->token)->onQueue($this->queue);
+            new MembersTitles($this->corporation_id, $this->token),
+        ])->dispatch($this->corporation_id, $this->token);
 
-        Jobs::dispatch($this->token)->onQueue($this->queue);
-        Extractions::dispatch($this->token)->onQueue($this->queue);
+        Jobs::dispatch($this->corporation_id, $this->token);
+        Extractions::dispatch($this->corporation_id, $this->token);
 
         Observers::withChain([
-            new ObserverDetails($this->token),
-        ])->dispatch($this->token)->onQueue($this->queue);
+            new ObserverDetails($this->corporation_id, $this->token),
+        ])->dispatch($this->corporation_id, $this->token);
 
-        Recent::withChain([
-            new Detail($this->token),
-        ])->dispatch($this->token)->onQueue($this->queue);
+        Recent::dispatch($this->corporation_id, $this->token);
 
-        Orders::dispatch($this->token)->onQueue($this->queue);
+        Orders::dispatch($this->corporation_id, $this->token);
 
-        Balances::dispatch($this->token)->onQueue($this->queue);
-        Journals::dispatch($this->token)->onQueue($this->queue);
-        Transactions::dispatch($this->token)->onQueue($this->queue);
+        Balances::dispatch($this->corporation_id, $this->token);
+        Journals::dispatch($this->corporation_id, $this->token);
+        Transactions::dispatch($this->corporation_id, $this->token);
     }
 }
