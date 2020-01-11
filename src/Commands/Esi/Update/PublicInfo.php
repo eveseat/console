@@ -24,16 +24,19 @@ namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Alliances\Alliances;
-use Seat\Eveapi\Jobs\Alliances\Members;
 use Seat\Eveapi\Jobs\Character\Affiliation;
-use Seat\Eveapi\Jobs\Character\PublicCorporationHistory;
-use Seat\Eveapi\Jobs\Character\PublicInfo as PublicInfoJob;
+use Seat\Eveapi\Jobs\Character\CorporationHistory;
+use Seat\Eveapi\Jobs\Character\Info as CharacterInfoJob;
+use Seat\Eveapi\Jobs\Corporation\AllianceHistory;
+use Seat\Eveapi\Jobs\Corporation\Info as CorporationInfoJob;
 use Seat\Eveapi\Jobs\Fittings\Insurances;
 use Seat\Eveapi\Jobs\Market\Prices;
 use Seat\Eveapi\Jobs\Sovereignty\Map;
 use Seat\Eveapi\Jobs\Sovereignty\Structures;
 use Seat\Eveapi\Jobs\Universe\Names;
 use Seat\Eveapi\Jobs\Universe\Stations;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Corporation\CorporationInfo;
 
 /**
  * Class PublicInfo.
@@ -64,10 +67,18 @@ class PublicInfo extends Command
         Map::dispatch();
         Structures::withChain([new Stations])->dispatch();
         Affiliation::withChain([new Names])->dispatch();
-        Alliances::withChain([new Members])->dispatch();
+        Alliances::dispatch();
         Prices::dispatch();
         Insurances::dispatch();
-        PublicCorporationHistory::dispatch();
-        PublicInfoJob::dispatch();
+
+        CharacterInfo::whereNotHave('refresh_token')->each(function ($character) {
+            CharacterInfoJob::dispatch($character->character_id);
+            CorporationHistory::dispatch($character->character_id);
+        });
+
+        CorporationInfo::all()->each(function ($corporation) {
+            CorporationInfoJob::dispatch($corporation->corporation_id);
+            AllianceHistory::dispatch($corporation->corporation_id);
+        });
     }
 }

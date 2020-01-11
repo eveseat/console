@@ -20,31 +20,30 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Console\Commands\Esi\Update;
+namespace Seat\Console\Commands\Server\Update;
 
 use Illuminate\Console\Command;
-use Seat\Eveapi\Jobs\Status\Esi;
+use Seat\Eveapi\Jobs\Status\Status as ServerStatusJob;
 
 /**
- * Class EsiStatus.
+ * Class ServerStatus.
  * @package Seat\Console\Commands\Esi\Update
  */
-class EsiStatus extends Command
+class Status extends Command
 {
-
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'esi:update:esistatus';
+    protected $signature = 'server:update:status';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Schedule updater jobs for the ESI status';
+    protected $description = 'Schedule updater jobs for the EVE server status';
 
     /**
      * Execute the console command.
@@ -52,6 +51,6 @@ class EsiStatus extends Command
     public function handle()
     {
 
-        Esi::dispatch()->onQueue('high');
+        ServerStatusJob::dispatch()->onQueue('high');
     }
 }
