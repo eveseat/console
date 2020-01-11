@@ -29,7 +29,7 @@ use Seat\Eveapi\Jobs\Status\Esi;
  * Class EsiStatus.
  * @package Seat\Console\Commands\Esi\Update
  */
-class EsiStatus extends Command
+class Status extends Command
 {
 
     /**
@@ -37,7 +37,7 @@ class EsiStatus extends Command
      *
      * @var string
      */
-    protected $signature = 'esi:update:esistatus';
+    protected $signature = 'esi:update:status';
 
     /**
      * The console command description.
