@@ -121,10 +121,10 @@ class Login extends Command
         $this->line(route('auth.admin.login', ['token' => $token]));
 
         // Analytics
-        $this->dispatch((new Analytics((new AnalyticsContainer)
+        $this->dispatch(new Analytics((new AnalyticsContainer)
             ->set('type', 'event')
             ->set('ec', 'admin')
             ->set('ea', 'password_reset')
-            ->set('el', 'console'))));
+            ->set('el', 'console')));
     }
 }
