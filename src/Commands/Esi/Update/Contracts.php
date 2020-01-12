@@ -96,7 +96,7 @@ class Contracts extends Command
         $corporation_contracts->get()->each(function ($contract) {
             if ($contract->detail->status != 'deleted') {
 
-                $token = RefreshToken::with('affiliation')->whereHas('character.corporation_roles', function ($query) {
+                $token = RefreshToken::with('character.affiliation')->whereHas('character.corporation_roles', function ($query) {
                     $query->where('role', 'Director');
                 })->whereHas('character.affiliation', function ($query) use ($contract) {
                     $query->where('corporation_id', $contract->corporation_id);
