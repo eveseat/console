@@ -208,13 +208,12 @@ class Sde extends Command
         $this->line('SDE Update Command Complete');
 
         // Analytics
-        dispatch((new Analytics((new AnalyticsContainer)
+        dispatch(new Analytics((new AnalyticsContainer)
             ->set('type', 'event')
             ->set('ec', 'queues')
             ->set('ea', 'update_sde')
             ->set('el', 'console')
-            ->set('ev', $this->json->version)))
-            ->onQueue('medium'));
+            ->set('ev', $this->json->version)));
 
     }
 
