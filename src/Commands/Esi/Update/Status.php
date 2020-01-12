@@ -26,7 +26,8 @@ use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Status\Esi;
 
 /**
- * Class EsiStatus.
+ * Class Status.
+ *
  * @package Seat\Console\Commands\Esi\Update
  */
 class Status extends Command
