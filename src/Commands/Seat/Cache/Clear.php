@@ -85,12 +85,11 @@ class Clear extends Command
         }
 
         // Analytics
-        dispatch((new Analytics((new AnalyticsContainer)
+        dispatch(new Analytics((new AnalyticsContainer)
             ->set('type', 'event')
             ->set('ec', 'admin')
             ->set('ea', 'cache_clear')
-            ->set('el', 'console')))
-            ->onQueue('medium'));
+            ->set('el', 'console')));
 
     }
 
