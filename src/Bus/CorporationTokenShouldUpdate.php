@@ -58,6 +58,7 @@ use Seat\Eveapi\Jobs\Killmails\Corporation\Recent;
 use Seat\Eveapi\Jobs\Market\Corporation\Orders;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOfficeLocations;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOffices;
+use Seat\Eveapi\Jobs\Universe\CorporationStructures;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Balances;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Journals;
 use Seat\Eveapi\Jobs\Wallet\Corporation\Transactions;
@@ -138,6 +139,7 @@ class CorporationTokenShouldUpdate extends BusCommand
         ])->dispatch($this->corporation_id, $this->token);
 
         Structures::dispatch($this->corporation_id, $this->token);
+        CorporationStructures::dispatch($this->corporation_id, $this->token);
 
         CustomsOffices::withChain([
             new CustomsOfficeLocations($this->corporation_id, $this->token),
