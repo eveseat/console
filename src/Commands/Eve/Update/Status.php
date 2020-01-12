@@ -20,14 +20,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Console\Commands\Server\Update;
+namespace Seat\Console\Commands\Eve\Update;
 
 use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Status\Status as ServerStatusJob;
 
 /**
- * Class ServerStatus.
- * @package Seat\Console\Commands\Esi\Update
+ * Class Status.
+ *
+ * @package Seat\Console\Commands\Eve\Update
  */
 class Status extends Command
 {
@@ -36,7 +37,7 @@ class Status extends Command
      *
      * @var string
      */
-    protected $signature = 'server:update:status';
+    protected $signature = 'eve:update:status';
 
     /**
      * The console command description.
