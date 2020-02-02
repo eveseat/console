@@ -27,6 +27,11 @@ use Seat\Eseye\Cache\NullCache;
 use Seat\Eseye\Configuration;
 use Seat\Eseye\Exceptions\RequestFailedException;
 
+/**
+ * Class Ping.
+ *
+ * @package Seat\Console\Commands\Esi
+ */
 class Ping extends Command
 {
     /**

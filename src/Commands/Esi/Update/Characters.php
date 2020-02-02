@@ -26,6 +26,11 @@ use Illuminate\Console\Command;
 use Seat\Console\Bus\CharacterTokenShouldUpdate;
 use Seat\Eveapi\Models\RefreshToken;
 
+/**
+ * Class Characters.
+ *
+ * @package Seat\Console\Commands\Esi\Update
+ */
 class Characters extends Command
 {
     /**
