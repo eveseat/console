@@ -32,6 +32,11 @@ use Seat\Web\Acl\AccessManager;
 use Seat\Web\Models\Acl\Role;
 use Seat\Web\Models\User;
 
+/**
+ * Class Login.
+ *
+ * @package Seat\Console\Commands\Seat\Admin
+ */
 class Login extends Command
 {
 
