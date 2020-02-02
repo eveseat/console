@@ -36,7 +36,6 @@ use Seat\Eveapi\Jobs\Character\CorporationHistory;
 use Seat\Eveapi\Jobs\Character\Fatigue;
 use Seat\Eveapi\Jobs\Character\Info;
 use Seat\Eveapi\Jobs\Character\Medals;
-use Seat\Eveapi\Jobs\Character\Notifications;
 use Seat\Eveapi\Jobs\Character\Roles;
 use Seat\Eveapi\Jobs\Character\Standings;
 use Seat\Eveapi\Jobs\Character\Stats;
