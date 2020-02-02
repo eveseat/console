@@ -120,7 +120,6 @@ class CharacterTokenShouldUpdate extends BusCommand
         CorporationHistory::dispatch($this->token->character_id);
         Fatigue::dispatch($this->token);
         Medals::dispatch($this->token);
-        Notifications::dispatch($this->token);
         Roles::dispatch($this->token);
         Standings::dispatch($this->token);
         Stats::dispatch($this->token);
