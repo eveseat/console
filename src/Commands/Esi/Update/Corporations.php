@@ -26,6 +26,11 @@ use Illuminate\Console\Command;
 use Seat\Console\Bus\CorporationTokenShouldUpdate;
 use Seat\Eveapi\Models\RefreshToken;
 
+/**
+ * Class Corporations.
+ *
+ * @package Seat\Console\Commands\Esi\Update
+ */
 class Corporations extends Command
 {
     /**

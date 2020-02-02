@@ -25,6 +25,11 @@ namespace Seat\Console\Commands\Esi;
 use Illuminate\Console\Command;
 use Seat\Eveapi\Models\RefreshToken;
 
+/**
+ * Class Dispatch.
+ *
+ * @package Seat\Console\Commands\Esi
+ */
 class Dispatch extends Command
 {
     /**

@@ -23,45 +23,41 @@
 namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
-use Seat\Console\Bus\CharacterTokenShouldUpdate;
+use Seat\Eveapi\Jobs\Character\Notifications as NotificationsJob;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class Characters.
+ * Class Notifications.
  *
  * @package Seat\Console\Commands\Esi\Update
  */
-class Characters extends Command
+class Notifications extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'esi:update:characters {character_id? : Optional character_id to update}';
+    protected $signature = 'esi:update:notifications {character_id? : Optional character_id to update}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Schedule updater jobs for characters';
+    protected $description = 'Schedule updater job for character notifications';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-
         $tokens = RefreshToken::all()
             ->when($this->argument('character_id'), function ($tokens) {
-
                 return $tokens->where('character_id', $this->argument('character_id'));
             })
             ->each(function ($token) {
-
-                // Fire the class that handles the collection of jobs to run.
-                (new CharacterTokenShouldUpdate($token, 'default'))->fire();
+                NotificationsJob::dispatch($token);
             });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
