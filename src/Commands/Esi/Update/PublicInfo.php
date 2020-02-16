@@ -71,7 +71,7 @@ class PublicInfo extends Command
         Prices::dispatch();
         Insurances::dispatch();
 
-        CharacterInfo::whereNotHave('refresh_token')->each(function ($character) {
+        CharacterInfo::doesntHave('refresh_token')->each(function ($character) {
             CharacterInfoJob::dispatch($character->character_id);
             CorporationHistory::dispatch($character->character_id);
         });
