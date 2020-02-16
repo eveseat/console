@@ -23,6 +23,11 @@
 namespace Seat\Console\Commands\Esi;
 
 use Illuminate\Console\Command;
+use Seat\Eveapi\Jobs\AbstractAuthCharacterJob;
+use Seat\Eveapi\Jobs\AbstractAuthCorporationJob;
+use Seat\Eveapi\Jobs\AbstractCharacterJob;
+use Seat\Eveapi\Jobs\AbstractCorporationJob;
+use Seat\Eveapi\Jobs\EsiBase;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -37,7 +42,7 @@ class Dispatch extends Command
      *
      * @var string
      */
-    protected $signature = 'esi:job:dispatch {job_class} {character_id?}';
+    protected $signature = 'esi:job:dispatch {job_class} {--character_id=} {--corporation_id=}';
 
     /**
      * The console command description.
@@ -51,13 +56,60 @@ class Dispatch extends Command
      */
     public function handle()
     {
+        $job = $this->argument('job_class');
 
-        if (is_null($this->argument('character_id')))
-            $this->warn('No character id specified. Using null token.');
-        else
-            $refresh_token = RefreshToken::findOrFail($this->argument('character_id'));
+        if (! class_exists($job)) {
+            $this->error('Invalid job name - the class does not exist!');
+            return;
+        }
 
-        $this->argument('job_class')::dispatch($refresh_token ?? null);
+        switch (true) {
+            case is_subclass_of($job, AbstractAuthCharacterJob::class):
+                if (! $this->option('character_id')) {
+                    $this->error('Missing mandatory character_id for an authenticated character job!');
+                    return;
+                }
+
+                $refresh_token = RefreshToken::findOrFail($this->option('character_id'));
+                $job::dispatch($refresh_token);
+                break;
+            case is_subclass_of($job, AbstractAuthCorporationJob::class):
+                if (! $this->option('corporation_id')) {
+                    $this->error('Missing mandatory corporation_id for an authenticated corporation job!');
+                    return;
+                }
+
+                if (! $this->option('character_id')) {
+                    $this->error('Missing mandatory character_id for an authenticated corporation job!');
+                    return;
+                }
+
+                $refresh_token = RefreshToken::findOrFail($this->option('character_id'));
+                $job::dispatch($this->option('corporation_id'), $refresh_token);
+                break;
+            case is_subclass_of($job, AbstractCharacterJob::class):
+                if (! $this->option('character_id')) {
+                    $this->error('Missing mandatory character_id for an authenticated character job!');
+                    return;
+                }
+
+                $job::dispatch($this->option('character_id'));
+                break;
+            case is_subclass_of($job, AbstractCorporationJob::class):
+                if (! $this->option('corporation_id')) {
+                    $this->error('Missing mandatory corporation_id for an authenticated corporation job!');
+                    return;
+                }
+
+                $job::dispatch($this->option('corporation_id'));
+                break;
+            default:
+                if (! is_subclass_of($job, EsiBase::class))
+                    $this->warn('The job is not part of Esi stack.');
+
+                $job::dispatch();
+        }
+
         $this->info('Job dispatched!');
     }
 }
