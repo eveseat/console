@@ -34,7 +34,7 @@ use Seat\Console\Commands\Esi\Update\Notifications;
 use Seat\Console\Commands\Esi\Update\PublicInfo;
 use Seat\Console\Commands\Esi\Update\Status as EsiStatus;
 use Seat\Console\Commands\EsiJobMakeCommand;
-use Seat\Console\Commands\Eve\Sde;
+use Seat\Console\Commands\Eve\Update\Sde;
 use Seat\Console\Commands\Eve\Update\Status as ServerStatus;
 use Seat\Console\Commands\Seat\Admin\Diagnose;
 use Seat\Console\Commands\Seat\Admin\Email;
