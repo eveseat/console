@@ -20,7 +20,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace Seat\Console\Commands\Eve;
+namespace Seat\Console\Commands\Eve\Update;
 
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -32,8 +32,9 @@ use Seat\Services\Jobs\Analytics;
 use Seat\Services\Settings\Seat;
 
 /**
- * Class UpdateServerStatus.
- * @package Seat\Console\Commands
+ * Class Sde.
+ *
+ * @package Seat\Console\Commands\Eve\Update
  */
 class Sde extends Command
 {
