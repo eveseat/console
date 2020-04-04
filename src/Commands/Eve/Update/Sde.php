@@ -170,7 +170,11 @@ class Sde extends Command
             }
         }
 
-        //TODO: Allow for tables to be specified in config file
+        // add extra tables registered on behalf providers
+        $extra_tables = config('seat.sde.tables', []);
+
+        $this->json->tables = array_unique(array_merge($this->json->tables, $extra_tables));
+        sort($this->json->tables, SORT_STRING);
 
         // Show a final confirmation with some info on what
         // we are going to be doing.
@@ -179,11 +183,11 @@ class Sde extends Command
             implode(', ', $this->json->tables));
         $this->info('Download format will be: ' . $this->json->format);
         $this->line('');
-        $this->info('The SDE will be imported to mysql://' .
-            config('database.connections.mysql.username') . '@' .
-            config('database.connections.mysql.host') . ':' .
-            config('database.connections.mysql.port') . '/' .
-            config('database.connections.mysql.database'));
+        $this->info(sprintf('The SDE will be imported to mysql://%s@%s:%d/%s',
+            config('database.connections.mysql.username'),
+            config('database.connections.mysql.host'),
+            config('database.connections.mysql.port'),
+            config('database.connections.mysql.database')));
 
         if (! $this->confirm('Does the above look OK?', true)) {
 
