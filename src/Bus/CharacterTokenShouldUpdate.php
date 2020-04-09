@@ -56,7 +56,6 @@ use Seat\Eveapi\Jobs\Mail\Labels as MailLabels;
 use Seat\Eveapi\Jobs\Mail\MailingLists;
 use Seat\Eveapi\Jobs\Mail\Mails;
 use Seat\Eveapi\Jobs\Market\Character\Orders;
-use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\PlanetDetail;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Character\Planets;
 use Seat\Eveapi\Jobs\Skills\Character\Attributes;
 use Seat\Eveapi\Jobs\Skills\Character\Queue;
@@ -162,9 +161,7 @@ class CharacterTokenShouldUpdate extends BusCommand
         Orders::dispatch($this->token);
 
         // Planetary Interactions
-        Planets::withChain([
-            new PlanetDetail($this->token), ]
-        )->dispatch($this->token);
+        Planets::dispatch($this->token);
 
         // Skills
         Attributes::dispatch($this->token);
