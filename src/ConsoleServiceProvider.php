@@ -31,6 +31,7 @@ use Seat\Console\Commands\Esi\Update\Contracts;
 use Seat\Console\Commands\Esi\Update\Corporations as CorporationsUpdater;
 use Seat\Console\Commands\Esi\Update\Killmails;
 use Seat\Console\Commands\Esi\Update\Notifications;
+use Seat\Console\Commands\Esi\Update\Prices;
 use Seat\Console\Commands\Esi\Update\PublicInfo;
 use Seat\Console\Commands\Esi\Update\Status as EsiStatus;
 use Seat\Console\Commands\EsiJobMakeCommand;
@@ -78,6 +79,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
             Notifications::class,
             CorporationsUpdater::class,
             PublicInfo::class,
+            Prices::class,
             Alliances::class,
             Contracts::class,
             Killmails::class,
