@@ -25,6 +25,7 @@ namespace Seat\Console;
 use App\Providers\AbstractSeatPlugin;
 use Seat\Console\Commands\Esi\Dispatch;
 use Seat\Console\Commands\Esi\Ping;
+use Seat\Console\Commands\Esi\Update\Affiliations;
 use Seat\Console\Commands\Esi\Update\Alliances;
 use Seat\Console\Commands\Esi\Update\Characters as CharactersUpdater;
 use Seat\Console\Commands\Esi\Update\Contracts;
@@ -79,6 +80,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
             Notifications::class,
             CorporationsUpdater::class,
             PublicInfo::class,
+            Affiliations::class,
             Prices::class,
             Alliances::class,
             Contracts::class,
