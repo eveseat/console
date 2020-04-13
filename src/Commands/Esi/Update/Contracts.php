@@ -79,10 +79,10 @@ class Contracts extends Command
 
                 $token = RefreshToken::find($contract->character_id);
 
-                if ($contract->detail->type == 'auction')
+                if (! is_null($token) && $contract->detail->type == 'auction')
                     CharacterBids::dispatch($token, $contract->contract_id);
 
-                if ($contract->detail->type != 'courier' && $contract->volume > 0)
+                if (! is_null($token) && $contract->detail->type != 'courier' && $contract->volume > 0)
                     CharacterItems::dispatch($token, $contract->contract_id);
             }
         });
@@ -102,13 +102,11 @@ class Contracts extends Command
                     $query->where('corporation_id', $contract->corporation_id);
                 })->first();
 
-                if (! is_null($token)) {
-                    if ($contract->detail->type == 'auction')
-                        CorporationBids::dispatch($token->character->affiliation->corporation_id, $token, $contract->contract_id);
+                if (! is_null($token) && $contract->detail->type == 'auction')
+                    CorporationBids::dispatch($token->character->affiliation->corporation_id, $token, $contract->contract_id);
 
-                    if ($contract->detail->type != 'courier' && $contract->volume > 0)
-                        CorporationItems::dispatch($token->character->affiliation->corporation_id, $token, $contract->contract_id);
-                }
+                if (! is_null($token) && $contract->detail->type != 'courier' && $contract->volume > 0)
+                    CorporationItems::dispatch($token->character->affiliation->corporation_id, $token, $contract->contract_id);
             }
         });
 
