@@ -27,9 +27,6 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Str;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
-use Seat\Services\Repositories\Configuration\UserRespository;
-use Seat\Web\Acl\AccessManager;
-use Seat\Web\Models\Acl\Role;
 use Seat\Web\Models\User;
 
 /**
@@ -39,8 +36,7 @@ use Seat\Web\Models\User;
  */
 class Login extends Command
 {
-
-    use UserRespository, AccessManager, DispatchesJobs;
+    use DispatchesJobs;
 
     /**
      * The name and signature of the console command.
@@ -55,17 +51,6 @@ class Login extends Command
      * @var string
      */
     protected $description = 'Generate an administrative login URL.';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
@@ -86,35 +71,19 @@ class Login extends Command
             $admin->fill([
                 'name'              => 'admin',
                 'main_character_id' => 0,
+                'admin'             => true,
             ]);
             $admin->id = 1; // Needed as id is not fillable
             $admin->save();
         }
 
-        $this->line('Searching for the \'Superuser\' role');
-        $role = Role::where('title', 'Superuser')->first();
-
-        if (! $role) {
-
-            $this->comment('Creating the Superuser role');
-            $role = Role::create(['title' => 'Superuser']);
-        }
-
-        $this->line('Checking if the Superuser role has the superuser permission');
-        $role_permissions = $this->getCompleteRole($role->id)->permissions;
-
-        if (! $role_permissions->contains('global.superuser')) {
-
-            $this->comment('Adding the superuser permission to the role');
-            $this->giveRolePermission($role->id, 'global.superuser', false);
-        }
-
         $this->line('Checking if \'admin\' is a super user');
 
-        if (! $admin->has('global.superuser')) {
+        if (! $admin->isAdmin()) {
 
             $this->comment('Adding \'admin\' to the Superuser role');
-            $this->giveUserRole($admin->id, $role->id);
+            $admin->admin = true;
+            $admin->save();
         }
 
         $this->line('Generating authentication token');
