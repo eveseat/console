@@ -23,7 +23,7 @@
 namespace Seat\Console\Commands\Seat\Admin;
 
 use Illuminate\Console\Command;
-use Seat\Services\Jobs\Maintenance as MaintenanceJob;
+use Seat\Console\Jobs\Maintenance as MaintenanceJob;
 
 /**
  * Class Maintenance.
@@ -51,6 +51,6 @@ class Maintenance extends Command
     public function handle()
     {
 
-        dispatch((new MaintenanceJob))->onQueue('medium');
+        dispatch((new MaintenanceJob))->onQueue('default');
     }
 }
