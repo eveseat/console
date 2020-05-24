@@ -27,6 +27,7 @@ use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Seat\Eveapi\Models\Sde\MapDenormalize;
 use Seat\Services\Helpers\AnalyticsContainer;
 use Seat\Services\Jobs\Analytics;
 use Seat\Services\Settings\Seat;
@@ -207,6 +208,8 @@ class Sde extends Command
         $this->getSde();
 
         $this->importSde();
+
+        $this->explodeMap();
 
         Seat::set('installed_sde', $this->json->version);
 
@@ -400,5 +403,63 @@ class Sde extends Command
         $bar->finish();
         $this->line('');
 
+    }
+
+    /**
+     * Explode mapDenormalize table into celestial sub-tables.
+     */
+    private function explodeMap()
+    {
+        // extract regions
+        DB::table('regions')->truncate();
+        DB::table('regions')
+            ->insertUsing([
+                'region_id', 'name',
+            ], DB::table('mapDenormalize')->where('groupID', MapDenormalize::REGION)
+                ->select('itemID', 'itemName'));
+
+        // extract constellations
+        DB::table('constellations')->truncate();
+        DB::table('constellations')
+            ->insertUsing([
+                'constellation_id', 'region_id', 'name',
+            ], DB::table('mapDenormalize')->where('groupID', MapDenormalize::CONSTELLATION)
+                ->select('itemID', 'regionID', 'itemName'));
+
+        // extract solar systems
+        DB::table('solar_systems')->truncate();
+        DB::table('solar_systems')
+            ->insertUsing([
+                'system_id', 'constellation_id', 'region_id', 'name', 'security',
+            ], DB::table('mapDenormalize')->where('groupID', MapDenormalize::SYSTEM)
+                ->select('itemID', 'constellationID', 'regionID', 'itemName', 'security'));
+
+        // extract stars
+        DB::table('stars')->truncate();
+        DB::table('stars')
+            ->insertUsing([
+                'star_id', 'system_id', 'constellation_id', 'region_id', 'name', 'type_id',
+            ], DB::table('mapDenormalize')->where('groupID', MapDenormalize::SUN)
+                ->select('itemID', 'solarSystemID', 'constellationID', 'regionID', 'itemName', 'typeID'));
+
+        // extract planets
+        DB::table('planets')->truncate();
+        DB::table('planets')
+            ->insertUsing([
+                'planet_id', 'system_id', 'constellation_id', 'region_id', 'name', 'type_id',
+                'x', 'y', 'z', 'radius', 'celestial_index',
+            ], DB::table('mapDenormalize')->where('groupID', MapDenormalize::PLANET)
+                ->select('itemID', 'solarSystemID', 'constellationID', 'regionID', 'itemName', 'typeID',
+                    'x', 'y', 'z', 'radius', 'celestialIndex'));
+
+        // extract moons
+        DB::table('moons')->truncate();
+        DB::table('moons')
+            ->insertUsing([
+                'moon_id', 'planet_id', 'system_id', 'constellation_id', 'region_id', 'name', 'type_id',
+                'x', 'y', 'z', 'radius', 'celestial_index', 'orbit_index',
+            ], DB::table('mapDenormalize')->where('groupID', MapDenormalize::MOON)
+                ->select('itemID', 'orbitID', 'solarSystemID', 'constellationID', 'regionID', 'itemName', 'typeID',
+                    'x', 'y', 'z', 'radius', 'celestialIndex', 'orbitIndex'));
     }
 }
