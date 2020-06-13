@@ -154,15 +154,15 @@ class Diagnose extends Command
         else
             $this->info(storage_path() . ' is writable');
 
-        if (! File::isWritable(config('eveapi.config.eseye_logfile')))
-            $this->error(config('eveapi.config.eseye_logfile') . ' is not writable');
+        if (! File::isWritable(config('esi.eseye_logfile')))
+            $this->error(config('esi.eseye_logfile') . ' is not writable');
         else
-            $this->info(config('eveapi.config.eseye_logfile') . ' is writable');
+            $this->info(config('esi.eseye_logfile') . ' is writable');
 
-        if (! File::isWritable(config('eveapi.config.eseye_cache')))
-            $this->error(config('eveapi.config.eseye_cache') . ' is not writable');
+        if (! File::isWritable(config('esi.eseye_cache')))
+            $this->error(config('esi.eseye_cache') . ' is not writable');
         else
-            $this->info(config('eveapi.config.eseye_cache') . ' is writable');
+            $this->info(config('esi.eseye_cache') . ' is writable');
 
         if (! File::isWritable(storage_path() . '/sde/'))
             $this->error(storage_path() . '/sde/' . ' is not writable');
