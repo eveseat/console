@@ -63,8 +63,13 @@ class PublicInfo extends Command
     public function handle()
     {
 
+        $npcStations = CorporationInfo::whereNotIn('home_station_id', [60000001])
+            ->select('home_station_id')
+            ->distinct()
+            ->get()->pluck('home_station_id')->toArray();
+
         Map::dispatch();
-        Structures::withChain([new Stations])->dispatch();
+        Structures::withChain([new Stations($npcStations)])->dispatch();
         Names::dispatch();
         Alliances::dispatch();
         Prices::dispatch();
