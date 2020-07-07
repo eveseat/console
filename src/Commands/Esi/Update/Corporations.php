@@ -62,7 +62,8 @@ class Corporations extends Command
             ->each(function ($token) {
 
                 // Fire the class to update corporation information
-                (new CorporationTokenShouldUpdate($token->character->affiliation->corporation_id, $token))->fire();
+                if ($token->character->affiliation->corporation_id != null)
+                    (new CorporationTokenShouldUpdate($token->character->affiliation->corporation_id, $token))->fire();
             });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
