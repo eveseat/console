@@ -60,13 +60,6 @@ class PublicInfo extends Command
     protected $description = 'Schedule updater jobs for public information';
 
     /**
-     * The requested stations.
-     *
-     * @var array
-     */
-    private $requestedStations = [];
-
-    /**
      * Execute the console command.
      */
     public function handle()
@@ -76,10 +69,7 @@ class PublicInfo extends Command
             ->select('home_station_id')
             ->distinct()
             ->chunk(100, function ($corporations) {
-                foreach ($corporations as $corporation) {
-                    if (! in_array($corporation->home_station_id, $this->requestedStations))
-                        array_push($this->requestedStations, $corporation->home_station_id);
-                }
+                Stations::dispatch($corporations->pluck('home_station_id'));
             });
 
         // corporation assets
@@ -87,15 +77,11 @@ class PublicInfo extends Command
             ->select('location_id')
             ->distinct()
             ->chunk(100, function ($assets) {
-                foreach ($assets as $asset) {
-                    if (! in_array($asset->location_id, $this->requestedStations))
-                        array_push($this->requestedStations, $asset->location_id);
-                }
+                Stations::dispatch($assets->pluck('location_id'));
             });
 
         Map::dispatch();
         Structures::dispatch();
-        Stations::dispatch($this->requestedStations);
         Names::dispatch();
         Alliances::dispatch();
         Prices::dispatch();
