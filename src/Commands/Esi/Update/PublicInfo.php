@@ -64,40 +64,33 @@ class PublicInfo extends Command
      *
      * @var array
      */
-    private $requestedStations = array();
+    private $requestedStations = [];
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        // filtering public structures on outpost typeID
-        $structure_filter = [
-            12242, 12294, 12295, // conquerable outpost
-            21642,               // caldari outpost
-            21644,               // amarr outpost
-            21645,               // gallente outpost
-            21646,               // minmatar outpost
-        ];
-
         // NPC stations
         CorporationInfo::whereNotIn('home_station_id', UniverseStation::FAKE_STATION_ID)
             ->select('home_station_id')
             ->distinct()
-            ->get()
-            ->each(function ($corporation) {
-                if(!in_array($corporation->home_station_id, $this->requestedStations))
-                    array_push($this->requestedStations, $corporation->home_station_id);
+            ->chunk(100, function ($corporations) {
+                foreach ($corporations as $corporation) {
+                    if (! in_array($corporation->home_station_id, $this->requestedStations))
+                        array_push($this->requestedStations, $corporation->home_station_id);
+                }
             });
 
         // corporation assets
         CorporationAsset::where('location_type', 'station')
             ->select('location_id')
             ->distinct()
-            ->get()
-            ->each(function ($asset) {
-                    if (!in_array($asset->location_id, $this->requestedStations))
+            ->chunk(100, function ($assets) {
+                foreach ($assets as $asset) {
+                    if (! in_array($asset->location_id, $this->requestedStations))
                         array_push($this->requestedStations, $asset->location_id);
+                }
             });
 
         Map::dispatch();
