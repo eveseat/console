@@ -34,8 +34,10 @@ use Seat\Eveapi\Jobs\Sovereignty\Map;
 use Seat\Eveapi\Jobs\Sovereignty\Structures;
 use Seat\Eveapi\Jobs\Universe\Names;
 use Seat\Eveapi\Jobs\Universe\Stations;
+use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
+use Seat\Eveapi\Models\Universe\UniverseStation;
 
 /**
  * Class PublicInfo.
@@ -58,18 +60,49 @@ class PublicInfo extends Command
     protected $description = 'Schedule updater jobs for public information';
 
     /**
+     * The requested stations.
+     *
+     * @var array
+     */
+    private $requestedStations = array();
+
+    /**
      * Execute the console command.
      */
     public function handle()
     {
+        // filtering public structures on outpost typeID
+        $structure_filter = [
+            12242, 12294, 12295, // conquerable outpost
+            21642,               // caldari outpost
+            21644,               // amarr outpost
+            21645,               // gallente outpost
+            21646,               // minmatar outpost
+        ];
 
-        $npcStations = CorporationInfo::whereNotIn('home_station_id', [60000001])
+        // NPC stations
+        CorporationInfo::whereNotIn('home_station_id', UniverseStation::FAKE_STATION_ID)
             ->select('home_station_id')
             ->distinct()
-            ->get()->pluck('home_station_id')->toArray();
+            ->get()
+            ->each(function ($corporation) {
+                if(!in_array($corporation->home_station_id, $this->requestedStations))
+                    array_push($this->requestedStations, $corporation->home_station_id);
+            });
+
+        // corporation assets
+        CorporationAsset::where('location_type', 'station')
+            ->select('location_id')
+            ->distinct()
+            ->get()
+            ->each(function ($asset) {
+                    if (!in_array($asset->location_id, $this->requestedStations))
+                        array_push($this->requestedStations, $asset->location_id);
+            });
 
         Map::dispatch();
-        Structures::withChain([new Stations($npcStations)])->dispatch();
+        Structures::dispatch();
+        Stations::dispatch($this->requestedStations);
         Names::dispatch();
         Alliances::dispatch();
         Prices::dispatch();
