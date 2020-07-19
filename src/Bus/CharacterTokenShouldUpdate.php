@@ -120,7 +120,6 @@ class CharacterTokenShouldUpdate extends BusCommand
         Medals::dispatch($this->token);
         Roles::dispatch($this->token);
         Standings::dispatch($this->token);
-        Stats::dispatch($this->token);
         Titles::dispatch($this->token);
 
         // Clones
