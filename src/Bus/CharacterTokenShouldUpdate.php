@@ -38,7 +38,6 @@ use Seat\Eveapi\Jobs\Character\Info;
 use Seat\Eveapi\Jobs\Character\Medals;
 use Seat\Eveapi\Jobs\Character\Roles;
 use Seat\Eveapi\Jobs\Character\Standings;
-use Seat\Eveapi\Jobs\Character\Stats;
 use Seat\Eveapi\Jobs\Character\Titles;
 use Seat\Eveapi\Jobs\Clones\Clones;
 use Seat\Eveapi\Jobs\Clones\Implants;
