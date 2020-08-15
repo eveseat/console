@@ -18,8 +18,8 @@
   "require": {
     "php": "^7.3",
     "laravel/framework": "^6.2",
-    "eveseat/eveapi": "4.0.x-dev",
-    "eveseat/services": "4.0.x-dev",
+    "eveseat/eveapi": "^4.0",
+    "eveseat/services": "^4.0",
     "guzzlehttp/guzzle": "^6.3"
   },
   "extra": {
