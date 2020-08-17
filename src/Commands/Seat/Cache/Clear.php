@@ -128,7 +128,7 @@ class Clear extends Command
     {
 
         // Eseye Cache Clearing
-        $eseye_cache = config('eveapi.config.eseye_cache');
+        $eseye_cache = config('esi.eseye_cache');
 
         if (File::isWritable($eseye_cache)) {
 
