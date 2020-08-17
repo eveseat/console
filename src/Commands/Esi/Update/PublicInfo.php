@@ -69,7 +69,7 @@ class PublicInfo extends Command
             ->select('home_station_id')
             ->distinct()
             ->chunk(100, function ($corporations) {
-                Stations::dispatch($corporations->pluck('home_station_id'));
+                Stations::dispatch($corporations->pluck('home_station_id')->toArray());
             });
 
         // corporation assets
@@ -77,7 +77,7 @@ class PublicInfo extends Command
             ->select('location_id')
             ->distinct()
             ->chunk(100, function ($assets) {
-                Stations::dispatch($assets->pluck('location_id'));
+                Stations::dispatch($assets->pluck('location_id')->toArray());
             });
 
         Map::dispatch();
