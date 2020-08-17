@@ -52,9 +52,9 @@ class ScheduleSeeder extends Seeder
             'ping_before'       => null,
             'ping_after'        => null,
         ],
-        [   // EVE Server Status | Every Five Minutes
+        [   // EVE Server Status | Every Minute
             'command'           => 'eve:update:status',
-            'expression'        => '*/5 * * * *',
+            'expression'        => '* * * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
