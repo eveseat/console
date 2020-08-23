@@ -86,7 +86,7 @@ class ScheduleSeeder extends Seeder
         ],
         [   // Character Affiliation | Every two hours
             'command'           => 'esi:update:affiliations',
-            'expression'        => '* */2 * * *',
+            'expression'        => '0 */2 * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -149,6 +149,22 @@ class ScheduleSeeder extends Seeder
      */
     public function run()
     {
+        //
+        // drop SeAT 3.x deprecated commands
+        //
+        DB::table('schedules')->where('command', 'alerts:run')->delete();
+        DB::table('schedules')->where('command', 'esi:update:serverstatus')->delete();
+        DB::table('schedules')->where('command', 'esi:update:esistatus')->delete();
+
+        //
+        // fix SeAT 4 released schedules
+        //
+        DB::table('schedules')
+            ->where('command', 'esi:update:affiliations')
+            ->where('expression', '* */2 * * *')
+            ->update([
+                'expression' => '0 */2 * * *',
+            ]);
 
         // Check if we have the schedules, else,
         // insert them
