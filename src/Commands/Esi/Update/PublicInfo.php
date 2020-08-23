@@ -67,6 +67,7 @@ class PublicInfo extends Command
         // NPC stations
         CorporationInfo::whereNotIn('home_station_id', UniverseStation::FAKE_STATION_ID)
             ->select('home_station_id')
+            ->orderBy('home_station_id')
             ->distinct()
             ->chunk(100, function ($corporations) {
                 Stations::dispatch($corporations->pluck('home_station_id')->toArray());
@@ -75,6 +76,7 @@ class PublicInfo extends Command
         // corporation assets
         CorporationAsset::where('location_type', 'station')
             ->select('location_id')
+            ->orderBy('location_id')
             ->distinct()
             ->chunk(100, function ($assets) {
                 Stations::dispatch($assets->pluck('location_id')->toArray());
