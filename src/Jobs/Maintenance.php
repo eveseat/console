@@ -26,7 +26,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Seat\Eveapi\Models\FailedJob;
+use Seat\Eveapi\Models\Failed_Jobs;
 use Seat\Eveapi\Models\Status\EsiStatus;
 use Seat\Eveapi\Models\Status\ServerStatus;
 
