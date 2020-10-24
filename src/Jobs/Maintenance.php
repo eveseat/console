@@ -26,6 +26,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Models\FailedJob;
 use Seat\Eveapi\Models\Status\EsiStatus;
 use Seat\Eveapi\Models\Status\ServerStatus;
@@ -45,6 +46,20 @@ class Maintenance implements ShouldQueue
      * @var int
      */
     public $tries = 1;
+
+    /**
+     * The maximum duration of job in seconds before being considered as dead.
+     *
+     * @var int
+     */
+    public $timeout = 12000;
+
+    /**
+     * The maximum duration of job in seconds before being retried.
+     *
+     * @var int
+     */
+    public $retryAfter = 12001;
 
     /**
      * Perform the maintenance job.
@@ -72,5 +87,8 @@ class Maintenance implements ShouldQueue
 
         // Prune ESI statuses older than a week
         EsiStatus::where('created_at', '<', carbon('now')->subWeek(1))->delete();
+
+        // ask database to rebuild index in order to properly reduce their space usage on drive
+        DB::statement('OPTIMIZE TABLE failed_jobs, server_status, esi_status');
     }
 }
