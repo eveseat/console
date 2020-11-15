@@ -27,6 +27,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\FailedJob;
 use Seat\Eveapi\Models\Status\EsiStatus;
 use Seat\Eveapi\Models\Status\ServerStatus;
@@ -68,6 +69,9 @@ class Maintenance implements ShouldQueue
     {
 
         $this->cleanup_tables();
+
+        if (setting('cleanup_data', true) == 'yes')
+            $this->cleanup_characters();
     }
 
     /**
@@ -90,5 +94,10 @@ class Maintenance implements ShouldQueue
 
         // ask database to rebuild index in order to properly reduce their space usage on drive
         DB::statement('OPTIMIZE TABLE failed_jobs, server_status, esi_status');
+    }
+
+    private function cleanup_characters()
+    {
+        CharacterInfo::doesntHave('refresh_token')->delete();
     }
 }
