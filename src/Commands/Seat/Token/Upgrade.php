@@ -24,11 +24,10 @@ namespace Seat\Console\Commands\Seat\Token;
 
 use Carbon\Carbon;
 use DB;
-use Seat\Eveapi\Models\RefreshToken;
-use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Console\Command;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Upgrade.
@@ -87,36 +86,36 @@ class Upgrade extends Command
         $progress = $this->output->createProgressBar($count);
 
         RefreshToken::whereNotIn('version', [self::CURRENT_VERSION])
-            ->chunk(100, function ($tokens) use ($client, &$errors, &$success, &$perm, $authsite, $progress){
+            ->chunk(100, function ($tokens) use ($client, &$errors, &$success, &$perm, $authsite, $progress) {
                 foreach ($tokens as $token){
                     try{
                         $token_headers = [
                             'headers' => [
-                            'Authorization' => 'Basic ' . base64_encode(env('EVE_CLIENT_ID') . ':' . env('EVE_CLIENT_SECRET')),
-                            'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact Crypta Electrica',
-                            'Content-Type' => 'application/x-www-form-urlencoded',
-                            'Host' => 'login.eveonline.com',
+                                'Authorization' => 'Basic ' . base64_encode(env('EVE_CLIENT_ID') . ':' . env('EVE_CLIENT_SECRET')),
+                                'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact Crypta Electrica',
+                                'Content-Type' => 'application/x-www-form-urlencoded',
+                                'Host' => 'login.eveonline.com',
                             ],
                             'form_params' => [
-                            // 'client_id' => env('EVE_CLIENT_ID'),
-                            'grant_type' => 'refresh_token',
-                            'refresh_token' => $token->refresh_token,
-                            ]
+                                // 'client_id' => env('EVE_CLIENT_ID'),
+                                'grant_type' => 'refresh_token',
+                                'refresh_token' => $token->refresh_token,
+                            ],
                         ];
-        
+
                         $result = $client->post($authsite, $token_headers);
                         $resp = json_decode($result->getBody());
                         $expires_new = Carbon::createFromTimestamp(time() + $resp->expires_in);
-        
+
                         $token->token = $resp->access_token;
                         $token->refresh_token = $resp->refresh_token;
                         $token->expires_on = $expires_new;
                         $token->version = self::CURRENT_VERSION;
-        
+
                         $token->save();
-        
+
                         $success += 1;
-        
+
                     } catch (RequestException $e) {
                         logger()->error('Error Migrating Refresh Token', [
                             'Character ID'   => $token->character_id,
@@ -125,26 +124,24 @@ class Upgrade extends Command
                             'Headers' => $e->getResponse()->getHeaders(),
                         ]);
 
-                        if ( strpos((string) $e->getResponse()->getBody(), 'invalid_grant') !== false) {
+                        if (strpos((string) $e->getResponse()->getBody(), 'invalid_grant') !== false) {
                             $perm += 1;
                             $token->delete();
                         } else{
                             $errors += 1;
                         }
-                    };
+                    }
                     $progress->advance();
                 }
             });
 
             $progress->finish();
             $this->line('');
-            
+
             $this->info('SeAT SSO Token Migration Complete!');
             $this->info('Success: '. $success);
             $this->info('Temp Fail: '. $errors);
             $this->info('Perm Fail: '. $perm);
-            
 
     }
-
 }
