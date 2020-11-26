@@ -92,7 +92,7 @@ class Upgrade extends Command
                         $token_headers = [
                             'headers' => [
                                 'Authorization' => 'Basic ' . base64_encode(env('EVE_CLIENT_ID') . ':' . env('EVE_CLIENT_SECRET')),
-                                'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact Crypta Electrica',
+                                'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact eveseat slack or github. https://github.com/eveseat/seat',
                                 'Content-Type' => 'application/x-www-form-urlencoded',
                                 'Host' => 'login.eveonline.com',
                             ],
