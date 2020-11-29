@@ -89,13 +89,12 @@ class Upgrade extends Command
                     try{
                         $token_headers = [
                             'headers' => [
-                                'Authorization' => 'Basic ' . base64_encode(env('EVE_CLIENT_ID') . ':' . env('EVE_CLIENT_SECRET')),
+                                'Authorization' => 'Basic ' . base64_encode(config('esi.eseye_client_id') . ':' . config('esi.eseye_client_secret')),
                                 'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact eveseat slack or github. https://github.com/eveseat/seat',
                                 'Content-Type' => 'application/x-www-form-urlencoded',
                                 'Host' => 'login.eveonline.com',
                             ],
                             'form_params' => [
-                                // 'client_id' => env('EVE_CLIENT_ID'),
                                 'grant_type' => 'refresh_token',
                                 'refresh_token' => $token->refresh_token,
                             ],
@@ -108,7 +107,7 @@ class Upgrade extends Command
                         $token->token = $resp->access_token;
                         $token->refresh_token = $resp->refresh_token;
                         $token->expires_on = $expires_new;
-                        $token->version = self::CURRENT_VERSION;
+                        $token->version = RefreshToken::CURRENT_VERSION;
 
                         $token->save();
 
@@ -138,8 +137,8 @@ class Upgrade extends Command
 
             $this->info('SeAT SSO Token Migration Complete!');
             $this->info('Success: '. $success);
-            $this->info('Temp Fail: '. $errors);
-            $this->info('Perm Fail: '. $perm);
+            $this->warn('Temp Fail: '. $errors);
+            $this->error('Perm Fail: '. $perm);
 
     }
 }
