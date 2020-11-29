@@ -23,14 +23,15 @@
 namespace Seat\Console\Commands\Seat\Admin;
 
 use Carbon\Carbon;
-use DB;
 use Exception;
-use File;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Predis\Client;
 use Seat\Eseye\Cache\NullCache;
 use Seat\Eseye\Configuration;
+use Seat\Eseye\Exceptions\RequestFailedException;
 
 /**
  * Class Diagnose.
@@ -51,17 +52,6 @@ class Diagnose extends Command
      * @var string
      */
     protected $description = 'Diagnose potential SeAT installation problems';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
@@ -93,7 +83,7 @@ class Diagnose extends Command
         $this->check_redis();
         $this->line('');
 
-        $this->check_pheal();
+        $this->check_eseye();
         $this->line('');
 
         $this->call('seat:version');
@@ -116,8 +106,8 @@ class Diagnose extends Command
         // Warn if we are running as root.
         if ($user === 'root') {
 
-            $this->error('WARNING: This command is running as root!');
-            $this->error('WARNING: Running as root means that we will probably be able to access ' .
+            $this->warn('WARNING: This command is running as root!');
+            $this->warn('WARNING: Running as root means that we will probably be able to access ' .
                 'any file on your system. This command will not be able to help diagnose permission ' .
                 'problems this way.');
         }
@@ -136,7 +126,7 @@ class Diagnose extends Command
 
         $this->line(' * Checking DEBUG mode');
 
-        if (env('APP_DEBUG') == true)
+        if (config('app.debug', false) == true)
             $this->warn('Debug mode is enabled. This is not recommended in production!');
         else
             $this->info('Debug mode disabled');
@@ -149,6 +139,7 @@ class Diagnose extends Command
     {
 
         $this->line(' * Checking storage');
+
         if (! File::isWritable(storage_path()))
             $this->error(storage_path() . ' is not writable');
         else
@@ -164,14 +155,17 @@ class Diagnose extends Command
         else
             $this->info(config('esi.eseye_cache') . ' is writable');
 
-        if (! File::isWritable(storage_path() . '/sde/'))
-            $this->error(storage_path() . '/sde/' . ' is not writable');
+        if (! File::isWritable(storage_path('sde')))
+            $this->error(storage_path('sde') . ' is not writable');
         else
-            $this->info(storage_path() . '/sde/' . ' is writable');
+            $this->info(storage_path('sde') . ' is writable');
 
-        if (! File::isWritable(storage_path(sprintf('logs/laravel-%s.log', carbon()->toDateString()))))
-            $this->error(storage_path(sprintf('logs/laravel-%s.log  is not writable', carbon()->toDateString())));
-        else
+        if (! File::isWritable(storage_path(sprintf('logs/laravel-%s.log', carbon()->toDateString())))) {
+            if (File::isWritable(storage_path('logs')))
+                $this->warn(storage_path(sprintf('logs/laravel-%s.log might be not writable or is missing', carbon()->toDateString())));
+            else
+                $this->error(storage_path('logs is not writable'));
+        } else
             $this->info(storage_path(sprintf('logs/laravel-%s.log is writable', carbon()->toDateString())));
     }
 
@@ -183,11 +177,12 @@ class Diagnose extends Command
 
         $this->line(' * Checking Database');
         $this->table(['Setting', 'Value'], [
-            ['Connection', env('DB_CONNECTION')],
-            ['Host', env('DB_HOST')],
-            ['Database', env('DB_DATABASE')],
-            ['Username', env('DB_USERNAME')],
-            ['Password', str_repeat('*', strlen(env('DB_PASSWORD')))],
+            ['Connection', config('database.default', 'mysql')],
+            ['Host', config(sprintf('database.connections.%s.host', config('database.default', 'mysql')))],
+            ['Database', config(sprintf('database.connections.%s.database', config('database.default')))],
+            ['Username', config(sprintf('database.connections.%s.username', config('database.default', 'mysql')))],
+            ['Password', str_repeat('*',
+                strlen(config(sprintf('database.connections.%s.password', config('database.default', 'mysql')))))],
         ]);
 
         try {
@@ -251,7 +246,7 @@ class Diagnose extends Command
     /**
      * Check if access to the EVE API OK.
      */
-    public function check_pheal()
+    public function check_eseye()
     {
 
         $this->line(' * Checking ESI Access');
