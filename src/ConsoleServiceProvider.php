@@ -42,6 +42,7 @@ use Seat\Console\Commands\Seat\Admin\Email;
 use Seat\Console\Commands\Seat\Admin\Login;
 use Seat\Console\Commands\Seat\Admin\Maintenance;
 use Seat\Console\Commands\Seat\Cache\Clear;
+use Seat\Console\Commands\Seat\Token\Upgrade;
 use Seat\Console\Commands\Seat\Version;
 use Seat\Services\AbstractSeatPlugin;
 
@@ -87,6 +88,9 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
             Killmails::class,
             Dispatch::class,
             EsiStatus::class,
+
+            //SSO
+            Upgrade::class,
         ]);
     }
 
