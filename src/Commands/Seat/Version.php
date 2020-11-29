@@ -22,8 +22,8 @@
 
 namespace Seat\Console\Commands\Seat;
 
-use GuzzleHttp\Client;
 use Illuminate\Console\Command;
+use Seat\Services\Traits\VersionsManagementTrait;
 
 /**
  * Class Version.
@@ -31,6 +31,8 @@ use Illuminate\Console\Command;
  */
 class Version extends Command
 {
+    use VersionsManagementTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -51,26 +53,6 @@ class Version extends Command
     protected $base_url = 'https://api.github.com/repos/:repo/releases/latest';
 
     /**
-     * @var array
-     */
-    protected $packages = [
-        'api', 'console', 'eveapi', 'notifications', 'web', 'services',
-    ];
-
-    /**
-     * Create a new command instance.
-     *
-     * @param \GuzzleHttp\Client $client
-     */
-    public function __construct(Client $client)
-    {
-
-        $this->client = $client;
-
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle()
@@ -81,35 +63,24 @@ class Version extends Command
         if ($offline)
             $this->info('Checking Local Versions Only');
         else
-            $this->info('Checking Local and Github Versions. Please wait...');
+            $this->info('Checking Local and Latest Versions. Please wait...');
 
-        $client = $this->client;
-        $base_url = $this->base_url;
-        $headers = [
-            'Accept' => 'application/json',
-        ];
-
-        $this->table(['Package Name', 'Local Version', 'Latest Github'],
-            array_map(function ($package) use ($offline, $base_url, $client, $headers) {
-
+        $this->table(['Package Name', 'Local Version', 'Latest Version'],
+            $this->getPluginsMetadataList()->core->map(function ($package) use ($offline) {
                 if ($offline) {
 
                     return [
-                        ucfirst($package),
-                        config($package . '.config.version'),
+                        $package->getName(),
+                        $package->getVersion(),
                         'Offline',
                     ];
                 }
 
-                $url = str_replace(':repo', 'eveseat/' . $package, $base_url);
-
                 return [
-                    ucfirst($package),
-                    config($package . '.config.version'),
-                    json_decode($client->get($url, $headers)->getBody())->tag_name,
+                    $package->getName(),
+                    $package->getVersion(),
+                    $this->getPackageLatestVersion($package->getPackagistVendorName(), $package->getPackagistPackageName()),
                 ];
-
-            }, $this->packages));
-
+            }));
     }
 }
