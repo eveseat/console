@@ -36,8 +36,6 @@ use Seat\Eveapi\Models\RefreshToken;
 class Upgrade extends Command
 {
 
-    const CURRENT_VERSION = 2;
-
     /**
      * The name and signature of the console command.
      *
@@ -81,11 +79,11 @@ class Upgrade extends Command
         $success = 0;
 
         $count = DB::table('refresh_tokens')
-            // ->whereNotNull('deleted_at')
+            ->whereNull('deleted_at')
             ->count();
         $progress = $this->output->createProgressBar($count);
 
-        RefreshToken::whereNotIn('version', [self::CURRENT_VERSION])
+        RefreshToken::whereNotIn('version', [RefreshToken::CURRENT_VERSION])
             ->chunk(100, function ($tokens) use ($client, &$errors, &$success, &$perm, $authsite, $progress) {
                 foreach ($tokens as $token){
                     try{
