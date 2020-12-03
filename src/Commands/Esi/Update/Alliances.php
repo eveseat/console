@@ -26,7 +26,10 @@ use Illuminate\Console\Command;
 use Seat\Eveapi\Jobs\Alliances\Alliances as AlliancesJob;
 use Seat\Eveapi\Jobs\Alliances\Info;
 use Seat\Eveapi\Jobs\Alliances\Members;
+use Seat\Eveapi\Jobs\Contacts\Alliance\Contacts;
+use Seat\Eveapi\Jobs\Contacts\Alliance\Labels;
 use Seat\Eveapi\Models\Alliances\Alliance;
+use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Alliances.
@@ -65,5 +68,22 @@ class Alliances extends Command
             Info::dispatch($alliance->alliance_id);
             Members::dispatch($alliance->alliance_id);
         })->isEmpty() && empty($alliance_ids)) AlliancesJob::dispatch();
+
+        $tokens = RefreshToken::all()
+            ->when(count($this->argument('alliance_ids')) > 0, function ($tokens) {
+
+                return $tokens->whereIn('character.affiliation.alliance_id', $this->argument('alliance_ids'));
+            })
+            ->each(function ($token) {
+
+                // Fire the class to update alliance information
+                if ($token->character->affiliation->alliance_id != null) {
+                    Contacts::withChain([
+                        new Labels($token->character->affiliation->alliance_id, $token),
+                    ])->dispatch($token->character->affiliation->alliance_id, $token);
+                }
+            });
+
+        $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
     }
 }
