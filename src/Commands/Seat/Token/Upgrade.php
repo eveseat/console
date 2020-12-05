@@ -83,9 +83,11 @@ class Upgrade extends Command
             ->count();
         $progress = $this->output->createProgressBar($count);
 
-        RefreshToken::whereNotIn('version', [RefreshToken::CURRENT_VERSION])
-            ->chunk(100, function ($tokens) use ($client, &$errors, &$success, &$perm, $authsite, $progress) {
+        RefreshToken::chunk(100, function ($tokens) use ($client, &$errors, &$success, &$perm, $authsite, $progress) {
                 foreach ($tokens as $token){
+                    if ($token->version == RefreshToken::CURRENT_VERSION){
+                        continue;
+                    }
                     try{
                         $token_headers = [
                             'headers' => [
