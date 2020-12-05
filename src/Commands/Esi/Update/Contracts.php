@@ -30,6 +30,7 @@ use Seat\Eveapi\Jobs\Contracts\Corporation\Bids as CorporationBids;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Contracts as CorporationContracts;
 use Seat\Eveapi\Jobs\Contracts\Corporation\Items as CorporationItems;
 use Seat\Eveapi\Models\Contracts\CharacterContract;
+use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Contracts\CorporationContract;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -55,65 +56,117 @@ class Contracts extends Command
      */
     public function handle()
     {
-        // collect optional contracts ID from arguments
         $contract_ids = $this->argument('contract_ids') ?: [];
 
-        $character_contracts = CharacterContract::whereHas('detail', function ($query) {
-            $query->where('status', '<>', 'deleted');
-        });
+        // in case requested contract are unknown, enqueue list jobs which will collect all contracts
+        if (! ContractDetail::where('status', '<>', 'deleted')->whereIn('contract_id', $contract_ids)->exists()) {
+            $this->enqueueContractsListJobs();
 
-        $corporation_contracts = CorporationContract::whereHas('detail', function ($query) {
-            $query->where('status', '<>', 'deleted');
-        });
-
-        // in case at least one ID has been provided, filter contracts on arguments
-        if (! empty($contract_ids)) {
-            $character_contracts->whereIn('contract_id', $contract_ids);
-            $corporation_contracts->whereIn('contract_id', $contract_ids);
+            return;
         }
 
-        // loop over character contracts and queue detailed jobs
-        // if we don't have any contracts registered -> queue character and corporation jobs to collect them
-        $character_contracts->get()->each(function ($contract) {
-            if ($contract->detail->status != 'deleted') {
+        // collect contract from character related to asked contracts
+        $this->enqueueDetailedCharacterContractsJobs($contract_ids);
 
-                $token = RefreshToken::find($contract->character_id);
+        // collect contract from corporation related to asked contracts
+        $this->enqueueDetailedCorporationContractsJobs($contract_ids);
+    }
 
-                if (! is_null($token) && $contract->detail->type == 'auction')
-                    CharacterBids::dispatch($token, $contract->contract_id);
+    private function enqueueContractsListJobs()
+    {
+        RefreshToken::chunk(100, function ($tokens) {
+            foreach ($tokens as $token) {
 
-                if (! is_null($token) && $contract->detail->type != 'courier' && $contract->volume > 0)
-                    CharacterItems::dispatch($token, $contract->contract_id);
-            }
-        });
+                // enqueue job to list contracts for that character
+                CharacterContracts::dispatch($token);
 
-        RefreshToken::all()->each(function ($token) {
-            CharacterContracts::dispatch($token);
-        });
-
-        // loop over character contracts and queue detailed jobs
-        // if we don't have any contracts registered -> queue character and corporation jobs to collect them
-        $corporation_contracts->get()->each(function ($contract) {
-            if ($contract->detail->status != 'deleted') {
-
-                $token = RefreshToken::with('character.affiliation')->whereHas('character.corporation_roles', function ($query) {
+                // in case this character is also a Director, enqueue job to list contracts for his corporation
+                if ($token->whereHas('character.corporation_roles', function ($query) {
+                    $query->where('scope', 'roles');
                     $query->where('role', 'Director');
-                })->whereHas('character.affiliation', function ($query) use ($contract) {
-                    $query->where('corporation_id', $contract->corporation_id);
-                })->first();
-
-                if (! is_null($token) && $contract->detail->type == 'auction')
-                    CorporationBids::dispatch($token->character->affiliation->corporation_id, $token, $contract->contract_id);
-
-                if (! is_null($token) && $contract->detail->type != 'courier' && $contract->volume > 0)
-                    CorporationItems::dispatch($token->character->affiliation->corporation_id, $token, $contract->contract_id);
+                })) CorporationContracts::dispatch($token->character->affiliation->corporation_id, $token);
             }
         });
+    }
 
-        RefreshToken::with('character.affiliation')->whereHas('character.corporation_roles', function ($query) {
-            $query->where('role', 'Director');
-        })->get()->each(function ($token) {
-            CorporationContracts::dispatch($token->character->affiliation->corporation_id, $token);
-        });
+    /**
+     * Enqueue relevant detail jobs for requested character contracts.
+     *
+     * @param array $contract_ids
+     */
+    private function enqueueDetailedCharacterContractsJobs(array $contract_ids)
+    {
+        CharacterContract::whereIn('contract_id', $contract_ids)
+            ->whereHas('detail', function ($query) {
+                $query->where('status', '<>', 'deleted');
+            })
+            ->chunk(200, function ($contracts) {
+                $token = null;
+
+                foreach ($contracts as $contract) {
+
+                    if (! $token || $token->character_id != $contract->character_id) {
+                        $token = RefreshToken::find($contract->character_id);
+                    }
+
+                    if (is_null($token)) {
+                        $this->warn(sprintf('No valid token for Character %d - requested by Contract %d',
+                            $contract->character_id, $contract->contract_id));
+                        continue;
+                    }
+
+                    // for each non deleted contract, enqueue relevant detailled jobs
+                    if ($contract->detail->type == 'auction')
+                        CharacterBids::dispatch($token, $contract->contract_id);
+
+                    if ($contract->detail->type != 'courier' && $contract->detail->volume > 0)
+                        CharacterItems::dispatch($token, $contract->contract_id);
+                }
+            });
+    }
+
+    /**
+     * Enqueue relevant detail jobs for requested corporation contracts.
+     *
+     * @param array $contract_ids
+     */
+    private function enqueueDetailedCorporationContractsJobs(array $contract_ids)
+    {
+        CorporationContract::whereIn('contract_id', $contract_ids)
+            ->whereHas('detail', function ($query) {
+                $query->where('status', '<>', 'deleted');
+            })
+            ->chunk(200, function ($contracts) {
+                $token = null;
+
+                foreach ($contracts as $contract) {
+
+                    // attempt to locate a token for the required corporation
+                    if (! $token || $token->character->affiliation->corporation_id != $contract->corporation_id) {
+                        $token = RefreshToken::whereHas('character', function ($query) use ($contract) {
+                            $query->whereHas('affiliation', function ($query) use ($contract) {
+                                $query->where('corporation_id', $contract->corporation_id);
+                            });
+                            $query->whereHas('corporation_roles', function ($query) {
+                                $query->where('scope', 'roles');
+                                $query->where('role', 'Director');
+                            });
+                        })->first();
+                    }
+
+                    if (is_null($token)) {
+                        $this->warn(sprintf('No valid token for Corporation %d - requested by Contract %d',
+                            $contract->corporation_id, $contract->contract_id));
+                        continue;
+                    }
+
+                    // for each non deleted contract, enqueue relevant detailled jobs
+                    if ($contract->detail->type == 'auction')
+                        CorporationBids::dispatch($contract->corporation_id, $token, $contract->contract_id);
+
+                    if ($contract->detail->type != 'courier' && $contract->detail->volume > 0)
+                        CorporationItems::dispatch($contract->corporation_id, $token, $contract->contract_id);
+                }
+            });
     }
 }
