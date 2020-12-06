@@ -95,18 +95,6 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
     }
 
     /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-
-        $this->mergeConfigFrom(
-            __DIR__ . '/Config/console.config.php', 'console.config');
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getChangelogUri(): ?string
