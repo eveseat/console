@@ -111,13 +111,13 @@ class CorporationBus extends BusCommand
                 new MembersTitles($this->corporation_id, $this->token),
             ]),
 
-            (new Medals($this->corporation_id, $this->token))->chain([
-                new IssuedMedals($this->corporation_id, $this->token),
-            ]),
-
             (new MembersLimit($this->corporation_id, $this->token))->chain([
                 new Members($this->corporation_id, $this->token),
                 new MemberTracking($this->corporation_id, $this->token),
+            ]),
+
+            (new Medals($this->corporation_id, $this->token))->chain([
+                new IssuedMedals($this->corporation_id, $this->token),
             ]),
 
             // collect military informations
