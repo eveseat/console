@@ -25,8 +25,6 @@ namespace Seat\Console\Bus;
 use Seat\Eveapi\Jobs\Assets\Character\Assets;
 use Seat\Eveapi\Jobs\Assets\Character\Locations;
 use Seat\Eveapi\Jobs\Assets\Character\Names;
-use Seat\Eveapi\Jobs\Bookmarks\Character\Bookmarks;
-use Seat\Eveapi\Jobs\Bookmarks\Character\Folders;
 use Seat\Eveapi\Jobs\Calendar\Attendees;
 use Seat\Eveapi\Jobs\Calendar\Detail;
 use Seat\Eveapi\Jobs\Calendar\Events;
@@ -66,10 +64,10 @@ use Seat\Eveapi\Jobs\Wallet\Character\Transactions;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class CharacterShouldUpdate.
+ * Class CharacterBus.
  * @package Seat\Console\Bus
  */
-class CharacterTokenShouldUpdate extends BusCommand
+class CharacterBus extends BusCommand
 {
     /**
      * @var \Seat\Eveapi\Models\RefreshToken
@@ -114,21 +112,21 @@ class CharacterTokenShouldUpdate extends BusCommand
                 new Skills($this->token),
             ]),
 
-            // collect military information
+            // collect military informations
             new Fittings($this->token),
             new Recent($this->token),
 
             new Fatigue($this->token),
             new Medals($this->token),
 
-            // collect industrial information
+            // collect industrial informations
             (new Blueprints($this->token))->chain([
                 new Jobs($this->token),
                 new Mining($this->token),
                 new AgentsResearch($this->token),
             ]),
 
-            // collect financial information
+            // collect financial informations
             new Orders($this->token),
             new Contracts($this->token),
             new Planets($this->token),
@@ -137,7 +135,7 @@ class CharacterTokenShouldUpdate extends BusCommand
                 new Transactions($this->token),
             ]),
 
-            // collect intel information
+            // collect intel informations
             new Standings($this->token),
             (new Contacts($this->token))->chain([
                 new ContactLabels($this->token),
@@ -148,19 +146,18 @@ class CharacterTokenShouldUpdate extends BusCommand
                 new MailingLists($this->token),
             ]),
 
-            // Calendar Events
+            // calendar events
             (new Events($this->token))->chain([
                 new Detail($this->token),
                 new Attendees($this->token),
             ]),
 
-            // Assets
+            // assets
             (new Assets($this->token))->chain([
-                new Locations($this->token),
                 new Names($this->token),
+                new Locations($this->token),
+                new CharacterStructures($this->token),
             ]),
-
-            new CharacterStructures($this->token),
         ])->dispatch($this->token->character_id);
     }
 }
