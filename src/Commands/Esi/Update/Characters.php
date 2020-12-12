@@ -23,7 +23,7 @@
 namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
-use Seat\Console\Bus\CharacterTokenShouldUpdate;
+use Seat\Console\Bus\CharacterBus;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -61,7 +61,7 @@ class Characters extends Command
             ->each(function ($token) {
 
                 // Fire the class that handles the collection of jobs to run.
-                (new CharacterTokenShouldUpdate($token, 'default'))->fire();
+                (new CharacterBus($token))->fire();
             });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');

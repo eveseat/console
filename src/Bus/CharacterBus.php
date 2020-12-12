@@ -25,8 +25,6 @@ namespace Seat\Console\Bus;
 use Seat\Eveapi\Jobs\Assets\Character\Assets;
 use Seat\Eveapi\Jobs\Assets\Character\Locations;
 use Seat\Eveapi\Jobs\Assets\Character\Names;
-use Seat\Eveapi\Jobs\Bookmarks\Character\Bookmarks;
-use Seat\Eveapi\Jobs\Bookmarks\Character\Folders;
 use Seat\Eveapi\Jobs\Calendar\Attendees;
 use Seat\Eveapi\Jobs\Calendar\Detail;
 use Seat\Eveapi\Jobs\Calendar\Events;
@@ -66,10 +64,10 @@ use Seat\Eveapi\Jobs\Wallet\Character\Transactions;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class CharacterShouldUpdate.
+ * Class CharacterBus.
  * @package Seat\Console\Bus
  */
-class CharacterTokenShouldUpdate extends BusCommand
+class CharacterBus extends BusCommand
 {
     /**
      * @var \Seat\Eveapi\Models\RefreshToken
@@ -94,84 +92,72 @@ class CharacterTokenShouldUpdate extends BusCommand
      */
     public function fire()
     {
-
-        // Assets
-        Assets::withChain([
-            new Locations($this->token), new Names($this->token),
-        ])->dispatch($this->token);
-
-        // Bookmarks
-        Bookmarks::withChain([
-            new Folders($this->token),
-        ])->dispatch($this->token);
-
-        // Calendar
-        Events::withChain([
-            new Detail($this->token), new Attendees($this->token),
-        ])->dispatch($this->token);
-
         // Character
-        Info::dispatch($this->token->character_id);
-        AgentsResearch::dispatch($this->token);
-        Blueprints::dispatch($this->token);
-        CorporationHistory::dispatch($this->token->character_id);
-        Fatigue::dispatch($this->token);
-        Medals::dispatch($this->token);
-        Roles::dispatch($this->token);
-        Standings::dispatch($this->token);
-        Titles::dispatch($this->token);
+        Info::withChain([
+            // collect information related to current character state
+            new CorporationHistory($this->token->character_id),
+            new Roles($this->token),
+            new Titles($this->token),
+            (new Clones($this->token))->chain([
+                new Implants($this->token),
+            ]),
 
-        // Clones
-        Clones::withChain([
-            new Implants($this->token),
-        ])->dispatch($this->token);
+            (new Location($this->token))->chain([
+                new Online($this->token),
+                new Ship($this->token),
+            ]),
 
-        // Contacts
-        Contacts::withChain([
-            new ContactLabels($this->token),
-        ])->dispatch($this->token);
+            (new Attributes($this->token))->chain([
+                new Queue($this->token),
+                new Skills($this->token),
+            ]),
 
-        // Contracts
-        Contracts::dispatch($this->token);
+            // collect military informations
+            new Fittings($this->token),
+            new Recent($this->token),
 
-        // Fittings
-        Fittings::dispatch($this->token);
+            new Fatigue($this->token),
+            new Medals($this->token),
 
-        // Industry
-        Jobs::dispatch($this->token);
-        Mining::dispatch($this->token);
+            // collect industrial informations
+            (new Blueprints($this->token))->chain([
+                new Jobs($this->token),
+                new Mining($this->token),
+                new AgentsResearch($this->token),
+            ]),
 
-        // Killmails
-        Recent::dispatch($this->token);
+            // collect financial informations
+            new Orders($this->token),
+            new Contracts($this->token),
+            new Planets($this->token),
+            (new Balance($this->token))->chain([
+                new Journal($this->token),
+                new Transactions($this->token),
+            ]),
 
-        // Location
-        Location::dispatch($this->token);
-        Online::dispatch($this->token);
-        Ship::dispatch($this->token);
+            // collect intel informations
+            new Standings($this->token),
+            (new Contacts($this->token))->chain([
+                new ContactLabels($this->token),
+            ]),
 
-        // Mail
-        Mails::withChain([
-            new MailLabels($this->token),
-        ])->dispatch($this->token);
-        MailingLists::dispatch($this->token);
+            (new Mails($this->token))->chain([
+                new MailLabels($this->token),
+                new MailingLists($this->token),
+            ]),
 
-        // Market
-        Orders::dispatch($this->token);
+            // calendar events
+            (new Events($this->token))->chain([
+                new Detail($this->token),
+                new Attendees($this->token),
+            ]),
 
-        // Planetary Interactions
-        Planets::dispatch($this->token);
-
-        // Skills
-        Attributes::dispatch($this->token);
-        Queue::dispatch($this->token);
-        Skills::dispatch($this->token);
-
-        // Structures
-        CharacterStructures::dispatch($this->token);
-
-        // Wallet
-        Balance::dispatch($this->token);
-        Journal::dispatch($this->token);
-        Transactions::dispatch($this->token);
+            // assets
+            (new Assets($this->token))->chain([
+                new Names($this->token),
+                new Locations($this->token),
+                new CharacterStructures($this->token),
+            ]),
+        ])->dispatch($this->token->character_id);
     }
 }
