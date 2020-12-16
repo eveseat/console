@@ -64,10 +64,10 @@ use Seat\Eveapi\Jobs\Wallet\Character\Transactions;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class CharacterBus.
+ * Class Character.
  * @package Seat\Console\Bus
  */
-class CharacterBus extends BusCommand
+class Character extends BusCommand
 {
     /**
      * @var \Seat\Eveapi\Models\RefreshToken
@@ -75,7 +75,7 @@ class CharacterBus extends BusCommand
     private $token;
 
     /**
-     * CharacterTokenShouldUpdate constructor.
+     * Character constructor.
      *
      * @param \Seat\Eveapi\Models\RefreshToken $token
      */
@@ -98,19 +98,16 @@ class CharacterBus extends BusCommand
             new CorporationHistory($this->token->character_id),
             new Roles($this->token),
             new Titles($this->token),
-            (new Clones($this->token))->chain([
-                new Implants($this->token),
-            ]),
+            new Clones($this->token),
+            new Implants($this->token),
 
-            (new Location($this->token))->chain([
-                new Online($this->token),
-                new Ship($this->token),
-            ]),
+            new Location($this->token),
+            new Online($this->token),
+            new Ship($this->token),
 
-            (new Attributes($this->token))->chain([
-                new Queue($this->token),
-                new Skills($this->token),
-            ]),
+            new Attributes($this->token),
+            new Queue($this->token),
+            new Skills($this->token),
 
             // collect military informations
             new Fittings($this->token),
@@ -120,44 +117,38 @@ class CharacterBus extends BusCommand
             new Medals($this->token),
 
             // collect industrial informations
-            (new Blueprints($this->token))->chain([
-                new Jobs($this->token),
-                new Mining($this->token),
-                new AgentsResearch($this->token),
-            ]),
+            new Blueprints($this->token),
+            new Jobs($this->token),
+            new Mining($this->token),
+            new AgentsResearch($this->token),
 
             // collect financial informations
             new Orders($this->token),
             new Contracts($this->token),
             new Planets($this->token),
-            (new Balance($this->token))->chain([
-                new Journal($this->token),
-                new Transactions($this->token),
-            ]),
+            new Balance($this->token),
+            new Journal($this->token),
+            new Transactions($this->token),
 
             // collect intel informations
             new Standings($this->token),
-            (new Contacts($this->token))->chain([
-                new ContactLabels($this->token),
-            ]),
+            new Contacts($this->token),
+            new ContactLabels($this->token),
 
-            (new Mails($this->token))->chain([
-                new MailLabels($this->token),
-                new MailingLists($this->token),
-            ]),
+            new MailLabels($this->token),
+            new MailingLists($this->token),
+            new Mails($this->token),
 
             // calendar events
-            (new Events($this->token))->chain([
-                new Detail($this->token),
-                new Attendees($this->token),
-            ]),
+            new Events($this->token),
+            new Detail($this->token),
+            new Attendees($this->token),
 
             // assets
-            (new Assets($this->token))->chain([
-                new Names($this->token),
-                new Locations($this->token),
-                new CharacterStructures($this->token),
-            ]),
+            new Assets($this->token),
+            new Names($this->token),
+            new Locations($this->token),
+            new CharacterStructures($this->token),
         ])->dispatch($this->token->character_id);
     }
 }
