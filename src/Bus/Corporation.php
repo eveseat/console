@@ -63,10 +63,10 @@ use Seat\Eveapi\Jobs\Wallet\Corporation\Transactions;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
- * Class CorporationBus.
+ * Class Corporation.
  * @package Seat\Console\Bus
  */
-class CorporationBus extends BusCommand
+class Corporation extends BusCommand
 {
     /**
      * @var int
@@ -79,7 +79,7 @@ class CorporationBus extends BusCommand
     private $token;
 
     /**
-     * CorporationCharacterShouldUpdate constructor.
+     * Corporation constructor.
      *
      * @param int $corporation_id
      * @param \Seat\Eveapi\Models\RefreshToken $token
@@ -103,68 +103,56 @@ class CorporationBus extends BusCommand
             new AllianceHistory($this->corporation_id),
             new Divisions($this->corporation_id, $this->token),
 
-            (new Roles($this->corporation_id, $this->token))->chain([
-                new RoleHistories($this->corporation_id, $this->token),
-            ]),
+            new Roles($this->corporation_id, $this->token),
+            new RoleHistories($this->corporation_id, $this->token),
 
-            (new Titles($this->corporation_id, $this->token))->chain([
-                new MembersTitles($this->corporation_id, $this->token),
-            ]),
+            new Titles($this->corporation_id, $this->token),
+            new MembersTitles($this->corporation_id, $this->token),
 
-            (new MembersLimit($this->corporation_id, $this->token))->chain([
-                new Members($this->corporation_id, $this->token),
-                new MemberTracking($this->corporation_id, $this->token),
-            ]),
+            new MembersLimit($this->corporation_id, $this->token),
+            new Members($this->corporation_id, $this->token),
+            new MemberTracking($this->corporation_id, $this->token),
 
-            (new Medals($this->corporation_id, $this->token))->chain([
-                new IssuedMedals($this->corporation_id, $this->token),
-            ]),
+            new Medals($this->corporation_id, $this->token),
+            new IssuedMedals($this->corporation_id, $this->token),
 
             // collect military informations
             new Recent($this->corporation_id, $this->token),
 
             // collect industrial informations
-            (new Blueprints($this->corporation_id, $this->token))->chain([
-                new Facilities($this->corporation_id, $this->token),
-                new Jobs($this->corporation_id, $this->token),
-                (new Observers($this->corporation_id, $this->token))->chain([
-                    new ObserverDetails($this->corporation_id, $this->token),
-                ]),
-            ]),
+            new Blueprints($this->corporation_id, $this->token),
+            new Facilities($this->corporation_id, $this->token),
+            new Jobs($this->corporation_id, $this->token),
+            new Observers($this->corporation_id, $this->token),
+            new ObserverDetails($this->corporation_id, $this->token),
 
             // collect financial informations
             new Orders($this->corporation_id, $this->token),
             new Contracts($this->corporation_id, $this->token),
             new Shareholders($this->corporation_id, $this->token),
-            (new Balances($this->corporation_id, $this->token))->chain([
-                new Journals($this->corporation_id, $this->token),
-                new Transactions($this->corporation_id, $this->token),
-            ]),
+            new Balances($this->corporation_id, $this->token),
+            new Journals($this->corporation_id, $this->token),
+            new Transactions($this->corporation_id, $this->token),
 
             // collect intel informations
+            new Labels($this->corporation_id, $this->token),
             new Standings($this->corporation_id, $this->token),
-            (new Contacts($this->corporation_id, $this->token))->chain([
-                new Labels($this->corporation_id, $this->token),
-            ]),
+            new Contacts($this->corporation_id, $this->token),
 
             // structures
-            (new Starbases($this->corporation_id, $this->token))->chain([
-                new StarbaseDetails($this->corporation_id, $this->token),
-            ]),
-            (new Structures($this->corporation_id, $this->token))->chain([
-                new Extractions($this->corporation_id, $this->token),
-            ]),
-            (new CustomsOffices($this->corporation_id, $this->token))->chain([
-                new CustomsOfficeLocations($this->corporation_id, $this->token),
-            ]),
+            new Starbases($this->corporation_id, $this->token),
+            new StarbaseDetails($this->corporation_id, $this->token),
+            new Structures($this->corporation_id, $this->token),
+            new Extractions($this->corporation_id, $this->token),
+            new CustomsOffices($this->corporation_id, $this->token),
+            new CustomsOfficeLocations($this->corporation_id, $this->token),
 
             // assets
-            (new Assets($this->corporation_id, $this->token))->chain([
-                new ContainerLogs($this->corporation_id, $this->token),
-                new Locations($this->corporation_id, $this->token),
-                new Names($this->corporation_id, $this->token),
-                new CorporationStructures($this->corporation_id, $this->token),
-            ]),
+            new Assets($this->corporation_id, $this->token),
+            new ContainerLogs($this->corporation_id, $this->token),
+            new Locations($this->corporation_id, $this->token),
+            new Names($this->corporation_id, $this->token),
+            new CorporationStructures($this->corporation_id, $this->token),
         ])->dispatch($this->corporation_id);
     }
 }
