@@ -149,6 +149,9 @@ class Character extends BusCommand
             new Names($this->token),
             new Locations($this->token),
             new CharacterStructures($this->token),
-        ])->dispatch($this->token->character_id);
+        ])->dispatch($this->token->character_id)->delay(now()->addSeconds(rand(30, 300)));
+        // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
+        // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
+        // https://github.com/eveseat/seat/issues/731
     }
 }
