@@ -27,8 +27,6 @@ use Seat\Console\Bus\Alliance as AllianceBus;
 use Seat\Eveapi\Jobs\Alliances\Alliances as AlliancesJob;
 use Seat\Eveapi\Jobs\Alliances\Info;
 use Seat\Eveapi\Jobs\Alliances\Members;
-use Seat\Eveapi\Jobs\Contacts\Alliance\Contacts;
-use Seat\Eveapi\Jobs\Contacts\Alliance\Labels;
 use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\RefreshToken;
 
