@@ -56,15 +56,16 @@ class Corporations extends Command
         // to prevent excessive calls, we queue only jobs for tokens with Director role.
         // more than 80% of corporation endpoints are requiring this role anyway.
         // https://github.com/eveseat/seat/issues/731
-        RefreshToken::whereHas('character.corporation_roles', function ($query) {
+        $tokens = RefreshToken::whereHas('character.affiliation', function ($query) {
+            $query->whereNotNull('corporation_id');
+        })->whereHas('character.corporation_roles', function ($query) {
             $query->where('role', 'Director');
         })->when($this->argument('character_id'), function ($tokens) {
             return $tokens->where('character_id', $this->argument('character_id'));
-        })->each(function ($tokens) {
+        })->get()->unique('character.affiliation.corporation_id')->each(function ($token) {
 
             // Fire the class to update corporation information
-            if ($token->character->affiliation->corporation_id != null)
-                (new Corporation($token->character->affiliation->corporation_id, $token))->fire();
+            (new Corporation($token->character->affiliation->corporation_id, $token))->fire();
         });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');

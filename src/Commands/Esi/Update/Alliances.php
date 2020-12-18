@@ -23,6 +23,7 @@
 namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
+use Seat\Console\Bus\Alliance as AllianceBus;
 use Seat\Eveapi\Jobs\Alliances\Alliances as AlliancesJob;
 use Seat\Eveapi\Jobs\Alliances\Info;
 use Seat\Eveapi\Jobs\Alliances\Members;
@@ -49,9 +50,39 @@ class Alliances extends Command
     protected $description = 'Schedule update jobs for alliances';
 
     /**
+     * @var array
+     */
+    private $alliance_blacklist = [];
+
+    /**
      * Execute the console command.
      */
     public function handle()
+    {
+        $this->processTokens();
+        $this->processPublics();
+    }
+
+    private function processTokens()
+    {
+        $tokens = RefreshToken::whereHas('character.affiliation', function ($query) {
+            $query->whereNotNull('alliance_id');
+        })->when($this->argument('alliance_ids'), function ($tokens) {
+            return $tokens->whereIn('character.affiliation.alliance_id', $this->argument('alliance_ids'));
+        })->get()->unique('character.affiliation.alliance_id')->each(function ($token) {
+
+            // init a blacklist which will be seed by token loop in order to prevent multiple jobs targetting same alliance
+            // to be queued
+            $this->alliance_blacklist[] = $token->character->affiliation->alliance_id;
+
+            // Fire the class to update alliance information
+            (new AllianceBus($token->character->affiliation->alliance_id, $token))->fire();
+        });
+
+        $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
+    }
+
+    private function processPublics()
     {
         // collect optional alliance ID from arguments
         $alliance_ids = $this->argument('alliance_ids') ?: [];
@@ -65,25 +96,14 @@ class Alliances extends Command
         // loop over alliances and queue detailed jobs
         // if we don't have any alliance registered -> queue a global job to collect them
         if ($alliances->get()->each(function ($alliance) {
-            Info::dispatch($alliance->alliance_id);
-            Members::dispatch($alliance->alliance_id);
+
+            // ignore already processed alliances
+            if (in_array($alliance->alliance_id, $this->alliance_blacklist))
+                return true;
+
+            Info::withChain([
+                new Members($alliance->alliance_id),
+            ])->dispatch($alliance->alliance_id)->delay(now()->addSeconds(rand(20, 600)));
         })->isEmpty() && empty($alliance_ids)) AlliancesJob::dispatch();
-
-        $tokens = RefreshToken::all()
-            ->when(count($this->argument('alliance_ids')) > 0, function ($tokens) {
-
-                return $tokens->whereIn('character.affiliation.alliance_id', $this->argument('alliance_ids'));
-            })
-            ->each(function ($token) {
-
-                // Fire the class to update alliance information
-                if ($token->character->affiliation->alliance_id != null) {
-                    Contacts::withChain([
-                        new Labels($token->character->affiliation->alliance_id, $token),
-                    ])->dispatch($token->character->affiliation->alliance_id, $token);
-                }
-            });
-
-        $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
     }
 }
