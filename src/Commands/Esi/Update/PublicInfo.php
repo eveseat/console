@@ -92,7 +92,7 @@ class PublicInfo extends Command
         CharacterInfo::doesntHave('refresh_token')->each(function ($character) {
             CharacterInfoJob::withChain([
                 new CorporationHistory($character->character_id),
-            ])->dispatch($character->character_id)->delay(rand(30, 300));
+            ])->dispatch($character->character_id)->delay(rand(10, 120));
             // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
             // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
             // https://github.com/eveseat/seat/issues/731
@@ -101,7 +101,7 @@ class PublicInfo extends Command
         CorporationInfo::all()->each(function ($corporation) {
             CorporationInfoJob::withChain([
                 new AllianceHistory($corporation->corporation_id),
-            ])->dispatch($corporation->corporation_id)->delay(rand(120, 600));
+            ])->dispatch($corporation->corporation_id)->delay(rand(120, 300));
             // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
             // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
             // https://github.com/eveseat/seat/issues/731

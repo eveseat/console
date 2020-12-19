@@ -153,7 +153,7 @@ class Corporation extends BusCommand
             new Locations($this->corporation_id, $this->token),
             new Names($this->corporation_id, $this->token),
             new CorporationStructures($this->corporation_id, $this->token),
-        ])->dispatch($this->corporation_id)->delay(now()->addSeconds(rand(120, 600)));
+        ])->dispatch($this->corporation_id)->delay(now()->addSeconds(rand(120, 300)));
         // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
         // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
         // https://github.com/eveseat/seat/issues/731

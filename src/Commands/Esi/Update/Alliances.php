@@ -101,7 +101,7 @@ class Alliances extends Command
 
             Info::withChain([
                 new Members($alliance->alliance_id),
-            ])->dispatch($alliance->alliance_id)->delay(now()->addSeconds(rand(20, 600)));
+            ])->dispatch($alliance->alliance_id)->delay(now()->addSeconds(rand(20, 300)));
         })->isEmpty() && empty($alliance_ids)) AlliancesJob::dispatch();
     }
 }
