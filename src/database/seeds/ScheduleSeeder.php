@@ -39,7 +39,7 @@ class ScheduleSeeder extends Seeder
 
         [   // ESI Status | Every Minute
             'command'           => 'esi:update:status',
-            'expression'        => '* 0-10,13-23 * * *',
+            'expression'        => '* * * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -55,7 +55,7 @@ class ScheduleSeeder extends Seeder
         ],
         [   // EVE Server Status | Every Minute
             'command'           => 'eve:update:status',
-            'expression'        => '* 0-10,13-23 * * *',
+            'expression'        => '* * * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -79,7 +79,7 @@ class ScheduleSeeder extends Seeder
         ],
         [   // Characters | Hourly
             'command'           => 'esi:update:characters',
-            'expression'        => '0 0-10,13-23 * * *',
+            'expression'        => '0 * * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -87,7 +87,7 @@ class ScheduleSeeder extends Seeder
         ],
         [   // Character Affiliation | Every two hours
             'command'           => 'esi:update:affiliations',
-            'expression'        => '0 0-10/2,13-23/2 * * *',
+            'expression'        => '0 */2 * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -95,7 +95,7 @@ class ScheduleSeeder extends Seeder
         ],
         [   // Character Notifications | Every twenty minutes
             'command'           => 'esi:update:notifications',
-            'expression'        => '*/20 0-10,13-23 * * *',
+            'expression'        => '*/20 * * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -103,7 +103,7 @@ class ScheduleSeeder extends Seeder
         ],
         [   // Corporations | Every two hours
             'command'           => 'esi:update:corporations',
-            'expression'        => '0 0-10/2,13-23/2 * * *',
+            'expression'        => '0 */2 * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -111,7 +111,7 @@ class ScheduleSeeder extends Seeder
         ],
         [   // Killmails | Every fifteen minutes
             'command'           => 'esi:update:killmails',
-            'expression'        => '*/15 0-10,13-23 * * *',
+            'expression'        => '*/15 * * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -119,7 +119,7 @@ class ScheduleSeeder extends Seeder
         ],
         [   // Contracts | Every fifteen minutes
             'command'           => 'esi:update:contracts',
-            'expression'        => '*/15 0-10,13-23 * * *',
+            'expression'        => '*/15 * * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -188,12 +188,12 @@ class ScheduleSeeder extends Seeder
             switch ($schedule['command']) {
                 // use random minute, from 12am up to 10am and from 1pm up to 11pm
                 case 'esi:update:characters':
-                    $this->schedules[$key]['expression'] = sprintf('%d 0-10,13-23 * * *', rand(0, 59));
+                    $this->schedules[$key]['expression'] = sprintf('%d * * * *', rand(0, 59));
                     break;
                 // use random minute, from 12am up to 10am and from 1pm up to 11pm - every 2 hours
                 case 'esi:update:affiliations':
                 case 'esi:update:corporations':
-                    $this->schedules[$key]['expression'] = sprintf('%d 0-10/2,13-23/2 * * *', rand(0, 59));
+                    $this->schedules[$key]['expression'] = sprintf('%d */2 * * *', rand(0, 59));
                     break;
                 // use random minute and hour, once a day, between 12am up to 10am and from 1pm up to 11pm
                 case 'esi:update:public':
