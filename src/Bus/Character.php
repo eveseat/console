@@ -41,7 +41,6 @@ use Seat\Eveapi\Jobs\Clones\Clones;
 use Seat\Eveapi\Jobs\Clones\Implants;
 use Seat\Eveapi\Jobs\Contacts\Character\Contacts;
 use Seat\Eveapi\Jobs\Contacts\Character\Labels as ContactLabels;
-use Seat\Eveapi\Jobs\Contracts\Character\Contracts;
 use Seat\Eveapi\Jobs\Fittings\Character\Fittings;
 use Seat\Eveapi\Jobs\Industry\Character\Jobs;
 use Seat\Eveapi\Jobs\Industry\Character\Mining;
@@ -122,7 +121,6 @@ class Character extends BusCommand
 
             // collect financial informations
             new Orders($this->token),
-            new Contracts($this->token),
             new Planets($this->token),
             new Balance($this->token),
             new Journal($this->token),

@@ -27,7 +27,6 @@ use Seat\Eveapi\Jobs\Assets\Corporation\Locations;
 use Seat\Eveapi\Jobs\Assets\Corporation\Names;
 use Seat\Eveapi\Jobs\Contacts\Corporation\Contacts;
 use Seat\Eveapi\Jobs\Contacts\Corporation\Labels;
-use Seat\Eveapi\Jobs\Contracts\Corporation\Contracts;
 use Seat\Eveapi\Jobs\Corporation\AllianceHistory;
 use Seat\Eveapi\Jobs\Corporation\Blueprints;
 use Seat\Eveapi\Jobs\Corporation\ContainerLogs;
@@ -124,7 +123,6 @@ class Corporation extends BusCommand
 
             // collect financial informations
             new Orders($this->corporation_id, $this->token),
-            new Contracts($this->corporation_id, $this->token),
             new Shareholders($this->corporation_id, $this->token),
             new Balances($this->corporation_id, $this->token),
             new Journals($this->corporation_id, $this->token),
