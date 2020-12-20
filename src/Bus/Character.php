@@ -45,7 +45,6 @@ use Seat\Eveapi\Jobs\Contracts\Character\Contracts;
 use Seat\Eveapi\Jobs\Fittings\Character\Fittings;
 use Seat\Eveapi\Jobs\Industry\Character\Jobs;
 use Seat\Eveapi\Jobs\Industry\Character\Mining;
-use Seat\Eveapi\Jobs\Killmails\Character\Recent;
 use Seat\Eveapi\Jobs\Location\Character\Location;
 use Seat\Eveapi\Jobs\Location\Character\Online;
 use Seat\Eveapi\Jobs\Location\Character\Ship;
@@ -111,7 +110,6 @@ class Character extends BusCommand
 
             // collect military informations
             new Fittings($this->token),
-            new Recent($this->token),
 
             new Fatigue($this->token),
             new Medals($this->token),

@@ -52,7 +52,6 @@ use Seat\Eveapi\Jobs\Industry\Corporation\Jobs;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Extractions;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\ObserverDetails;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Observers;
-use Seat\Eveapi\Jobs\Killmails\Corporation\Recent;
 use Seat\Eveapi\Jobs\Market\Corporation\Orders;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOfficeLocations;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOffices;
@@ -115,9 +114,6 @@ class Corporation extends BusCommand
 
             new Medals($this->corporation_id, $this->token),
             new IssuedMedals($this->corporation_id, $this->token),
-
-            // collect military informations
-            new Recent($this->corporation_id, $this->token),
 
             // collect industrial informations
             new Blueprints($this->corporation_id, $this->token),
