@@ -59,6 +59,7 @@ class Corporations extends Command
         $tokens = RefreshToken::whereHas('character.affiliation', function ($query) {
             $query->whereNotNull('corporation_id');
         })->whereHas('character.corporation_roles', function ($query) {
+            $query->where('scope', 'roles');
             $query->where('role', 'Director');
         })->when($this->argument('character_id'), function ($tokens) {
             return $tokens->where('character_id', $this->argument('character_id'));
