@@ -186,16 +186,16 @@ class ScheduleSeeder extends Seeder
 
         foreach ($this->schedules as $key => $schedule) {
             switch ($schedule['command']) {
-                // use random minute, from 12am up to 10am and from 1pm up to 11pm
+                // use random minute - every hour
                 case 'esi:update:characters':
                     $this->schedules[$key]['expression'] = sprintf('%d * * * *', rand(0, 59));
                     break;
-                // use random minute, from 12am up to 10am and from 1pm up to 11pm - every 2 hours
+                // use random minute - every 2 hours
                 case 'esi:update:affiliations':
                 case 'esi:update:corporations':
                     $this->schedules[$key]['expression'] = sprintf('%d */2 * * *', rand(0, 59));
                     break;
-                // use random minute and hour, once a day, between 12am up to 10am and from 1pm up to 11pm
+                // use random minute and hour, once a day
                 case 'esi:update:public':
                 case 'esi:update:prices':
                 case 'esi:update:alliances':
