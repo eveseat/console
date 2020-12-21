@@ -23,6 +23,7 @@
 namespace Seat\Console\database\seeds;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -34,7 +35,7 @@ class ScheduleSeeder extends Seeder
     /**
      * @var array
      */
-    protected $schedule = [
+    protected $schedules = [
 
         [   // ESI Status | Every Minute
             'command'           => 'esi:update:status',
@@ -68,7 +69,7 @@ class ScheduleSeeder extends Seeder
             'ping_before'       => null,
             'ping_after'        => null,
         ],
-        [   // EVE Map | Daily at 12am
+        [   // Public Data | Daily at 12am
             'command'           => 'esi:update:public',
             'expression'        => '0 0 * * *',
             'allow_overlap'     => false,
@@ -149,6 +150,9 @@ class ScheduleSeeder extends Seeder
      */
     public function run()
     {
+        // add randomness to default schedules
+        $this->seedRandomize();
+
         //
         // drop SeAT 3.x deprecated commands
         //
@@ -156,22 +160,48 @@ class ScheduleSeeder extends Seeder
         DB::table('schedules')->where('command', 'esi:update:serverstatus')->delete();
         DB::table('schedules')->where('command', 'esi:update:esistatus')->delete();
 
-        //
-        // fix SeAT 4 released schedules
-        //
-        DB::table('schedules')
-            ->where('command', 'esi:update:affiliations')
-            ->where('expression', '* */2 * * *')
-            ->update([
-                'expression' => '0 */2 * * *',
-            ]);
-
         // Check if we have the schedules, else,
         // insert them
-        foreach ($this->schedule as $job) {
-
-            if (! DB::table('schedules')->where('command', $job['command'])->first())
+        foreach ($this->schedules as $job) {
+            if (DB::table('schedules')->where('command', $job['command'])->exists()) {
+                DB::table('schedules')->where('command', $job['command'])->update([
+                    'expression' => $job['expression'],
+                ]);
+            } else {
                 DB::table('schedules')->insert($job);
+            }
+        }
+    }
+
+    /**
+     * To prevent massive request wave from all installed instances in the world,
+     * we add some randomness to seeded schedules.
+     *
+     * @see https://github.com/eveseat/seat/issues/731
+     */
+    private function seedRandomize()
+    {
+        // except utc 11 and utc 12
+        $hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+
+        foreach ($this->schedules as $key => $schedule) {
+            switch ($schedule['command']) {
+                // use random minute - every hour
+                case 'esi:update:characters':
+                    $this->schedules[$key]['expression'] = sprintf('%d * * * *', rand(0, 59));
+                    break;
+                // use random minute - every 2 hours
+                case 'esi:update:affiliations':
+                case 'esi:update:corporations':
+                    $this->schedules[$key]['expression'] = sprintf('%d */2 * * *', rand(0, 59));
+                    break;
+                // use random minute and hour, once a day
+                case 'esi:update:public':
+                case 'esi:update:prices':
+                case 'esi:update:alliances':
+                    $this->schedules[$key]['expression'] = sprintf('%d %d * * *', rand(0, 59), Arr::random($hours));
+                    break;
+            }
         }
     }
 }

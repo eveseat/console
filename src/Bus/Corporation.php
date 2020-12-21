@@ -27,7 +27,6 @@ use Seat\Eveapi\Jobs\Assets\Corporation\Locations;
 use Seat\Eveapi\Jobs\Assets\Corporation\Names;
 use Seat\Eveapi\Jobs\Contacts\Corporation\Contacts;
 use Seat\Eveapi\Jobs\Contacts\Corporation\Labels;
-use Seat\Eveapi\Jobs\Contracts\Corporation\Contracts;
 use Seat\Eveapi\Jobs\Corporation\AllianceHistory;
 use Seat\Eveapi\Jobs\Corporation\Blueprints;
 use Seat\Eveapi\Jobs\Corporation\ContainerLogs;
@@ -52,7 +51,6 @@ use Seat\Eveapi\Jobs\Industry\Corporation\Jobs;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Extractions;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\ObserverDetails;
 use Seat\Eveapi\Jobs\Industry\Corporation\Mining\Observers;
-use Seat\Eveapi\Jobs\Killmails\Corporation\Recent;
 use Seat\Eveapi\Jobs\Market\Corporation\Orders;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOfficeLocations;
 use Seat\Eveapi\Jobs\PlanetaryInteraction\Corporation\CustomsOffices;
@@ -116,9 +114,6 @@ class Corporation extends BusCommand
             new Medals($this->corporation_id, $this->token),
             new IssuedMedals($this->corporation_id, $this->token),
 
-            // collect military informations
-            new Recent($this->corporation_id, $this->token),
-
             // collect industrial informations
             new Blueprints($this->corporation_id, $this->token),
             new Facilities($this->corporation_id, $this->token),
@@ -128,7 +123,6 @@ class Corporation extends BusCommand
 
             // collect financial informations
             new Orders($this->corporation_id, $this->token),
-            new Contracts($this->corporation_id, $this->token),
             new Shareholders($this->corporation_id, $this->token),
             new Balances($this->corporation_id, $this->token),
             new Journals($this->corporation_id, $this->token),
@@ -153,6 +147,9 @@ class Corporation extends BusCommand
             new Locations($this->corporation_id, $this->token),
             new Names($this->corporation_id, $this->token),
             new CorporationStructures($this->corporation_id, $this->token),
-        ])->dispatch($this->corporation_id);
+        ])->dispatch($this->corporation_id)->delay(now()->addSeconds(rand(120, 300)));
+        // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
+        // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
+        // https://github.com/eveseat/seat/issues/731
     }
 }

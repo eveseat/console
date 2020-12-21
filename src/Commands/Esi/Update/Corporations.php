@@ -39,7 +39,7 @@ class Corporations extends Command
      * @var string
      */
     protected $signature = 'esi:update:corporations {character_id? : Optional character_id to update ' .
-    'corporation information for}';
+        'corporation information for}';
 
     /**
      * The console command description.
@@ -53,18 +53,21 @@ class Corporations extends Command
      */
     public function handle()
     {
+        // to prevent excessive calls, we queue only jobs for tokens with Director role.
+        // more than 80% of corporation endpoints are requiring this role anyway.
+        // https://github.com/eveseat/seat/issues/731
+        $tokens = RefreshToken::whereHas('character.affiliation', function ($query) {
+            $query->whereNotNull('corporation_id');
+        })->whereHas('character.corporation_roles', function ($query) {
+            $query->where('scope', 'roles');
+            $query->where('role', 'Director');
+        })->when($this->argument('character_id'), function ($tokens) {
+            return $tokens->where('character_id', $this->argument('character_id'));
+        })->get()->unique('character.affiliation.corporation_id')->each(function ($token) {
 
-        $tokens = RefreshToken::all()
-            ->when($this->argument('character_id'), function ($tokens) {
-
-                return $tokens->where('character_id', $this->argument('character_id'));
-            })
-            ->each(function ($token) {
-
-                // Fire the class to update corporation information
-                if ($token->character->affiliation->corporation_id != null)
-                    (new Corporation($token->character->affiliation->corporation_id, $token))->fire();
-            });
+            // Fire the class to update corporation information
+            (new Corporation($token->character->affiliation->corporation_id, $token))->fire();
+        });
 
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
 

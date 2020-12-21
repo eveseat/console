@@ -65,11 +65,19 @@ class Killmails extends Command
         if ($killmails->get()->each(function ($killmail) {
             Detail::dispatch($killmail->killmail_id, $killmail->killmail_hash);
         })->isEmpty() && empty($killmail_ids)) {
-            RefreshToken::with('character', 'affiliation', 'character.corporation_roles')->get()->each(function ($token) {
-                RecentCharacterKills::dispatch($token);
+            RefreshToken::chunk(100, function ($tokens) {
+                $tokens->each(function ($token) {
+                    RecentCharacterKills::dispatch($token);
+                });
+            });
 
-                if ($token->character->corporation_roles->where('role', 'Director')->isNotEmpty())
-                    RecentCorporationKills::dispatch($token->character->affiliation->corporation_id, $token);
+            RefreshToken::whereHas('character.affiliation', function ($query) {
+                $query->whereNotNull('corporation_id');
+            })->whereHas('character.corporation_roles', function ($query) {
+                $query->where('scope', 'roles');
+                $query->where('role', 'Director');
+            })->get()->unique('character.affiliation.corporation_id')->each(function ($token) {
+                RecentCorporationKills::dispatch($token->character->affiliation->corporation_id, $token);
             });
         }
     }

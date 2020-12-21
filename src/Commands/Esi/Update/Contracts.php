@@ -74,18 +74,21 @@ class Contracts extends Command
 
     private function enqueueContractsListJobs()
     {
+        // process all tokens character contracts by batch of 100
         RefreshToken::chunk(100, function ($tokens) {
             foreach ($tokens as $token) {
-
-                // enqueue job to list contracts for that character
                 CharacterContracts::dispatch($token);
-
-                // in case this character is also a Director, enqueue job to list contracts for his corporation
-                if ($token->whereHas('character.corporation_roles', function ($query) {
-                    $query->where('scope', 'roles');
-                    $query->where('role', 'Director');
-                })) CorporationContracts::dispatch($token->character->affiliation->corporation_id, $token);
             }
+        });
+
+        // process all tokens corporation contracts with a Director role
+        RefreshToken::whereHas('character.affiliation', function ($query) {
+            $query->whereNotNull('corporation_id');
+        })->whereHas('character.corporation_roles', function ($query) {
+            $query->where('scope', 'roles');
+            $query->where('role', 'Director');
+        })->get()->unique('character.affiliation.corporation_id')->each(function ($token) {
+            CorporationContracts::dispatch($token->character->affiliation->corporation_id, $token);
         });
     }
 

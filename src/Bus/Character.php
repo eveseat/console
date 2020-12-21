@@ -41,11 +41,9 @@ use Seat\Eveapi\Jobs\Clones\Clones;
 use Seat\Eveapi\Jobs\Clones\Implants;
 use Seat\Eveapi\Jobs\Contacts\Character\Contacts;
 use Seat\Eveapi\Jobs\Contacts\Character\Labels as ContactLabels;
-use Seat\Eveapi\Jobs\Contracts\Character\Contracts;
 use Seat\Eveapi\Jobs\Fittings\Character\Fittings;
 use Seat\Eveapi\Jobs\Industry\Character\Jobs;
 use Seat\Eveapi\Jobs\Industry\Character\Mining;
-use Seat\Eveapi\Jobs\Killmails\Character\Recent;
 use Seat\Eveapi\Jobs\Location\Character\Location;
 use Seat\Eveapi\Jobs\Location\Character\Online;
 use Seat\Eveapi\Jobs\Location\Character\Ship;
@@ -111,7 +109,6 @@ class Character extends BusCommand
 
             // collect military informations
             new Fittings($this->token),
-            new Recent($this->token),
 
             new Fatigue($this->token),
             new Medals($this->token),
@@ -124,7 +121,6 @@ class Character extends BusCommand
 
             // collect financial informations
             new Orders($this->token),
-            new Contracts($this->token),
             new Planets($this->token),
             new Balance($this->token),
             new Journal($this->token),
@@ -149,6 +145,9 @@ class Character extends BusCommand
             new Names($this->token),
             new Locations($this->token),
             new CharacterStructures($this->token),
-        ])->dispatch($this->token->character_id);
+        ])->dispatch($this->token->character_id)->delay(now()->addSeconds(rand(10, 120)));
+        // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
+        // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
+        // https://github.com/eveseat/seat/issues/731
     }
 }
