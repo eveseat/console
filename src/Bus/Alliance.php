@@ -22,69 +22,25 @@
 
 namespace Seat\Console\Bus;
 
-use Seat\Eveapi\Jobs\Alliances\Info;
-use Seat\Eveapi\Jobs\Alliances\Members;
-use Seat\Eveapi\Jobs\Contacts\Alliance\Contacts;
-use Seat\Eveapi\Jobs\Contacts\Alliance\Labels;
+use Seat\Eveapi\Bus\Alliance as AllianceBus;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
  * Class Alliance.
  *
  * @package Seat\Console\Bus
- * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
+ * @deprecated since 4.7.0 - will be replaced by Seat\Eveapi\Bus\Alliance
  */
-class Alliance extends BusCommand
+class Alliance extends AllianceBus
 {
-    /**
-     * @var int
-     */
-    private $alliance_id;
-
-    /**
-     * @var \Illuminate\Support\Collection
-     */
-    private $jobs;
-
-    /**
-     * @var \Seat\Eveapi\Models\RefreshToken|null
-     */
-    private $token;
-
     /**
      * Alliance constructor.
      *
      * @param int $alliance_id
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param \Seat\Eveapi\Models\RefreshToken|null $token
      */
     public function __construct(int $alliance_id, ?RefreshToken $token = null)
     {
-        $this->token = $token;
-        $this->alliance_id = $alliance_id;
-        $this->jobs = collect();
-    }
-
-    public function fire()
-    {
-        $this->jobs->add(new Members($this->alliance_id));
-
-        if (! is_null($this->token))
-            $this->addAuthenticatedJobs();
-
-        Info::withChain($this->jobs->toArray())
-            ->dispatch($this->alliance_id)
-            ->delay(now()->addSeconds(rand(20, 300)));
-        // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
-        // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
-        // https://github.com/eveseat/seat/issues/731
-    }
-
-    /**
-     * Seed jobs list with job requiring authentication.
-     */
-    private function addAuthenticatedJobs()
-    {
-        $this->jobs->add(new Labels($this->alliance_id, $this->token));
-        $this->jobs->add(new Contacts($this->alliance_id, $this->token));
+        parent::__construct($alliance_id, $token);
     }
 }

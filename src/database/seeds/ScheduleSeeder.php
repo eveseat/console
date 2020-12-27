@@ -36,18 +36,17 @@ class ScheduleSeeder extends Seeder
      * @var array
      */
     protected $schedules = [
-
-        [   // ESI Status | Every Minute
-            'command'           => 'esi:update:status',
-            'expression'        => '* * * * *',
+        [   // Horizon Metrics | Every Five Minutes
+            'command'           => 'horizon:snapshot',
+            'expression'        => '*/5 * * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
             'ping_after'        => null,
         ],
-        [   // Horizon Metrics | Every Five Minutes
-            'command'           => 'horizon:snapshot',
-            'expression'        => '*/5 * * * *',
+        [   // ESI Status | Every Minute
+            'command'           => 'esi:update:status',
+            'expression'        => '* * * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -69,17 +68,17 @@ class ScheduleSeeder extends Seeder
             'ping_before'       => null,
             'ping_after'        => null,
         ],
-        [   // Public Data | Daily at 12am
-            'command'           => 'esi:update:public',
-            'expression'        => '0 0 * * *',
+        [   // Update a set of tokens | Every 2 Minutes
+            'command'           => 'seat:buckets:update',
+            'expression'        => '*/2 * * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
             'ping_after'        => null,
         ],
-        [   // Characters | Hourly
-            'command'           => 'esi:update:characters',
-            'expression'        => '0 * * * *',
+        [   // Public Data | Daily at 12am
+            'command'           => 'esi:update:public',
+            'expression'        => '0 0 * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -96,14 +95,6 @@ class ScheduleSeeder extends Seeder
         [   // Character Notifications | Every twenty minutes
             'command'           => 'esi:update:notifications',
             'expression'        => '*/20 * * * *',
-            'allow_overlap'     => false,
-            'allow_maintenance' => false,
-            'ping_before'       => null,
-            'ping_after'        => null,
-        ],
-        [   // Corporations | Every two hours
-            'command'           => 'esi:update:corporations',
-            'expression'        => '0 */2 * * *',
             'allow_overlap'     => false,
             'allow_maintenance' => false,
             'ping_before'       => null,
@@ -186,13 +177,8 @@ class ScheduleSeeder extends Seeder
 
         foreach ($this->schedules as $key => $schedule) {
             switch ($schedule['command']) {
-                // use random minute - every hour
-                case 'esi:update:characters':
-                    $this->schedules[$key]['expression'] = sprintf('%d * * * *', rand(0, 59));
-                    break;
                 // use random minute - every 2 hours
                 case 'esi:update:affiliations':
-                case 'esi:update:corporations':
                     $this->schedules[$key]['expression'] = sprintf('%d */2 * * *', rand(0, 59));
                     break;
                 // use random minute and hour, once a day
