@@ -31,6 +31,7 @@ use Seat\Eseye\Exceptions\RequestFailedException;
  * Class Ping.
  *
  * @package Seat\Console\Commands\Esi
+ * @deprecated since 4.7.0
  */
 class Ping extends Command
 {

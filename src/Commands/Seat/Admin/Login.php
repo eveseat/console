@@ -33,6 +33,7 @@ use Seat\Web\Models\User;
  * Class Login.
  *
  * @package Seat\Console\Commands\Seat\Admin
+ * @deprecated since 4.7.0 - this will be moved into web package in a near future
  */
 class Login extends Command
 {
