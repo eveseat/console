@@ -64,6 +64,7 @@ use Seat\Eveapi\Models\RefreshToken;
 /**
  * Class Character.
  * @package Seat\Console\Bus
+ * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
  */
 class Character extends BusCommand
 {

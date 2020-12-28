@@ -29,6 +29,7 @@ use Seat\Eveapi\Jobs\Status\Status as ServerStatusJob;
  * Class Status.
  *
  * @package Seat\Console\Commands\Eve\Update
+ * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
  */
 class Status extends Command
 {

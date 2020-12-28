@@ -28,6 +28,7 @@ use Seat\Services\Settings\Seat;
 /**
  * Class Email.
  * @package Seat\Console\Commands\Seat\Admin
+ * @deprecated since 4.7.0
  */
 class Email extends Command
 {

@@ -34,6 +34,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Dispatch.
  *
  * @package Seat\Console\Commands\Esi
+ * @deprecated since 4.7.0
  */
 class Dispatch extends Command
 {

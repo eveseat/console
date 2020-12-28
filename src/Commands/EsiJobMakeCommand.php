@@ -26,6 +26,12 @@ use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * Class EsiJobMakeCommand.
+ *
+ * @package Seat\Console\Commands
+ * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
+ */
 class EsiJobMakeCommand extends GeneratorCommand
 {
 

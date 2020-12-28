@@ -34,6 +34,7 @@ use Seat\Eveapi\Models\RefreshToken;
  * Class Alliances.
  *
  * @package Seat\Console\Commands\Esi\Update
+ * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
  */
 class Alliances extends Command
 {
