@@ -25,8 +25,6 @@ namespace Seat\Console\Commands\Esi\Update;
 use Illuminate\Console\Command;
 use Seat\Console\Bus\Alliance as AllianceBus;
 use Seat\Eveapi\Jobs\Alliances\Alliances as AlliancesJob;
-use Seat\Eveapi\Jobs\Alliances\Info;
-use Seat\Eveapi\Jobs\Alliances\Members;
 use Seat\Eveapi\Models\Alliances\Alliance;
 use Seat\Eveapi\Models\RefreshToken;
 
@@ -59,7 +57,7 @@ class Alliances extends Command
     public function handle()
     {
         $this->processTokens();
-        $this->processPublics();
+        $this->processPublic();
     }
 
     private function processTokens()
@@ -81,7 +79,7 @@ class Alliances extends Command
         $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
     }
 
-    private function processPublics()
+    private function processPublic()
     {
         // collect optional alliance ID from arguments
         $alliance_ids = $this->argument('alliance_ids') ?: [];
@@ -100,9 +98,7 @@ class Alliances extends Command
             if (in_array($alliance->alliance_id, $this->alliance_blacklist))
                 return true;
 
-            Info::withChain([
-                new Members($alliance->alliance_id),
-            ])->dispatch($alliance->alliance_id)->delay(now()->addSeconds(rand(20, 300)));
+            (new AllianceBus($alliance->alliance_id))->fire();
         })->isEmpty() && empty($alliance_ids)) AlliancesJob::dispatch();
     }
 }
