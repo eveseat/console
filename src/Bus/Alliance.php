@@ -42,7 +42,12 @@ class Alliance extends BusCommand
     private $alliance_id;
 
     /**
-     * @var \Seat\Eveapi\Models\RefreshToken
+     * @var \Illuminate\Support\Collection
+     */
+    private $jobs;
+
+    /**
+     * @var \Seat\Eveapi\Models\RefreshToken|null
      */
     private $token;
 
@@ -52,21 +57,34 @@ class Alliance extends BusCommand
      * @param int $alliance_id
      * @param \Seat\Eveapi\Models\RefreshToken $token
      */
-    public function __construct(int $alliance_id, RefreshToken $token)
+    public function __construct(int $alliance_id, ?RefreshToken $token = null)
     {
         $this->token = $token;
         $this->alliance_id = $alliance_id;
+        $this->jobs = collect();
     }
 
     public function fire()
     {
-        Info::withChain([
-            new Members($this->alliance_id),
-            new Labels($this->alliance_id, $this->token),
-            new Contacts($this->alliance_id, $this->token),
-        ])->dispatch($this->alliance_id)->delay(now()->addSeconds(rand(120, 600)));
+        $this->jobs->add(new Members($this->alliance_id));
+
+        if (! is_null($this->token))
+            $this->addAuthenticatedJobs();
+
+        Info::withChain($this->jobs->toArray())
+            ->dispatch($this->alliance_id)
+            ->delay(now()->addSeconds(rand(20, 300)));
         // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
         // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
         // https://github.com/eveseat/seat/issues/731
+    }
+
+    /**
+     * Seed jobs list with job requiring authentication.
+     */
+    private function addAuthenticatedJobs()
+    {
+        $this->jobs->add(new Labels($this->alliance_id, $this->token));
+        $this->jobs->add(new Contacts($this->alliance_id, $this->token));
     }
 }
