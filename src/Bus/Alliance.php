@@ -55,7 +55,7 @@ class Alliance extends BusCommand
      * Alliance constructor.
      *
      * @param int $alliance_id
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param \Seat\Eveapi\Models\RefreshToken|null $token
      */
     public function __construct(int $alliance_id, ?RefreshToken $token = null)
     {
@@ -64,6 +64,9 @@ class Alliance extends BusCommand
         $this->jobs = collect();
     }
 
+    /**
+     * Fires the jobs.
+     */
     public function fire()
     {
         $this->jobs->add(new Members($this->alliance_id));

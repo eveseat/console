@@ -69,86 +69,105 @@ use Seat\Eveapi\Models\RefreshToken;
 class Character extends BusCommand
 {
     /**
-     * @var \Seat\Eveapi\Models\RefreshToken
+     * @var int
+     */
+    private $character_id;
+
+    /**
+     * @var \Illuminate\Support\Collection
+     */
+    private $jobs;
+
+    /**
+     * @var \Seat\Eveapi\Models\RefreshToken|null
      */
     private $token;
 
     /**
      * Character constructor.
      *
-     * @param \Seat\Eveapi\Models\RefreshToken $token
+     * @param int $character_id
+     * @param \Seat\Eveapi\Models\RefreshToken|null $token
      */
-    public function __construct(RefreshToken $token)
+    public function __construct(int $character_id, ?RefreshToken $token = null)
     {
-
+        $this->character_id = $character_id;
         $this->token = $token;
+        $this->jobs = collect();
     }
 
     /**
-     * Fires the command.
-     *
-     * @return mixed|void
+     * Fires the jobs.
      */
     public function fire()
     {
-        // Character
-        Info::withChain([
-            // collect information related to current character state
-            new CorporationHistory($this->token->character_id),
-            new Roles($this->token),
-            new Titles($this->token),
-            new Clones($this->token),
-            new Implants($this->token),
+        $this->jobs->add(new CorporationHistory($this->character_id));
 
-            new Location($this->token),
-            new Online($this->token),
-            new Ship($this->token),
+        if (! is_null($this->token))
+            $this->addAuthenticatedJobs();
 
-            new Attributes($this->token),
-            new Queue($this->token),
-            new Skills($this->token),
-
-            // collect military informations
-            new Fittings($this->token),
-
-            new Fatigue($this->token),
-            new Medals($this->token),
-
-            // collect industrial informations
-            new Blueprints($this->token),
-            new Jobs($this->token),
-            new Mining($this->token),
-            new AgentsResearch($this->token),
-
-            // collect financial informations
-            new Orders($this->token),
-            new Planets($this->token),
-            new Balance($this->token),
-            new Journal($this->token),
-            new Transactions($this->token),
-
-            // collect intel informations
-            new Standings($this->token),
-            new Contacts($this->token),
-            new ContactLabels($this->token),
-
-            new MailLabels($this->token),
-            new MailingLists($this->token),
-            new Mails($this->token),
-
-            // calendar events
-            new Events($this->token),
-            new Detail($this->token),
-            new Attendees($this->token),
-
-            // assets
-            new Assets($this->token),
-            new Names($this->token),
-            new Locations($this->token),
-            new CharacterStructures($this->token),
-        ])->dispatch($this->token->character_id)->delay(now()->addSeconds(rand(10, 120)));
+        Info::withChain($this->jobs->toArray())
+            ->dispatch($this->character_id)
+            ->delay(now()->addSeconds(rand(10, 120)));
         // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
         // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
         // https://github.com/eveseat/seat/issues/731
+    }
+
+    /**
+     * Seed jobs list with job requiring authentication.
+     */
+    private function addAuthenticatedJobs()
+    {
+        // collect information related to current character state
+        $this->jobs->add(new Roles($this->token));
+        $this->jobs->add(new Titles($this->token));
+        $this->jobs->add(new Clones($this->token));
+        $this->jobs->add(new Implants($this->token));
+
+        $this->jobs->add(new Location($this->token));
+        $this->jobs->add(new Online($this->token));
+        $this->jobs->add(new Ship($this->token));
+
+        $this->jobs->add(new Attributes($this->token));
+        $this->jobs->add(new Queue($this->token));
+        $this->jobs->add(new Skills($this->token));
+
+        // collect military information
+        $this->jobs->add(new Fittings($this->token));
+        $this->jobs->add(new Fatigue($this->token));
+        $this->jobs->add(new Medals($this->token));
+
+        // collect industrial information
+        $this->jobs->add(new Blueprints($this->token));
+        $this->jobs->add(new Jobs($this->token));
+        $this->jobs->add(new Mining($this->token));
+        $this->jobs->add(new AgentsResearch($this->token));
+
+        // collect financial information
+        $this->jobs->add(new Orders($this->token));
+        $this->jobs->add(new Planets($this->token));
+        $this->jobs->add(new Balance($this->token));
+        $this->jobs->add(new Journal($this->token));
+        $this->jobs->add(new Transactions($this->token));
+
+        // collect intel information
+        $this->jobs->add(new Standings($this->token));
+        $this->jobs->add(new Contacts($this->token));
+        $this->jobs->add(new ContactLabels($this->token));
+        $this->jobs->add(new MailLabels($this->token));
+        $this->jobs->add(new MailingLists($this->token));
+        $this->jobs->add(new Mails($this->token));
+
+        // calendar events
+        $this->jobs->add(new Events($this->token));
+        $this->jobs->add(new Detail($this->token));
+        $this->jobs->add(new Attendees($this->token));
+
+        // assets
+        $this->jobs->add(new Assets($this->token));
+        $this->jobs->add(new Names($this->token));
+        $this->jobs->add(new Locations($this->token));
+        $this->jobs->add(new CharacterStructures($this->token));
     }
 }

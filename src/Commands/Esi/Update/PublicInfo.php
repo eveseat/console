@@ -23,11 +23,9 @@
 namespace Seat\Console\Commands\Esi\Update;
 
 use Illuminate\Console\Command;
+use Seat\Console\Bus\Character;
+use Seat\Console\Bus\Corporation;
 use Seat\Eveapi\Jobs\Alliances\Alliances;
-use Seat\Eveapi\Jobs\Character\CorporationHistory;
-use Seat\Eveapi\Jobs\Character\Info as CharacterInfoJob;
-use Seat\Eveapi\Jobs\Corporation\AllianceHistory;
-use Seat\Eveapi\Jobs\Corporation\Info as CorporationInfoJob;
 use Seat\Eveapi\Jobs\Fittings\Insurances;
 use Seat\Eveapi\Jobs\Market\Prices;
 use Seat\Eveapi\Jobs\Sovereignty\Map;
@@ -91,21 +89,11 @@ class PublicInfo extends Command
         Insurances::dispatch();
 
         CharacterInfo::doesntHave('refresh_token')->each(function ($character) {
-            CharacterInfoJob::withChain([
-                new CorporationHistory($character->character_id),
-            ])->dispatch($character->character_id)->delay(rand(10, 120));
-            // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
-            // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
-            // https://github.com/eveseat/seat/issues/731
+            (new Character($character->character_id))->fire();
         });
 
         CorporationInfo::all()->each(function ($corporation) {
-            CorporationInfoJob::withChain([
-                new AllianceHistory($corporation->corporation_id),
-            ])->dispatch($corporation->corporation_id)->delay(rand(120, 300));
-            // in order to prevent ESI to receive massive income of all existing SeAT instances in the world
-            // add a bit of randomize when job can be processed - we use seconds here, so we have more flexibility
-            // https://github.com/eveseat/seat/issues/731
+            (new Corporation($corporation->corporation_id))->fire();
         });
     }
 }
