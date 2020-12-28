@@ -86,13 +86,19 @@ class Character extends BusCommand
     /**
      * Character constructor.
      *
-     * @param int $character_id
+     * @param \Seat\Eveapi\Models\RefreshToken|int $character_id
      * @param \Seat\Eveapi\Models\RefreshToken|null $token
      */
-    public function __construct(int $character_id, ?RefreshToken $token = null)
+    public function __construct($character_id, ?RefreshToken $token = null)
     {
         $this->character_id = $character_id;
         $this->token = $token;
+
+        if (is_a($character_id, RefreshToken::class)) {
+            $this->character_id = $character_id->character_id;
+            $this->token = $character_id;
+        }
+
         $this->jobs = collect();
     }
 
