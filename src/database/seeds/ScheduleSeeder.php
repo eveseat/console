@@ -144,12 +144,12 @@ class ScheduleSeeder extends Seeder
         // add randomness to default schedules
         $this->seedRandomize();
 
-        //
-        // drop SeAT 3.x deprecated commands
-        //
+        // drop deprecated commands
         DB::table('schedules')->where('command', 'alerts:run')->delete();
         DB::table('schedules')->where('command', 'esi:update:serverstatus')->delete();
         DB::table('schedules')->where('command', 'esi:update:esistatus')->delete();
+        DB::table('schedules')->where('command', 'esi:update:characters')->delete();
+        DB::table('schedules')->where('command', 'esi:update:corporations')->delete();
 
         // Check if we have the schedules, else,
         // insert them
