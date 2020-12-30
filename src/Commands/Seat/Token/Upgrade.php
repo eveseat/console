@@ -23,10 +23,10 @@
 namespace Seat\Console\Commands\Seat\Token;
 
 use Carbon\Carbon;
-use DB;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Seat\Eveapi\Models\RefreshToken;
 
 /**
@@ -142,6 +142,5 @@ class Upgrade extends Command
             $this->info('Success: '. $success);
             $this->warn('Temp Fail: '. $errors);
             $this->error('Perm Fail: '. $perm);
-
     }
 }

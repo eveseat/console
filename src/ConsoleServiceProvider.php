@@ -26,9 +26,9 @@ use Seat\Console\Commands\Esi\Dispatch;
 use Seat\Console\Commands\Esi\Ping;
 use Seat\Console\Commands\Esi\Update\Affiliations;
 use Seat\Console\Commands\Esi\Update\Alliances;
-use Seat\Console\Commands\Esi\Update\Characters as CharactersUpdater;
+use Seat\Console\Commands\Esi\Update\Characters;
 use Seat\Console\Commands\Esi\Update\Contracts;
-use Seat\Console\Commands\Esi\Update\Corporations as CorporationsUpdater;
+use Seat\Console\Commands\Esi\Update\Corporations;
 use Seat\Console\Commands\Esi\Update\Killmails;
 use Seat\Console\Commands\Esi\Update\Notifications;
 use Seat\Console\Commands\Esi\Update\Prices;
@@ -77,9 +77,9 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
 
             // Esi
             Ping::class,
-            CharactersUpdater::class,
+            Characters::class,
+            Corporations::class,
             Notifications::class,
-            CorporationsUpdater::class,
             PublicInfo::class,
             Affiliations::class,
             Prices::class,
@@ -89,7 +89,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
             Dispatch::class,
             EsiStatus::class,
 
-            //SSO
+            // SSO
             Upgrade::class,
         ]);
     }
