@@ -83,7 +83,7 @@ class PublicInfo extends Command
             ->chunk(100, function ($assets) {
                 Stations::dispatch($assets->pluck('location_id')->toArray());
             });
-        
+
          // NPC stations using corporation assets
         CorporationAsset::where('location_type', 'station')
             ->select('location_id')
