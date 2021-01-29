@@ -34,6 +34,7 @@ use Seat\Eveapi\Jobs\Sovereignty\Map;
 use Seat\Eveapi\Jobs\Sovereignty\Structures;
 use Seat\Eveapi\Jobs\Universe\Names;
 use Seat\Eveapi\Jobs\Universe\Stations;
+use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
@@ -74,7 +75,16 @@ class PublicInfo extends Command
                 Stations::dispatch($corporations->pluck('home_station_id')->toArray());
             });
 
-        // NPC stations using corporation assets
+        // NPC stations using character assets
+        CharacterAsset::where('location_type', 'station')
+            ->select('location_id')
+            ->orderBy('location_id')
+            ->distinct()
+            ->chunk(100, function ($assets) {
+                Stations::dispatch($assets->pluck('location_id')->toArray());
+            });
+
+         // NPC stations using corporation assets
         CorporationAsset::where('location_type', 'station')
             ->select('location_id')
             ->orderBy('location_id')
