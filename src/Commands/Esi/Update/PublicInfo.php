@@ -95,7 +95,7 @@ class PublicInfo extends Command
             });
 
         // NPC stations usings from contract start locations
-        ContractDetail::where('start_location_type', 'Seat\\Eveapi\\Models\\Universe\\UniverseStation')
+        ContractDetail::where('start_location_type', UniverseStation::class)
             ->select('start_location_id')
             ->orderBy('start_location_id')
             ->distinct()
@@ -104,7 +104,7 @@ class PublicInfo extends Command
             });
 
         // NPC stations usings from contract start locations
-        ContractDetail::where('end_location_type', 'Seat\\Eveapi\\Models\\Universe\\UniverseStation')
+        ContractDetail::where('end_location_type', UniverseStation::class)
             ->select('end_location_id')
             ->orderBy('end_location_id')
             ->distinct()
