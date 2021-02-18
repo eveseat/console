@@ -37,6 +37,7 @@ use Seat\Eveapi\Jobs\Universe\Stations;
 use Seat\Eveapi\Models\Assets\CharacterAsset;
 use Seat\Eveapi\Models\Assets\CorporationAsset;
 use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Contracts\ContractDetail;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Eveapi\Models\Universe\UniverseStation;
 
@@ -91,6 +92,24 @@ class PublicInfo extends Command
             ->distinct()
             ->chunk(100, function ($assets) {
                 Stations::dispatch($assets->pluck('location_id')->toArray());
+            });
+
+        // NPC stations usings from contract start locations
+        ContractDetail::where('start_location_type', UniverseStation::class)
+            ->select('start_location_id')
+            ->orderBy('start_location_id')
+            ->distinct()
+            ->chunk(100, function ($locations) {
+                Stations::dispatch($locations->pluck('start_location_id')->toArray());
+            });
+
+        // NPC stations usings from contract start locations
+        ContractDetail::where('end_location_type', UniverseStation::class)
+            ->select('end_location_id')
+            ->orderBy('end_location_id')
+            ->distinct()
+            ->chunk(100, function ($locations) {
+                Stations::dispatch($locations->pluck('end_location_id')->toArray());
             });
 
         Map::dispatch();
