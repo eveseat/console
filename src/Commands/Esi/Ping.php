@@ -22,18 +22,15 @@
 
 namespace Seat\Console\Commands\Esi;
 
-use Illuminate\Console\Command;
-use Seat\Eseye\Cache\NullCache;
-use Seat\Eseye\Configuration;
-use Seat\Eseye\Exceptions\RequestFailedException;
+use Seat\Eveapi\Commands\Esi\Meta\Ping as Base;
 
 /**
  * Class Ping.
  *
  * @package Seat\Console\Commands\Esi
- * @deprecated since 4.7.0
+ * @deprecated since 4.7.0 - this has been replaced by Seat\Eveapi\Commands\Esi\Meta\Ping
  */
-class Ping extends Command
+class Ping extends Base
 {
     /**
      * The name and signature of the console command.
@@ -41,46 +38,4 @@ class Ping extends Command
      * @var string
      */
     protected $signature = 'esi:ping';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Perform an ESI status check';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @throws \Seat\Eseye\Exceptions\InvalidContainerDataException
-     */
-    public function handle()
-    {
-
-        $esi = app('esi-client')->get();
-        $esi->setVersion('');   // meta URI lives in /
-        Configuration::getInstance()->cache = NullCache::class;
-
-        try {
-
-            $esi->invoke('get', '/ping');
-
-        } catch (RequestFailedException $e) {
-
-            $this->error('ESI does not appear to be available: ' . $e->getMessage());
-        }
-
-        $this->info('ESI appears to be OK');
-    }
 }

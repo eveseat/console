@@ -22,125 +22,19 @@
 
 namespace Seat\Console\Commands\Seat\Token;
 
-use Carbon\Carbon;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Seat\Eveapi\Models\RefreshToken;
+use Seat\Eveapi\Commands\Seat\Tokens\Upgrade as Base;
 
 /**
  * Class Upgrade.
  * @package Seat\Console\Commands\Seat\Token
- * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
+ * @deprecated since 4.8.0 - this has been replaced by Seat\Eveapi\Commands\Eve\Update\Status
  */
-class Upgrade extends Command
+class Upgrade extends Base
 {
-
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
     protected $signature = 'seat:token:upgrade';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Upgrade all tokens to latest sso version';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
-    {
-
-        $this->line('SeAT Token Upgrader');
-
-        $client = new Client([
-            'timeout' => 30,
-        ]);
-        $authsite = 'https://login.eveonline.com/v2/oauth/token';
-
-        $errors = 0;
-        $perm = 0;
-        $success = 0;
-
-        $count = DB::table('refresh_tokens')
-            ->whereNull('deleted_at')
-            ->count();
-        $progress = $this->output->createProgressBar($count);
-
-        RefreshToken::chunk(100, function ($tokens) use ($client, &$errors, &$success, &$perm, $authsite, $progress) {
-                foreach ($tokens as $token){
-                    if ($token->version == RefreshToken::CURRENT_VERSION){
-                        continue;
-                    }
-                    try{
-                        $token_headers = [
-                            'headers' => [
-                                'Authorization' => 'Basic ' . base64_encode(config('esi.eseye_client_id') . ':' . config('esi.eseye_client_secret')),
-                                'User-Agent' => 'Eve SeAT SSO v2 Migrator. Contact eveseat slack or github. https://github.com/eveseat/seat',
-                                'Content-Type' => 'application/x-www-form-urlencoded',
-                                'Host' => 'login.eveonline.com',
-                            ],
-                            'form_params' => [
-                                'grant_type' => 'refresh_token',
-                                'refresh_token' => $token->refresh_token,
-                            ],
-                        ];
-
-                        $result = $client->post($authsite, $token_headers);
-                        $resp = json_decode($result->getBody());
-                        $expires_new = Carbon::createFromTimestamp(time() + $resp->expires_in);
-
-                        $token->token = $resp->access_token;
-                        $token->refresh_token = $resp->refresh_token;
-                        $token->expires_on = $expires_new;
-                        $token->version = RefreshToken::CURRENT_VERSION;
-
-                        $token->save();
-
-                        $success += 1;
-
-                    } catch (RequestException $e) {
-                        logger()->error('Error Migrating Refresh Token', [
-                            'Character ID'   => $token->character_id,
-                            'Message' => $e->getMessage(),
-                            'Body' => (string) $e->getResponse()->getBody(),
-                            'Headers' => $e->getResponse()->getHeaders(),
-                        ]);
-
-                        if (strpos((string) $e->getResponse()->getBody(), 'invalid_grant') !== false) {
-                            $perm += 1;
-                            $token->delete();
-                        } else{
-                            $errors += 1;
-                        }
-                    }
-                    $progress->advance();
-                }
-            });
-
-            $progress->finish();
-            $this->line('');
-
-            $this->info('SeAT SSO Token Migration Complete!');
-            $this->info('Success: '. $success);
-            $this->warn('Temp Fail: '. $errors);
-            $this->error('Perm Fail: '. $perm);
-    }
 }

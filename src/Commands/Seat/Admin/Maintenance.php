@@ -22,35 +22,13 @@
 
 namespace Seat\Console\Commands\Seat\Admin;
 
-use Illuminate\Console\Command;
-use Seat\Console\Jobs\Maintenance as MaintenanceJob;
+use Seat\Eveapi\Commands\Seat\Admin\Maintenance as Base;
 
 /**
  * Class Maintenance.
  * @package Seat\Console\Commands\Seat\Admin
+ * @deprecated since 4.8.0 - this has been replaced by Seat\Eveapi\Commands\Seat\Admin\Maintenance
  */
-class Maintenance extends Command
+class Maintenance extends Base
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'seat:admin:maintenance';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Dispatches a maintenance job';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
-    {
-
-        dispatch((new MaintenanceJob))->onQueue('default');
-    }
 }

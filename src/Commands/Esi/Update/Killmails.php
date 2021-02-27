@@ -22,64 +22,14 @@
 
 namespace Seat\Console\Commands\Esi\Update;
 
-use Illuminate\Console\Command;
-use Seat\Eveapi\Jobs\Killmails\Character\Recent as RecentCharacterKills;
-use Seat\Eveapi\Jobs\Killmails\Corporation\Recent as RecentCorporationKills;
-use Seat\Eveapi\Jobs\Killmails\Detail;
-use Seat\Eveapi\Models\Killmails\Killmail;
-use Seat\Eveapi\Models\RefreshToken;
+use Seat\Eveapi\Commands\Esi\Update\Killmails as Base;
 
 /**
  * Class Killmails.
  *
  * @package Seat\Console\Commands\Esi\Update
- * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
+ * @deprecated since 4.7.0 - this has been replaced by Seat\Eveapi\Commands\Esi\Update\Killmails
  */
-class Killmails extends Command
+class Killmails extends Base
 {
-    /**
-     * @var string
-     */
-    protected $signature = 'esi:update:killmails {killmail_ids?* : Optional killmail_ids to update}';
-
-    /**
-     * @var string
-     */
-    protected $description = 'Schedule update jobs for killmails';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
-    {
-        // collect optional kills ID from arguments
-        $killmail_ids = $this->argument('killmail_ids') ?: [];
-
-        $killmails = Killmail::whereDoesntHave('detail');
-
-        // in case at least one ID has been provided, filter kills on arguments
-        if (! empty($killmail_ids))
-            $killmails->whereIn('killmail_id', $killmail_ids);
-
-        // loop over kills and queue detailed jobs
-        // if we don't have any kills registered -> queue character and corporation jobs to collect them
-        if ($killmails->get()->each(function ($killmail) {
-            Detail::dispatch($killmail->killmail_id, $killmail->killmail_hash);
-        })->isEmpty() && empty($killmail_ids)) {
-            RefreshToken::chunk(100, function ($tokens) {
-                $tokens->each(function ($token) {
-                    RecentCharacterKills::dispatch($token);
-                });
-            });
-
-            RefreshToken::whereHas('character.affiliation', function ($query) {
-                $query->whereNotNull('corporation_id');
-            })->whereHas('character.corporation_roles', function ($query) {
-                $query->where('scope', 'roles');
-                $query->where('role', 'Director');
-            })->get()->unique('character.affiliation.corporation_id')->each(function ($token) {
-                RecentCorporationKills::dispatch($token->character->affiliation->corporation_id, $token);
-            });
-        }
-    }
 }

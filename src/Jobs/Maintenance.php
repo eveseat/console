@@ -22,82 +22,13 @@
 
 namespace Seat\Console\Jobs;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
-use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Eveapi\Models\FailedJob;
-use Seat\Eveapi\Models\Status\EsiStatus;
-use Seat\Eveapi\Models\Status\ServerStatus;
+use Seat\Eveapi\Jobs\Maintenance as Base;
 
 /**
  * Class Maintenance.
  * @package Seat\Console\Jobs
+ * @deprecated since 4.8.0 - this has been replaced by Seat\Eveapi\Jobs\Maintenance
  */
-class Maintenance implements ShouldQueue
+class Maintenance extends Base
 {
-
-    use InteractsWithQueue, Queueable, SerializesModels;
-
-    /**
-     * The number of times the job may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 1;
-
-    /**
-     * The maximum duration of job in seconds before being considered as dead.
-     *
-     * @var int
-     */
-    public $timeout = 12000;
-
-    /**
-     * The maximum duration of job in seconds before being retried.
-     *
-     * @var int
-     */
-    public $retryAfter = 12001;
-
-    /**
-     * Perform the maintenance job.
-     */
-    public function handle()
-    {
-
-        $this->cleanup_tables();
-
-        if (setting('cleanup_data', true) == 'yes')
-            $this->cleanup_characters();
-    }
-
-    /**
-     * Partially truncates tables that typically contain
-     * a lot of data.
-     */
-    public function cleanup_tables()
-    {
-
-        logger()->info('Performing table maintenance');
-
-        // Prune the failed jobs table
-        FailedJob::where('id', '<', (FailedJob::max('id') - 100))->delete();
-
-        // Prune the server statuses older than a week.
-        ServerStatus::where('created_at', '<', carbon('now')->subWeek(1))->delete();
-
-        // Prune ESI statuses older than a week
-        EsiStatus::where('created_at', '<', carbon('now')->subWeek(1))->delete();
-
-        // ask database to rebuild index in order to properly reduce their space usage on drive
-        DB::statement('OPTIMIZE TABLE failed_jobs, server_status, esi_status');
-    }
-
-    private function cleanup_characters()
-    {
-        CharacterInfo::doesntHave('refresh_token')->delete();
-    }
 }

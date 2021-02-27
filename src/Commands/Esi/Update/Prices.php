@@ -22,47 +22,14 @@
 
 namespace Seat\Console\Commands\Esi\Update;
 
-use Illuminate\Console\Command;
-use Seat\Eveapi\Jobs\Market\History;
-use Seat\Eveapi\Models\Sde\InvType;
+use Seat\Eveapi\Commands\Esi\Update\Prices as Base;
 
 /**
  * Class Prices.
  *
  * @package Seat\Console\Commands\Esi\Update
- * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
+ * @deprecated since 4.7.0 - this has been replaced by Seat\Eveapi\Commands\Esi\Update\Prices
  */
-class Prices extends Command
+class Prices extends Base
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'esi:update:prices';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Schedule updater jobs which will collect market price stats.';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
-    {
-        // collect all items which can be sold on the market.
-        $types = InvType::whereNotNull('marketGroupID')
-            ->where('published', true)
-            ->select('typeID')
-            ->get();
-
-        // build small batch of a maximum of 200 entries to avoid long running job.
-        $types->chunk(50)->each(function ($chunk) {
-            $ids = $chunk->pluck('typeID')->toArray();
-            History::dispatch($ids)->delay(rand(20, 300));
-        });
-    }
 }

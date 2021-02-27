@@ -22,45 +22,14 @@
 
 namespace Seat\Console\Commands\Esi\Update;
 
-use Illuminate\Console\Command;
-use Seat\Eveapi\Jobs\Character\Notifications as NotificationsJob;
-use Seat\Eveapi\Models\RefreshToken;
+use Seat\Eveapi\Commands\Esi\Update\Notifications as Base;
 
 /**
  * Class Notifications.
  *
  * @package Seat\Console\Commands\Esi\Update
- * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
+ * @deprecated since 4.7.0 - this has been replaced by Seat\Eveapi\Commands\Esi\Update\Notifications
  */
-class Notifications extends Command
+class Notifications extends Base
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'esi:update:notifications {character_id? : Optional character_id to update}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Schedule updater job for character notifications';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
-    {
-        $tokens = RefreshToken::all()
-            ->when($this->argument('character_id'), function ($tokens) {
-                return $tokens->where('character_id', $this->argument('character_id'));
-            })
-            ->each(function ($token) {
-                NotificationsJob::dispatch($token);
-            });
-
-        $this->info('Processed ' . $tokens->count() . ' refresh tokens.');
-    }
 }

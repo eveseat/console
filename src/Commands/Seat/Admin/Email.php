@@ -22,62 +22,13 @@
 
 namespace Seat\Console\Commands\Seat\Admin;
 
-use Illuminate\Console\Command;
-use Seat\Services\Settings\Seat;
+use Seat\Services\Commands\Seat\Admin\Email as Base;
 
 /**
  * Class Email.
  * @package Seat\Console\Commands\Seat\Admin
- * @deprecated since 4.7.0
+ * @deprecated since 4.7.0 - this has been replaced by Seat\Services\Commands\Seat\Admin\Email
  */
-class Email extends Command
+class Email extends Base
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'seat:admin:email';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Set the administrator email.';
-
-    /**
-     * Create a new command instance.
-     */
-    public function __construct()
-    {
-
-        parent::__construct();
-
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @throws \Seat\Services\Exceptions\SettingException
-     */
-    public function handle()
-    {
-
-        $this->line('SeAT Admin Email Set Tool');
-
-        $this->info('The current admin email is: ' . Seat::get('admin_contact'));
-        $this->question('Please enter the new administrator email address:');
-
-        $email = $this->ask('Email: ');
-        while (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-
-            // invalid email address
-            $this->error($email . ' is not a valid email. Please try again:');
-            $email = $this->ask('Email: ');
-        }
-
-        $this->info('Setting the administrator email to: ' . $email);
-        Seat::set('admin_contact', $email);
-    }
 }

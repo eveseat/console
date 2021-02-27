@@ -22,37 +22,14 @@
 
 namespace Seat\Console\Commands\Eve\Update;
 
-use Illuminate\Console\Command;
-use Seat\Eveapi\Jobs\Status\Status as ServerStatusJob;
+use Seat\Eveapi\Commands\Eve\Update\Status as Base;
 
 /**
  * Class Status.
  *
  * @package Seat\Console\Commands\Eve\Update
- * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
+ * @deprecated since 4.7.0 - this has been replaced by Seat\Eveapi\Commands\Eve\Update\Status
  */
-class Status extends Command
+class Status extends Base
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'eve:update:status';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Schedule updater jobs for the EVE server status';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
-    {
-
-        ServerStatusJob::dispatch()->onQueue('high');
-    }
 }
