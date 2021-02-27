@@ -22,65 +22,13 @@
 
 namespace Seat\Console\Commands\Seat;
 
-use Illuminate\Console\Command;
-use Seat\Services\Traits\VersionsManagementTrait;
+use Seat\Services\Commands\Seat\Version as Base;
 
 /**
  * Class Version.
  * @package Seat\Console\Commands\Seat
+ * @deprecated since 4.8.0 - this has been replaced by Seat\Services\Commands\Seat\Version
  */
-class Version extends Command
+class Version extends Base
 {
-    use VersionsManagementTrait;
-
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'seat:version {--offline : Skip Checking Github for latest versions}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Show all of the SeAT component versions';
-
-    /**
-     * @var string
-     */
-    protected $base_url = 'https://api.github.com/repos/:repo/releases/latest';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
-    {
-
-        $offline = $this->option('offline');
-
-        if ($offline)
-            $this->info('Checking Local Versions Only');
-        else
-            $this->info('Checking Local and Latest Versions. Please wait...');
-
-        $this->table(['Package Name', 'Local Version', 'Latest Version'],
-            $this->getPluginsMetadataList()->core->map(function ($package) use ($offline) {
-                if ($offline) {
-
-                    return [
-                        $package->getName(),
-                        $package->getVersion(),
-                        'Offline',
-                    ];
-                }
-
-                return [
-                    $package->getName(),
-                    $package->getVersion(),
-                    $this->getPackageLatestVersion($package->getPackagistVendorName(), $package->getPackagistPackageName()),
-                ];
-            }));
-    }
 }

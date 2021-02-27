@@ -22,50 +22,14 @@
 
 namespace Seat\Console\Commands\Esi\Update;
 
-use Illuminate\Console\Command;
-use Seat\Console\Bus\Character;
-use Seat\Eveapi\Models\RefreshToken;
+use Seat\Eveapi\Commands\Esi\Update\Characters as Base;
 
 /**
  * Class Characters.
  *
  * @package Seat\Console\Commands\Esi\Update
- * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
+ * @deprecated since 4.7.0 - this has been replaced by Seat\Eveapi\Commands\Esi\Update\Characters
  */
-class Characters extends Command
+class Characters extends Base
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'esi:update:characters {character_id : ID from character to update}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Schedule updater jobs for character';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
-    {
-
-        $token = RefreshToken::find($this->argument('character_id'));
-
-        if (! $token) {
-            $this->error('The provided ID is invalid or not registered in SeAT.');
-
-            return;
-        }
-
-        // Fire the class that handles the collection of jobs to run.
-        (new Character($token))->fire();
-
-        $this->info(sprintf('Processing character update %d - %s',
-            $token->character_id, $token->character->name ?? trans('web::seat.unknown')));
-    }
 }

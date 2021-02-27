@@ -28,6 +28,7 @@ use Laravel\Horizon\Contracts\WorkloadRepository;
 /**
  * Class Status.
  * @package Seat\Console\Commands\Seat\Queue
+ * @deprecated since 4.8.0 - this class will be removed with no replacement
  */
 class Status extends Command
 {

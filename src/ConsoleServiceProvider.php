@@ -22,30 +22,16 @@
 
 namespace Seat\Console;
 
-use Seat\Console\Commands\Esi\Dispatch;
 use Seat\Console\Commands\Esi\Ping;
-use Seat\Console\Commands\Esi\Update\Affiliations;
-use Seat\Console\Commands\Esi\Update\Alliances;
-use Seat\Console\Commands\Esi\Update\Characters;
-use Seat\Console\Commands\Esi\Update\Contracts;
-use Seat\Console\Commands\Esi\Update\Corporations;
-use Seat\Console\Commands\Esi\Update\Killmails;
-use Seat\Console\Commands\Esi\Update\Notifications;
-use Seat\Console\Commands\Esi\Update\Prices;
-use Seat\Console\Commands\Esi\Update\PublicInfo;
-use Seat\Console\Commands\Esi\Update\Status as EsiStatus;
-use Seat\Console\Commands\EsiJobMakeCommand;
-use Seat\Console\Commands\Eve\Update\Sde;
-use Seat\Console\Commands\Eve\Update\Status as ServerStatus;
 use Seat\Console\Commands\Seat\Admin\Diagnose;
-use Seat\Console\Commands\Seat\Admin\Email;
-use Seat\Console\Commands\Seat\Admin\Login;
-use Seat\Console\Commands\Seat\Admin\Maintenance;
-use Seat\Console\Commands\Seat\Cache\Clear;
 use Seat\Console\Commands\Seat\Token\Upgrade;
-use Seat\Console\Commands\Seat\Version;
 use Seat\Services\AbstractSeatPlugin;
 
+/**
+ * Class ConsoleServiceProvider
+ * @package Seat\Console
+ * @deprecated since 4.8.0 - this package will be decommissioned
+ */
 class ConsoleServiceProvider extends AbstractSeatPlugin
 {
     /**
@@ -63,33 +49,7 @@ class ConsoleServiceProvider extends AbstractSeatPlugin
     {
 
         $this->commands([
-            Sde::class,
-            Diagnose::class,
-            Email::class,
-            Login::class,
-            Clear::class,
-            Version::class,
-            ServerStatus::class,
-            Maintenance::class,
-
-            // Dev
-            EsiJobMakeCommand::class,
-
-            // Esi
             Ping::class,
-            Characters::class,
-            Corporations::class,
-            Notifications::class,
-            PublicInfo::class,
-            Affiliations::class,
-            Prices::class,
-            Alliances::class,
-            Contracts::class,
-            Killmails::class,
-            Dispatch::class,
-            EsiStatus::class,
-
-            // SSO
             Upgrade::class,
         ]);
     }

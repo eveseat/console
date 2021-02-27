@@ -22,53 +22,14 @@
 
 namespace Seat\Console\Commands\Esi\Update;
 
-use Illuminate\Console\Command;
-use Seat\Eveapi\Jobs\Character\Affiliation;
-use Seat\Eveapi\Models\Character\CharacterInfo;
-use Seat\Eveapi\Models\Universe\UniverseName;
+use Seat\Eveapi\Commands\Esi\Update\Affiliations as Base;
 
 /**
  * Class Affiliations.
  *
  * @package Seat\Console\Commands\Esi\Update
- * @deprecated since 4.7.0 - this will be moved into eveapi package in a near future
+ * @deprecated since 4.7.0 - this has been replaced by Seat\Eveapi\Commands\Esi\Update\Affiliations
  */
-class Affiliations extends Command
+class Affiliations extends Base
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'esi:update:affiliations {character_id?* : Optional character_ids to update}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Schedule updater jobs for characters affiliations';
-
-    /**
-     * Execute the console command.
-     */
-    public function handle()
-    {
-        $character_ids = collect($this->argument('character_id'));
-
-        // in case no IDs has been specified, collect all characters and universe names.
-        if ($character_ids->isEmpty()) {
-            $characters = CharacterInfo::select('character_id')->get();
-            $entities = UniverseName::where('category', 'character')->select('entity_id')->get();
-
-            $character_ids = $character_ids->merge($characters->pluck('character_id')->toArray());
-            $character_ids = $character_ids->merge($entities->pluck('entity_id')->toArray());
-        }
-
-        // build small batch of a maximum of 200 entries to avoid long running job.
-        $character_ids->unique()->chunk(Affiliation::REQUEST_ID_LIMIT)->each(function ($chunk) {
-            $ids = $chunk->toArray();
-            Affiliation::dispatch($ids);
-        });
-    }
 }

@@ -22,84 +22,14 @@
 
 namespace Seat\Console\Commands\Seat\Admin;
 
-use Illuminate\Console\Command;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Support\Str;
-use Seat\Services\Helpers\AnalyticsContainer;
-use Seat\Services\Jobs\Analytics;
-use Seat\Web\Models\User;
+use Seat\Web\Commands\Seat\Admin\Login as Base;
 
 /**
  * Class Login.
  *
  * @package Seat\Console\Commands\Seat\Admin
- * @deprecated since 4.7.0 - this will be moved into web package in a near future
+ * @deprecated since 4.7.0 - this has been replaced by Seat\Web\Commands\Seat\Admin\Login
  */
-class Login extends Command
+class Login extends Base
 {
-    use DispatchesJobs;
-
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'seat:admin:login';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Generate an administrative login URL.';
-
-    /**
-     * Execute the console command.
-     *
-     * @throws \Exception
-     */
-    public function handle()
-    {
-
-        $this->line('SeAT Admin Login URL Generator');
-
-        $admin = User::firstOrNew(['name' => 'admin']);
-
-        if (! $admin->exists) {
-
-            $this->warn('User \'admin\' does not exist. It will be created.');
-
-            $admin->fill([
-                'name'              => 'admin',
-                'main_character_id' => 0,
-                'admin'             => true,
-            ]);
-            $admin->id = 1; // Needed as id is not fillable
-            $admin->save();
-        }
-
-        $this->line('Checking if \'admin\' is a super user');
-
-        if (! $admin->isAdmin()) {
-
-            $this->comment('Adding \'admin\' to the Superuser role');
-            $admin->admin = true;
-            $admin->save();
-        }
-
-        $this->line('Generating authentication token');
-        $token = Str::random(32);
-        cache(['admin_login_token' => $token], 60);
-
-        $this->line('');
-        $this->info('Your authentication URL is valid for 60 seconds.');
-        $this->line(route('auth.admin.login', ['token' => $token]));
-
-        // Analytics
-        $this->dispatch(new Analytics((new AnalyticsContainer)
-            ->set('type', 'event')
-            ->set('ec', 'admin')
-            ->set('ea', 'password_reset')
-            ->set('el', 'console')));
-    }
 }
