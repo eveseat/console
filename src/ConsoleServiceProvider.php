@@ -23,12 +23,11 @@
 namespace Seat\Console;
 
 use Seat\Console\Commands\Esi\Ping;
-use Seat\Console\Commands\Seat\Admin\Diagnose;
 use Seat\Console\Commands\Seat\Token\Upgrade;
 use Seat\Services\AbstractSeatPlugin;
 
 /**
- * Class ConsoleServiceProvider
+ * Class ConsoleServiceProvider.
  * @package Seat\Console
  * @deprecated since 4.8.0 - this package will be decommissioned
  */
